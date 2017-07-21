@@ -1,0 +1,7 @@
+# This is just to keep notes on snmp commands to run to test stuff.
+#it should be removed when the module is ready.
+
+
+snmpwalk -v3 -u snmp_rw -l authPriv -A P@ssw0rd -X P@ssw0rd localhost system
+# The following needs net-snmp-devel rpm installed
+net-snmp-config --default-mibdirs

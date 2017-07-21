@@ -1,0 +1,4 @@
+* Tue Jul 18 2014 First Draft of SNMPD profile module <jeanne.greulich@onyxpoint.com> - 0.0.1
+- Set up initial install
+- Setup data/common variables
+- Outline modules

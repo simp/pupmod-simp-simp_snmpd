@@ -1,0 +1,69 @@
+{
+  "name": "simp-simp_snmpd",
+  "version": "1.0.0",
+  "author": "SIMP Team",
+  "summary": "Provides useful settings to set up the GNOME desktop environment",
+  "license": "Apache-2.0",
+  "source": "https://github.com/simp/pupmod-simp-simp_snmpd",
+  "project_page": "https://github.com/simp/pupmod-simp-simp_snmpd",
+  "issues_url": "https://simp-project.atlassian.net",
+  "tags": [
+    "simp",
+    "gnome",
+    "desktop"
+  ],
+  "dependencies": [
+    {
+      "name": "simp/simplib",
+      "version_requirement": ">= 3.1.0 < 4.0.0"
+    },
+    {
+      "name": "simp/iptables",
+      "version_requirement": ">= 6.0.0 < 7.0.0"
+    },
+    {
+      "name": "simp/logrotate",
+      "version_requirement": ">= 6.0.0 < 7.0.0"
+    },
+    {
+      "name": "simp/snmp",
+      "version_requirement": ">= 3.8.1 < 4.0.0"
+    },
+    {
+      "name": "simp/rsync",
+      "version_requirement": ">= 6.0.0 < 7.0.0"
+    },
+    {
+      "name": "simp/rsyslog",
+      "version_requirement": ">= 7.0.0 < 8.0.0"
+    },
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 4.13.0 < 5.0.0"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 4.7.0 < 5.0.0"
+    }
+  ],
+  "data_provider": "hiera"
+}
+

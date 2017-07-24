@@ -1,5 +1,5 @@
 #
-#  This mudule is underconstruction and not ready for use.
+#  This module is underconstruction and not ready for use.
 #
 #
 

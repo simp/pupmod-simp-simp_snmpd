@@ -2,3 +2,8 @@
 - Set up initial install
 - Setup data/common variables
 - Outline modules
+- Create access modules
+- Configure client access
+- Configured rsyslog and logrotate
+- setup rsync for mib dirs and dlmod dirs
+

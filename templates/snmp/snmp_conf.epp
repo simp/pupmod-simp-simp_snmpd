@@ -1,0 +1,6 @@
+defVersion <%= $simp_snmpd::version %>
+defSecurityModel <%= $simp_snmpd::defsecuritymodel %>
+defSecurityLevel <%= $simp_snmpd::install::client::seclevel %>
+defAuthType <%= $simp_snmpd::defauthtype %>
+defPrivType <%= $simp_snmpd::defprivtype %>
+mibdirs /usr/share/snmp/mibs:<%= $simp_snmpd::rsync_mibs_dir -%>/mibs

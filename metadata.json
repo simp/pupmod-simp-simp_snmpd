@@ -1,6 +1,6 @@
 {
   "name": "simp-simp_snmpd",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "author": "SIMP Team",
   "summary": "Provides useful settings to set up the GNOME desktop environment",
   "license": "Apache-2.0",
@@ -9,8 +9,7 @@
   "issues_url": "https://simp-project.atlassian.net",
   "tags": [
     "simp",
-    "gnome",
-    "desktop"
+    "snmp"
   ],
   "dependencies": [
     {

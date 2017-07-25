@@ -34,15 +34,20 @@ class simp_snmpd::install {
     "includeDir ${simp_snmpd::user_snmpd_dir}"
   ]
 
-  $snmp_config = [
-    'includeFile /etc/snmp/snmp.simp.conf'
-  ]
+  if $simp_snmpd::manage_client {
+    include 'simp_snmpd::install::client'
+    $snmp_config = [
+      "includeFile ${simp_snmpd::snmp_conf_file}"
+    ]
+  }
 
-  file { '/etc/snmp':
-    ensure => directory,
-    owner  => root,
-    group  => root,
-    mode   => '0750'
+  unless $simp_snmpd::manage_client {
+    file { '/etc/snmp':
+      ensure => directory,
+      owner  => root,
+      group  => root,
+      mode   => '0750'
+    }
   }
 
   # How to default the agent address?  Will need to
@@ -69,4 +74,5 @@ class simp_snmpd::install {
     manage_client            => $simp_snmpd::manage_client,
     snmp_config              => $snmp_config,
   }
+
 }

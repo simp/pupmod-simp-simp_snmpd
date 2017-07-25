@@ -20,4 +20,11 @@ class simp_snmpd::config::logging {
     }
   }
 
+  file { '/var/log/snmpd.log':
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0600',
+    seltype => snmpd_log_t,
+  }
+
 }

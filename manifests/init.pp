@@ -15,6 +15,8 @@
 # @param $v3_users_hash,  $view_hash, $group_hash, $access_hash,
 #   These are hashed used to set up access to snmpd.  See
 #   the access.pp module for more information.
+# @param $simp_snmp_file
+#   file to hold snmp configuration directives for client utils.
 # @param $simp_snmpd_dir
 #   Directory to hold configuration files defined by simp and used
 #   by the snmpd daemon.  These files are managed by puppet.
@@ -50,6 +52,7 @@ class simp_snmpd (
   Hash                                 $access_hash,
   Optional[Array[
     Simp_snmpd::Listeningaddr]]        $agentaddress,
+  StdLib::AbsolutePath                 $snmp_conf_file,
   StdLib::AbsolutePath                 $simp_snmpd_dir,
   StdLib::AbsolutePath                 $user_snmpd_dir,
 # Do we need to set these?

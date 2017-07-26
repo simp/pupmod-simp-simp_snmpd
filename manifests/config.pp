@@ -28,6 +28,7 @@ class simp_snmpd::config {
   # package net-snmp-utils?  I changed it to package net-snmp
   # if running snmp under a different group make it has read permissions on
   # the configuration files.
+
   $_mibs_dir = $simp_snmpd::rsync_mibs ? {
     true    => $simp_snmpd::rsync_mibs_dir,
     default => '' }

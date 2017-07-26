@@ -112,9 +112,7 @@ simp_snmpd::trap_service_startatboot: false
 #simp_snmpd::snmp_uid: undef
 simp_snmpd::version: 3
 simp_snmpd::snmp_conf_file: /etc/snmp/simp_snmp.conf
-simp_snmpd::simp_snmp_dir: /etc/snmp/simp_snmp.d
 simp_snmpd::simp_snmpd_dir: /etc/snmp/simp_snmpd.d
-simp_snmpd::user_snmp_dir: /etc/snmp/snmp.d
 simp_snmpd::user_snmpd_dir: /etc/snmp/snmpd.d
 simp_snmpd::do_not_log_traps: 'no'
 simp_snmpd::do_not_log_tcpwrappers: 'no'

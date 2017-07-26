@@ -55,7 +55,6 @@ class simp_snmpd (
   StdLib::AbsolutePath                 $snmp_conf_file,
   StdLib::AbsolutePath                 $simp_snmpd_dir,
   StdLib::AbsolutePath                 $user_snmpd_dir,
-# Do we need to set these?
   Enum['SHA','MD5']                    $defauthtype,
   Enum['DES', 'AES']                   $defprivtype,
   Simp_snmpd::Secmodel                 $defsecuritymodel,
@@ -81,4 +80,9 @@ class simp_snmpd (
   include simp_snmpd::access
 
   Class['simp_snmpd::install'] -> Class['simp_snmpd::config'] -> Class['simp_snmpd::access']
+
+  if $rsync_dlmod or $rsync_mibs {
+    include simp_snmpd::rsync
+    Class['simp_snmpd::config'] -> Class['simp_snmpd::rsync']
+  }
 }

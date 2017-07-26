@@ -9,7 +9,7 @@
 #  -disable v2 setup
 #
 class simp_snmpd::install {
-  if $simp_snmpd::snmp_gid {
+  if defined('$simp_snmpd::snmp_gid') {
     group { 'snmp':
       ensure => present,
       gid    => $simp_snmpd::snmp_gid,
@@ -17,7 +17,7 @@ class simp_snmpd::install {
     }
   }
 
-  if $simp_snmpd::snmp_uid {
+  if defined('$simp_snmpd::snmp_uid') {
     user { 'snmp':
       ensure => present,
       uid    => $simp_snmpd::snmp_uid,
@@ -36,10 +36,11 @@ class simp_snmpd::install {
 
   if $simp_snmpd::manage_client {
     include 'simp_snmpd::install::client'
-    $snmp_config = [
-      "includeFile ${simp_snmpd::snmp_conf_file}"
-    ]
   }
+  $snmp_config = [
+    "includeFile ${simp_snmpd::snmp_conf_file}"
+  ]
+
 
   unless $simp_snmpd::manage_client {
     file { '/etc/snmp':

@@ -54,7 +54,7 @@ class simp_snmpd::rsync{
       server   => $simp_snmpd::rsync_server,
       timeout  => $simp_snmpd::rsync_timeout,
       source   => "${simp_snmpd::rsync_source}/mibs",
-      target   => $simp_snmpd::rsync_mib_dir,
+      target   => $simp_snmpd::rsync_mibs_dir,
       notify   => [
         Service['snmpd'],
         Exec['set_snmp_perms']

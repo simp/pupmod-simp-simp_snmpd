@@ -18,7 +18,7 @@ Puppet::Functions.create_function(:'simp_snmpd::grouplist') do
               grouplist.push("#{grouppref} #{model} #{user}")
            }
         else
-          grouplist.push("# badly formed group #{name} could not create configuraton item")
+          fail("simp_snmpd: group_hash has badly formed group for key #{name}. Could not create configuraton item")
         end
      end
     }

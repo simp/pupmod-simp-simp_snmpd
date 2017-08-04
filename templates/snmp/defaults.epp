@@ -1,5 +1,0 @@
-defAuthType  <%= $simp_snmp::defauthtype %>
-defPrivType  <%= $simp_snmp::defprivtype %>
-defSecurityModel <%= $simp_snmp::securitymodel %>
-defSecurityLevel <%= $simp_snmp::securitylevel %>,
-defVersion  <%= $simp_snmp::version %>

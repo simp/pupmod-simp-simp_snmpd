@@ -1,12 +1,13 @@
 ---
 fixtures:
   repositories:
-    iptables: https://github.com/simp/pupmod-simp-iptables
+    iptables:  https://github.com/simp/pupmod-simp-iptables
     logrotate: https://github.com/simp/pupmod-simp-logrotate
-    rsync: https://github.com/simp/pupmod-simp-rsync
-    rsyslog: https://github.com/simp/pupmod-simp-rsyslog
-    simpcat: https://github.com/simp/pupmod-simp-simpcat
-    simplib: https://github.com/simp/pupmod-simp-simplib
+    pki:       https://github.com/simp/pupmod-simp-pki
+    rsync:     https://github.com/simp/pupmod-simp-rsync
+    rsyslog:   https://github.com/simp/pupmod-simp-rsyslog
+    simpcat:   https://github.com/simp/pupmod-simp-simpcat
+    simplib:   https://github.com/simp/pupmod-simp-simplib
     snmp:
       repo:  https://github.com/simp/puppet-snmp
       tag:   3.8.1

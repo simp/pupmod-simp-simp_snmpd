@@ -10,7 +10,7 @@ Puppet::Functions.create_function(:'simp_snmpd::authaccesslist') do
     access_hash.each { | name, values|
       accesspref = "authaccess"
       if values.length > 0 then
-        if  values.has_key?('view') and values.has_key?('groups')  then 
+        if  values.has_key?('view') and values.has_key?('groups')  then
           model = "-s #{defaultmodel}"
           level = defaultlevel
           type = 'read'
@@ -22,10 +22,10 @@ Puppet::Functions.create_function(:'simp_snmpd::authaccesslist') do
                 model = "-s #{setting}"
               end
             when 'view'
-              view = setting 
+              view = setting
             when 'level'
               if values.has_key?('context')
-               level = "#{setting} #{values['context']}" 
+               level = "#{setting} #{values['context']}"
               else
                 level = setting
               end

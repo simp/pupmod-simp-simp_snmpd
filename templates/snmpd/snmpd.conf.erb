@@ -5,23 +5,23 @@
 ################################################################################
 # AGENT BEHAVIOUR
 
-<% if @master != nil -%>
+<% if @master.nil? -%>
 <% if @master -%>
 master agentx
 
-<% if @agentx_perms != nil -%>
+<% if @agentx_perms.nil? -%>
 agentXPerms <%= @agentx_perms %>
 <% end -%>
-<% if @agentx_ping_interval != nil -%>
+<% if @agentx_ping_interval.nil? -%>
 agentXPingInterval <%= @agentx_ping_interval %>
 <% end -%>
-<% if @agentx_socket != nil -%>
+<% if @agentx_socket.nil? -%>
 agentXSocket <%= @agentx_socket %>
 <% end -%>
-<% if @agentx_timeout != nil -%>
+<% if @agentx_timeout.nil? -%>
 agentXTimeout <%= @agentx_timeout %>
 <% end -%>
-<% if @agentx_retries != nil -%>
+<% if @agentx_retries.nil? -%>
 agentXRetries <%= @agentx_retries %>
 <% end -%>
 <% end -%>
@@ -35,28 +35,20 @@ agentaddress <%= @agentaddress.join(',') %>
 # SYSTEM INFORMATION
 #
 # ------------------------------------------------------------------------------
-# System Group
-sysLocation <%= @location %>
-sysContact <%= @contact %>
-sysServices <%= @services %>
-sysName <%= @sysname %>
+# System Group 
+#  if set_system_info is true system settingis are in the system_info.conf file 
+#  in the IncludeDir defined at the and of this file
 
 ################################################################################
 # EXTENDING AGENT FUNCTIONALITY
-
-<% if @dlmod.any? -%>
-# ------------------------------------------------------------------------------
-# Dynamically Loadable Modules
-<% @dlmod.each do |mod| -%>
-dlmod <%= mod %>
-<% end -%>
-
-<% end -%>
+# if dlmod array is set the dlmod entries will be in the dlmod.conf file
+#  in the IncludeDir defined at the and of this file
+#
 
 ###############################################################################
 # Access
 #  all the access information has been moved to access.conf file that is located
-#  in the IncludeDir defined at the and of this fil
+#  in the IncludeDir defined at the and of this file
 #
 ###############################################################################
 ## Logging

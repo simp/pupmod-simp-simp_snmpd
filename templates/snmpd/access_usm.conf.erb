@@ -3,13 +3,13 @@
 # or additions can be added in  /etc/snmpd/snmpd.d
 #  views
 <% @_viewlist.each do |view| %>
-<%= view %>
+<%= view -%>
 <% end -%>
 
 <% @_grouplist.each do |group| %>
-<%= group %>
+<%= group -%>
 <% end -%>
 
 <% @_accesslist.each do |access| %>
-<%= access %>
+<%= access -%>
 <% end -%>

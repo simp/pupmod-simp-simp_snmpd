@@ -4,7 +4,7 @@ Puppet::Functions.create_function(:'simp_snmpd::viewlist') do
   end
 
   def createlist(view_hash)
-    viewlist = [] 
+    viewlist = []
     view_hash.each { | name, values|
        viewpref = "view #{name}"
        if values.length > 0 then
@@ -19,6 +19,8 @@ Puppet::Functions.create_function(:'simp_snmpd::viewlist') do
                end
                viewlist.push("#{viewpref}  #{type}  #{elements}")
              }
+           else
+             fail("simp_snmpd: Badly formed view_hash entry #{name}.  Type key must be included or excluded and was #{type}.")
            end
          }
        end

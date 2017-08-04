@@ -28,13 +28,19 @@ class simp_snmpd::rsync{
       preserve_acl => false,
       notify       => [
         Service['snmpd'],
-        Exec['set_snmp_perms']
       ]
     }
-    # Then for each module you need to add it to a config file in simp snmpd direcory and restart snmpd service
-    # dlmod NAME PATH
-    # will load the shared object module from the file PATH (an absolute filename), and call the initialisation routine init_NAME.
-    # Note:  If the specified PATH is not a fully qualified filename, it will be interpreted relative to /usr/lib(64)/snmp/dlmod, and .so will be appended to the filename.
+
+    if $simp_snmpd::dlmods {
+      $_dlmods = $simp_snmpd::dlmods.each | $dlname | { "dlmod ${dlname} ${simp_snmpd::rsync_dlmod_dir}"}
+      file { "${simp_snmpd::simp_snmpd_dir}/dlmod.conf":
+        owner   => root,
+        group   => root,
+        mode    => '0750',
+        content => $_dlmods,
+        notify  => Service[snmpd]
+      }
+    }
   }
 
   #sset up rsync of mibs
@@ -45,7 +51,7 @@ class simp_snmpd::rsync{
       owner  => root,
       group  => root,
       mode   => '0750',
-      before => Rsync['snmp_mibs'],
+      before => Rsync['snmpd_mibs'],
     }
 
     rsync { 'snmpd_mibs':
@@ -57,7 +63,6 @@ class simp_snmpd::rsync{
       target   => $simp_snmpd::rsync_mibs_dir,
       notify   => [
         Service['snmpd'],
-        Exec['set_snmp_perms']
       ]
     }
 

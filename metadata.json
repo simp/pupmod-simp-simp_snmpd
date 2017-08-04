@@ -1,8 +1,8 @@
 {
   "name": "simp-simp_snmpd",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "SIMP Team",
-  "summary": "Provides useful settings to set up the GNOME desktop environment",
+  "summary": "Configures snmpd agent using v3 USM on the client",
   "license": "Apache-2.0",
   "source": "https://github.com/simp/pupmod-simp-simp_snmpd",
   "project_page": "https://github.com/simp/pupmod-simp-simp_snmpd",

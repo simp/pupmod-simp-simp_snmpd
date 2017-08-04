@@ -1,0 +1,14 @@
+###
+### File managed by Puppet
+###
+################################################################################
+# SYSTEM INFORMATION
+#  If the values are set here then using a they are set to not writable in the
+#  by the system.  If you wish to set these via a snmp manager or through your
+#  own file you can disable this by setting simp_snmpd::set_system_info to false.
+# ------------------------------------------------------------------------------
+# System Group
+sysLocation <%= $simp_snmpd::location %>
+sysContact <%= $simp_snmpd::contact %>
+sysServices <%= $simp_snmpd::services %>
+sysName <%= $simp_snmpd::sysname %>

@@ -10,7 +10,7 @@ Puppet::Functions.create_function(:'simp_snmpd::accesslist') do
     access_hash.each { | name, values|
       accesspref = "access"
       if values.length > 0 then
-        if  values.has_key?('view') and values.has_key?('groups')  then 
+        if  values.has_key?('view') and values.has_key?('groups')  then
           model = defaultmodel
           level = defaultlevel
           view = 'none none none'
@@ -33,7 +33,7 @@ Puppet::Functions.create_function(:'simp_snmpd::accesslist') do
               end
             when 'context'
                context = "#{context}"
-            when 'prefx'
+            when /^(prefx|prefix)$/
               if ['exact','prefix'].include? setting then
                   prefix = setting
               end
@@ -43,7 +43,7 @@ Puppet::Functions.create_function(:'simp_snmpd::accesslist') do
             accesslist.push("#{accesspref} #{group} #{context} #{model} #{level} #{prefx} #{view}")
           }
         else
-          accesslist.push("#access definition #{name} is missing either view, type or groups. Can not configure it")
+          fail("simp_snmpd: access_hash definition #{name} is missing either view or groups key.")
         end
      end
     }

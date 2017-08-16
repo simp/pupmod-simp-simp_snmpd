@@ -1,8 +1,8 @@
-# The simp_snmpd module configures the snmpd daemon.
-# Currently it only uses v3 USM.
+# The simp_snmpd init class
+#
+# @summary Configures the snmpd daemon. Currently, it only uses v3 USM.
 # This module does not configure the snmptrap service.
 #
-# Parameters
 # @param ensure
 #   present (default) will install files and packages
 #   absent  make sure they are not installed.
@@ -25,10 +25,8 @@
 #   a directory where users can include *.conf with snmpd configuration items
 #   that will be included.  This directory is not managed by simp.  Users can put
 #   additional configurations files in this directory.
-#
 # @param   $snmpd_service_ensure, $trap_service_ensure
 #   Set the snmpd/trap daemon service to stopped or running
-#
 # @param $snmpd_service_startatboot, $trap_service_startatboot
 #   Start the snmpd/trap service at boot
 #

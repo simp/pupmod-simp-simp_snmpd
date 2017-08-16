@@ -1,12 +1,7 @@
-# == Class simp_snmpd::install
+# simp_snmpd::install
 #
-# -set up snmp group/user if needed
-# - (if user and group != root then need to change permissions on
-#  directories.
-#     /etc/snmp /var/lib/net-snmp
-#     (previous snmpd module set acl on these directories.)
-#  -set up defaults in snmp.conf?
-#  -disable v2 setup
+# @summary Set up snmp group/user if needed, and subsequently change
+# permissions.  Set defaults in snmp.conf.  Disable v2 setup.
 #
 class simp_snmpd::install {
 
@@ -14,7 +9,7 @@ class simp_snmpd::install {
     group { 'snmp':
       ensure => present,
       gid    => $simp_snmpd::snmpd_gid,
-      system => no
+      system => 'no'
     }
   }
 
@@ -22,14 +17,13 @@ class simp_snmpd::install {
     user { 'snmp':
       ensure => present,
       uid    => $simp_snmpd::snmpd_uid,
-      system => no
+      system => 'no'
     }
   }
 
-  # include directories for further configuration
-  # lastone wins so put user directory after simp
-  # so they can include files to override/change/add to what
-  # simp creates.
+  # Include directories for further configuration.  The last one wins, so put
+  # user directory after simp, so they can include files to override, change,
+  # and add to what simp creates.
   $_snmpd_config  = [
     "includeDir ${simp_snmpd::simp_snmpd_dir}",
     "includeDir ${simp_snmpd::user_snmpd_dir}"
@@ -41,16 +35,18 @@ class simp_snmpd::install {
 
   if $simp_snmpd::manage_client {
     include 'simp_snmpd::install::client'
-  } else {
-  # For some reason the snmp module only creates this directory if the
-  # client is included.
+  }
+  else {
+    # For some reason the snmp module only creates this directory if the
+    # client is included.
     file { '/etc/snmp':
       ensure => directory,
-      owner  => root,
-      group  => root,
+      owner  => 'root',
+      group  => 'root',
       mode   => '0750'
     }
   }
+
   $_snmp_config = [
     "includeFile ${simp_snmpd::snmp_conf_file}"
   ]

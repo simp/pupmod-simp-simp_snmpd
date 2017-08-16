@@ -1,6 +1,6 @@
-# == Class simp_snmpd::config::selinux
+# simp_snmpd::config::selinux
 #
-# This class is meant to be called from simp_snmp.
+# @summary This class is meant to be called from simp_snmp.
 # It ensures that selinux rules are defined.
 #
 class simp_snmpd::config::selinux {

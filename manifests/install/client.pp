@@ -1,6 +1,6 @@
-# == Class simp_snmpd::install:: client
+# simp_snmpd::install:: client
 #
-# Sets up parameters to pass to snmp module
+# @summary Sets up parameters to pass to snmp module
 # for configuring the snmp.conf file.
 #
 # The snmp.conf file is used by client utilities

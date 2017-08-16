@@ -1,5 +1,8 @@
-# This sets up some defaults for the agent
-# they can be changed in hiera
+# simp_snmpd::config::agent
+#
+# @summary This sets up some defaults for the agent, they can be changed in
+# hiera
+#
 class simp_snmpd::config::agent {
 
   file { "${simp_snmpd::simp_snmpd_dir}/agent.conf":

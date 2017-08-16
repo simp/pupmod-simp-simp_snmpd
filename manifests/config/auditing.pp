@@ -1,6 +1,6 @@
-# == Class simp_snmpd::config::auditing
+# simp_snmpd::config::auditing
 #
-# This class is meant to be called from simp_snmp.
+# @summary This class is meant to be called from simp_snmp.
 # It ensures that auditing rules are defined.
 #
 class simp_snmpd::config::auditing {

@@ -1,14 +1,10 @@
-# == Class simp_snmpd::config::firewall
+# simp_snmpd::config::firewall
 #
-# This class is meant to be called from simp_snmp.
-# It ensures that firewall rules are defined.
-# for anything in the listenagent array
-# It will go through the agentaddress array and
-# determine if ports on the firewall need to be opened.
-#
-# It ignores any entries for ipx or pvc at this time.
-# IPTABLES calls will have to be set up manually if these
-# transport services are being used.
+# @summary This class is meant to be called from simp_snmp.
+# It ensures that firewall rules are defined. For anything in the listenagent
+# array, it will determine if ports on the firewall need to be opened.
+# It ignores any entries for ipx or pvc at this time. IPTABLES calls will have
+# to be set up manually if these transport services are being used.
 #
 class simp_snmpd::config::firewall {
   assert_private()

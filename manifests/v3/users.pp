@@ -1,4 +1,7 @@
-# Create v3 users from user hash
+# simp_snmpd::v3::users
+#
+# @summary Create v3 users from user hash
+#
 class simp_snmpd::v3::users(
   Enum['snmpd','snmptrapd'] $daemon = 'snmpd'
 ){

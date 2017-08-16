@@ -1,8 +1,6 @@
-# == Class simp_snmpd::config::tsm
+# simp_snmpd::config::tsm
 #
-# This class is under construction
-#
-# It will configure snmpd to use tsm security model
+# @summary This class configures snmpd to use tsm security model.
 #
 class simp_snmpd::config::tsm {
   assert_private()

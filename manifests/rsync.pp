@@ -33,7 +33,7 @@ class simp_snmpd::rsync{
     }
 
     if $simp_snmpd::dlmods {
-      $_dlmods = $simp_snmpd::dlmods.each | $dlname | { "dlmod ${dlname} ${simp_snmpd::rsync_dlmod_dir}"}
+      $_dlmods = $simp_snmpd::dlmods.map | $dlname | { "dlmod ${dlname} ${simp_snmpd::rsync_dlmod_dir}/dlmod/${dlname}.so"}
       file { "${simp_snmpd::simp_snmpd_dir}/dlmod.conf":
         owner   => 'root',
         group   => 'root',

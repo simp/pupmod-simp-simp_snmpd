@@ -47,6 +47,7 @@ simp_snmpd::groups_hash:
   readonly_group:
     secname:
       - foo
+      - snmp_ro
   bar_group:
     secname:
       - bar
@@ -57,7 +58,7 @@ simp_snmpd::access_hash:
       write: iso1
     level: auth
     groups:
-      bar_group
+      - bar_group
 simp_snmpd::system_info: false
 simp_snmpd::agentaddress:
  - udp:localhost:161
@@ -121,23 +122,25 @@ simp_snmpd::manage_client: true
   end
   context 'remove the usm users to  so we can recreate' do
     hosts.each do |node|
-      on(node,'rm -rf /var/lib/net-snmp /etc/snmp')
-      os_release = fact_on(node, 'operatingsystemmajrelease')
-      if os_release == '6'
-        on(node,'service snmpd stop',  :accept_all_exit_codes => true )
-      else
-        on(node,'/bin/systemctl stop snmpd', :accept_all_exit_codes => true)
+      it 'should remove old data' do
+        on(node,'rm -rf /var/lib/net-snmp /etc/snmp')
+        os_release = fact_on(node, 'operatingsystemmajrelease')
+        if os_release == '6'
+          on(node,'service snmpd stop',  :accept_all_exit_codes => true )
+        else
+          on(node,'/bin/systemctl stop snmpd', :accept_all_exit_codes => true)
+        end
       end
-      it 'should set the hiera data' do
+      it 'should set the hiera data 2' do
         set_hieradata_on(node, snmphieradata2, 'default')
       end
 
-      it 'should work with no errors' do
+      it 'should rerun with no errors' do
        # Using puppet_apply as a helper
          apply_manifest_on(node, manifest, :catch_failures => true)
       end
       it 'should not create  snmp_ro user' do
-        result = on(node, '/usr/bin/snmpwalk -u snmp_ro -X KeepItSafe -A KeepItSecret localhost sysLocation.0')
+        result = on(node, '/usr/bin/snmpwalk -u snmp_ro -X KeepItSafe -A KeepItSecret localhost sysLocation.0, :accept_all_exit_codes => true')
         expect(result.stdout).to include("Unknown user name")
       end
       it 'should create bar user and give it write access' do

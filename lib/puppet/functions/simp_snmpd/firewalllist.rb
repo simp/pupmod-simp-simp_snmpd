@@ -39,7 +39,9 @@ Puppet::Functions.create_function(:'simp_snmpd::firewalllist') do
       when parts.count > 2
         # we have an ipv6 address.
         all = parts.join.split(']')
-        if all[1] then
+        if addr.match(/\[::1\]/) then
+          parts = []
+        elsif all[1] then
           parts = [ all[1] ]
         else
           parts = [ '161' ]

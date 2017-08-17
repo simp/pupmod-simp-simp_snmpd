@@ -9,7 +9,7 @@ lookup_options:
   simp_snmpd::group_hash:
     merge:
       strategy: hash
-  simp_snmpd::group_hash:
+  simp_snmpd::access_hash:
     merge:
       strategy: hash
 
@@ -42,11 +42,9 @@ simp_snmpd::view_hash:
       - ['.1']
 simp_snmpd::group_hash:
   readonly_group:
-    model: default
     secname:
       - snmp_ro
   readwrite_group:
-    model: default
     secname:
       - snmp_rw
 

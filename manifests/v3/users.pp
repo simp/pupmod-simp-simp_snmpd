@@ -7,7 +7,7 @@ class simp_snmpd::v3::users(
 ){
 
   $simp_snmpd::v3_users_hash.each |String $username,  Optional[Hash] $settings| {
-    if $settings {
+    if  $settings {
       $_authpass = $settings['authpass'] ? {
         /(undef|UNDEF)/  => passgen("snmp_auth_${username}"),
         undef            => passgen("snmp_auth_${username}"),

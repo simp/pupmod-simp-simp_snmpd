@@ -7,10 +7,6 @@ describe 'simp_snmpd' do
       it { is_expected.to contain_class('simp_snmpd') }
       it { is_expected.to contain_class('simp_snmpd::install').that_comes_before('Class[simp_snmpd::config]') }
       it { is_expected.to contain_class('simp_snmpd::config') }
-      it { is_expected.to contain_class('simp_snmpd::config::agent') }
-      it { is_expected.to  create_file('/etc/snmp/simp_snmpd.d') }
-      it { is_expected.to  create_file('/etc/snmp/simp_snmpd.d/agent.conf') }
-      it { is_expected.to  create_file('/etc/snmp/snmpd.d') }
       it { is_expected.to create_service('snmpd').with_ensure('running') }
   end
 
@@ -22,12 +18,12 @@ describe 'simp_snmpd' do
         end
 
         context "simp_snmp class without any parameters" do
+          let(:expected) { File.read('spec/expected/default_access_usm_conf')}
           let(:params) {{ }}
           it_behaves_like "a structured module"
           #install.pp
-          it { is_expected.to_not contain_class('simp_snmpd::install::client') }
           it { is_expected.to contain_class('snmp').with({
-#            :agentaddress             => ['udp:127.0.0.1:161','udp6:[::1]:161'],
+            :agentaddress             => ['udp:localhost:161'],
             :ensure                   => 'present',
             :autoupgrade              => 'false',
             :service_ensure           => 'running',
@@ -44,17 +40,30 @@ describe 'simp_snmpd' do
             :snmp_config              => ['includeFile /etc/snmp/simp_snmp.conf']
             })
           }
-          # config.pp
-          it { is_expected.to contain_class('simp_snmpd::config::usm') }
-          it { is_expected.to  create_file('/etc/snmp/simp_snmpd.d/access_usm.conf') }
-          it { is_expected.to contain_class('simp_snmpd::v3::users')}
           it { is_expected.to create_package('snmpd').with_ensure('present') }
+          it { is_expected.to_not contain_class('simp_snmpd::rsync')}
+          it { is_expected.to_not contain_class('simp_snmpd::install::client') }
+        end
+        context "config with default params" do
+          it { is_expected.to create_file('/etc/snmp/simp_snmpd.d')}
+          it { is_expected.to create_file('/etc/snmp/snmpd.d')}
+          it { is_expected.to create_file('/etc/snmp/snmptrapd.d')}
+          it { is_expected.to contain_class('simp_snmpd::config::usm') }
+          it { is_expected.to contain_class('simp_snmpd::config::agent') }
+          it { is_expected.to  create_file('/etc/snmp/simp_snmpd.d/agent.conf') }
           it { is_expected.to_not contain_class('simp_snmpd::config::firewall')}
           it { is_expected.to_not contain_class('simp_snmpd::config::tcpwrappers')}
           it { is_expected.to_not contain_class('simp_snmpd::config::logging')}
-          it { is_expected.to_not contain_class('simp_snmpd::rsync')}
           it { is_expected.to contain_exec('set_snmp_perms').with_command('/usr/bin/setfacl -R -m g:snmp:r /etc/snmp  ')}
           it { is_expected.to contain_class('simp_snmpd::config::system_info') }
+        end
+        # Tests for config::usm and v3::users
+        context "config::usm  with default params" do
+          let(:expected) { File.read('spec/expected/default_access_usm_conf')}
+          it { is_expected.to contain_class('simp_snmpd::v3::users') }
+          it { is_expected.to  create_file('/etc/snmp/simp_snmpd.d/access_usm.conf') }
+          it { is_expected.to  create_snmp__snmpv3_user('snmp_rw')}
+          it { is_expected.to  create_snmp__snmpv3_user('snmp_ro')}
         end
         context "simp_snmp class with rsync on" do
           let(:params) {{
@@ -63,7 +72,8 @@ describe 'simp_snmpd' do
             :rsync_mibs_dir => '/etc/mibs_here',
             :rsync_dlmod_dir => '/etc/dlmod_there'
           }}
-          it { is_expected.to contain_class('simp_snmpd::rsync') }
+          it_behaves_like "a structured module"
+          it { is_expected.to contain_class('simp_snmpd::config').that_comes_before('Class[simp_snmpd::rsync]') }
           it { is_expected.to contain_exec('set_snmp_perms').with_command('/usr/bin/setfacl -R -m g:snmp:r /etc/snmp /etc/dlmod_there /etc/mibs_here')}
           it { is_expected.to contain_file('/etc/mibs_here') }
           it { is_expected.to contain_file('/etc/dlmod_there') }
@@ -74,26 +84,39 @@ describe 'simp_snmpd' do
           }}
           it { is_expected.to_not contain_class('simp_snmpd::config::system_info') }
         end
-#
-#        context "simp_snmp class with default security model tsm" do
-#          let(:params) {{
-#            :defsecuritymodel => 'tsm',
-#            :pki => true
-#          }}
-#          let(:facts) {
-#            _facts = facts.dup
-#            _facts[:net_snmp_version] = '5.7.2'
-#            _facts
-#          }
-#          it { is_expected.to contain_class('simp_snmpd::config::tsm') }
-#          if facts[:os][:release][:major].to_i >= 7
-#            it { is_expected.to  create_file('/etc/snmp/simp_snmpd.d/access_tsm.conf') }
-#            it { is_expected.to create_pki__copy('snmpd') }
-#          else
-#            it { is_expected.to contain_notify('net-snmp version')}
-#          end
-#        end
-
+        context "simp_snmp class with simp parameters set to true" do
+          let(:params) {{
+            :firewall => true,
+            :tcpwrappers => true,
+            :syslog => true,
+            :logrotate => true,
+          }}
+          it_behaves_like "a structured module"
+          it { is_expected.to contain_class('simp_snmpd::config::tcpwrappers')}
+          it { is_expected.to contain_class('simp_snmpd::config::firewall')}
+          it { is_expected.to contain_class('simp_snmpd::config::logging')}
+          it { is_expected.to create_rsyslog__rule__local('11_snmpd')}
+          it { is_expected.to create_logrotate__rule('snmpd')}
+        end
+        context "with default security mode set to something other than usm" do
+          let(:params) {{
+            :defsecuritymodel => 'tsm',
+          }}
+          it { is_expected.to_not contain_class('simp_snmpd::config::usm')}
+          it { is_expected.to contain_notify('simp_snmpd Security Model')}
+        end
+        context "with manage_client sset to true" do
+          let(:params) {{
+            :manage_client => true,
+          }}
+          it_behaves_like "a structured module"
+          it { is_expected.to contain_class('snmp').with({
+              :manage_client            => 'true',
+            })
+          }
+          it { is_expected.to contain_class('simp_snmpd::install::client')}
+          it { is_expected.to contain_file('/etc/snmp/simp_snmp.conf')}
+        end
       end
     end
   end

@@ -3,20 +3,33 @@ require 'spec_helper'
 describe 'simp_snmpd::grouplist' do
   context 'With valid params' do
 
-    it 'returns an array' do
-      args = {"group1" =>
-               { "secname" => [ 'user1', 'user2']
-              },
-              "group2" =>
-                { "secname" => "user3",
+    it 'grouplist returns an array' do
+      args = {
+               "group1" => {
+                 "secname" => [ 'user1', 'user2']
+                },
+                "group2" => {
+                  "secname" => "user3",
                   "model" => "tsm"
                 },
-              "group3" => {}
              }
       retval = [
              'group group1 usm user1',
              'group group1 usm user2',
              'group group2 tsm user3',
+             ]
+      is_expected.to run.with_params(args,"usm").and_return(retval)
+    end
+    it 'grouplist can handle an empty group hash and removes it from the list' do
+      args = {
+               "group1" => {
+                 "secname" => [ 'user1', 'user2']
+                },
+                "group2" => {}
+             }
+      retval = [
+             'group group1 usm user1',
+             'group group1 usm user2',
              ]
       is_expected.to run.with_params(args,"usm").and_return(retval)
     end

@@ -7,7 +7,7 @@ Puppet::Functions.create_function(:'simp_snmpd::viewlist') do
     viewlist = []
     view_hash.each { | name, values|
        viewpref = "view #{name}"
-       if values.length > 0 then
+       if ! values.nil? and ! values.empty? then
          values.each { |type, oids|
            case "#{type}"
            when /^(included|excluded)$/

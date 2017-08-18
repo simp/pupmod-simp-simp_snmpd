@@ -8,7 +8,7 @@ Puppet::Functions.create_function(:'simp_snmpd::grouplist') do
     grouplist = []
     group_hash.each { | name, values|
       grouppref = "group #{name}"
-      if values.length > 0 then
+      if ! values.nil?  and  ! values.empty? then
         if values.has_key?('model') then
           if ['v1','v2c','usm','tsm','ksm'].include? values['model'] then
             model = values['model']
@@ -27,9 +27,9 @@ Puppet::Functions.create_function(:'simp_snmpd::grouplist') do
               grouplist.push("#{grouppref} #{model} #{values['secname']}")
           end
         else
-          fail("simp_snmpd: Badly formed group for key #{name}. It must include a valuse for secname")
+          fail("simp_snmpd: Badly formed group for key #{name}. It must include a value for secname")
         end
-     end
+      end
     }
     grouplist
   end

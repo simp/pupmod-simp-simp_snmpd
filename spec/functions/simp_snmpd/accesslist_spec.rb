@@ -28,16 +28,18 @@ describe 'simp_snmpd::accesslist' do
               }
       is_expected.to  run.with_params(args,"usm","priv").and_raise_error(/expects a hash/)
     end
-    it 'returns the correct  access list' do
-      args = {"access1" =>
-               { "view" => {
+    it 'returns the correct access list and can handle empty list' do
+      args = {
+               "access1" => {
+                  "view" => {
                     'write' => "myview"
-                    } ,
-                 "groups" => ["group1","group2"],
-                 "level" => "auth",
-                 "context" => "c",
-                 "prefix" => "prefix"
-               }
+                  } ,
+                  "groups" => ["group1","group2"],
+                  "level" => "auth",
+                  "context" => "c",
+                  "prefix" => "prefix"
+                },
+                "empty" => {}
               }
       retval = [
              '#access GROUP CONTEXT {any|v1|v2c|usm|tsm|ksm} LEVEL PREFX READ WRITE NOTIFY',
@@ -54,6 +56,20 @@ describe 'simp_snmpd::accesslist' do
                }
              }
       is_expected.to  run.with_params(args,"usm","priv").and_raise_error(/missing either view or groups/)
+    end
+    it 'returns an error with with incorrect keys' do
+      args = {
+               "access1" => {
+                  "view" => {
+                    'write' => "myview"
+                  } ,
+                  "groups" => ["group1","group2"],
+                  "level" => "auth",
+                  "mycontext" => "c",
+                  "prefix" => "prefix"
+                },
+              }
+      is_expected.to  run.with_params(args,"usm","priv").and_raise_error(/invalid key/)
     end
   end
 end

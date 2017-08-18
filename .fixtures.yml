@@ -1,6 +1,7 @@
 ---
 fixtures:
   repositories:
+    concat:    https://github.com/simp/puppetlabs-concat
     iptables:  https://github.com/simp/pupmod-simp-iptables
     logrotate: https://github.com/simp/pupmod-simp-logrotate
     pki:       https://github.com/simp/pupmod-simp-pki

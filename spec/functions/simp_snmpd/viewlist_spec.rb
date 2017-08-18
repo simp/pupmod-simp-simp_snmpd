@@ -3,11 +3,11 @@ require 'spec_helper'
 describe 'simp_snmpd::viewlist' do
   context 'With valid params' do
 
-    it 'returns an array' do
+    it 'returns an array and removes views with no keys like empty view' do
       args = {"first_view" =>
                { "included" => ".1.2.3.4",
                  "excluded" => ["6.7.5.6", ".9"]
-               }, 
+               },
              "empty_view" => {},
              "second_view" =>
                { "included" => "My::Mib", }

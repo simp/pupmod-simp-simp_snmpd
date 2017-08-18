@@ -9,7 +9,7 @@ Puppet::Functions.create_function(:'simp_snmpd::accesslist') do
     accesslist = ['#access GROUP CONTEXT {any|v1|v2c|usm|tsm|ksm} LEVEL PREFX READ WRITE NOTIFY']
     access_hash.each { | name, values|
       accesspref = "access"
-      if values.length > 0 then
+      if ! values.nil? and ! values.empty?  then
         if  values.has_key?('view') and values.has_key?('groups')  then
           model = defaultmodel
           level = defaultlevel
@@ -45,11 +45,21 @@ Puppet::Functions.create_function(:'simp_snmpd::accesslist') do
                 fail("simp_snmpd: access_hash - level is:  #{setting} level must be one of 'auth','priv','noauth'")
               end
             when 'context'
-               context = setting 
+               context = setting
             when /^(prefx|prefix)$/
               if ['exact','prefix'].include? setting then
                   prefx = setting
+              else
+                fail("simp_snmpd: access_hash - prefix is:  #{setting} level must be one of 'exact' or 'prefix'")
               end
+            when 'groups'
+              if values['groups'].is_a?(Array) then
+                groups = values['groups']
+              else
+                groups = [ values['groups'] ]
+              end
+            else
+              fail("simp_snmpd: access_hash #{name} has invalid key #{key}")
             end
           }
           if values['groups'].is_a?(Array) then

@@ -108,7 +108,7 @@ will create two users:
   - User passwords are automatically generated using passgen.  They can be
     accessed via passgen using `passgen("snmp_auth_${username}")`
   - The passwords for the users are configured when SNMP is configured the
-    first time.  If you need to change them, you will need to use the `snmpsum`
+    first time.  If you need to change them, you will need to use the `snmpusm`
     command, or remove the files in `/var/lib/net-snmp` and run puppet again to
     regenerate them.
 
@@ -129,13 +129,15 @@ systems.
 ### SNMP System Information
 
 `simp_snmpd` configures some basic system information: contact, location,
-system name, and services, in the snmpd configuration directory.  You will
-probably want to set these.  You can do so via hiera, instantiation, or create
-your own configuration file in the user directory.
+system name, and services, in the snmpd configuration directory.  These settings
+can be changed via hiera, instantiation, by creating your own configuration file
+in the user directory.
 
-NOTE: net-snmp does not allow write access to configuration files via a client.
+NOTE: If the system variables are set in a configuratioin file then net-snmp
+marks them as not writable and will not allow them to be changed via snmpset
+or other client utilities.
 If you want to set information via a client, set `simp_snmpd::system_info` to
-false.
+false and the defaults will not be set in the configuration file.
 
 ### SNMP Client
 

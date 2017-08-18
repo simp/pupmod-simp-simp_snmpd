@@ -9,7 +9,7 @@ class simp_snmpd::config {
   case $simp_snmpd::defsecuritymodel {
     'usm':  { contain simp_snmpd::config::usm }
     default: {
-      $msg = "The following Security model is not supported by simp_snmpd at this time: ${simp_snmpd::defsecmodel}.  Access will not be configured. "
+      $msg = "The following Security model is not supported by simp_snmpd at this time: ${simp_snmpd::defsecuritymodel}.  Access will not be configured. "
       notify {'simp_snmpd Security Model':
         message => $msg
       }

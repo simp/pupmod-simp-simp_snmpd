@@ -1,26 +1,30 @@
 # This nodeset spins up a simple one-host test VM for both EL6 and EL7
 HOSTS:
-  server7:
-    roles:
-      - snmpd
-      - server
-      - default
-      - el7
-    platform:   el-7-x86_64
-    box:        centos/7
-    hypervisor: vagrant
   centos-7-1:
     roles:
-      - snmpd
-      - client
+      - defaultparams
       - el7
+      - default
     platform:   el-7-x86_64
     box:        centos/7
     hypervisor: vagrant
   centos-6-1:
     roles:
-      - snmpd
-      - client
+      - defaultparams
+      - el6
+    platform:   el-6-x86_64
+    box:        centos/6
+    hypervisor: vagrant
+  centos-7-2:
+    roles:
+      - customparams
+      - el7
+    platform:   el-7-x86_64
+    box:        centos/7
+    hypervisor: vagrant
+  centos-6-2:
+    roles:
+      - customparams
       - el6
     platform:   el-6-x86_64
     box:        centos/6

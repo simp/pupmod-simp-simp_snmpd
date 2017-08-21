@@ -136,7 +136,7 @@ in the user directory.
 NOTE: If the system variables are set in a configuratioin file then net-snmp
 marks them as not writable and will not allow them to be changed via snmpset
 or other client utilities.
-If you want to set information via a client, set `simp_snmpd::system_info` to
+To be able to set information via a client, set `simp_snmpd::system_info` to
 false and the defaults will not be set in the configuration file.
 
 ### SNMP Client

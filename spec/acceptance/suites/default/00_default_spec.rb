@@ -134,23 +134,23 @@ simp_snmpd::manage_client: true
   end
 
   context 'check remote' do
-    it 'firewall should be opened to access remotely' do
-      customconfig.each do | client|
-        defaultconfig.each do | remote|
-          it 'should be able to query the remote server over tcp' do
-            result = on(client,"/usr/bin/snmpwalk -u bar -X KeepItSafe -A KeepItSecret tcp:#{remote} sysLocation.0")
-            expect(result.stdout).to include("SNMPv2-MIB::sysLocation.0 = STRING: Over the Rainbow")
-          end
+    customconfig.each do | client|
+      defaultconfig.each do | remote|
+        it 'should be able to query the remote server over udp' do
+          result = on(client,"/usr/bin/snmpwalk -u snmp_ro -X KeepItSafe -A KeepItSecret #{remote} sysLocation.0")
+          expect(result.stdout).to include("SNMPv2-MIB::sysLocation.0 = STRING: Unknown")
         end
       end
-      defaultconfig.each do | client|
-        customconfig.each do | remote|
-          it 'should be able to query the remote server over udp' do
-            result = on(client,"/usr/bin/snmpwalk -u snmp_ro -X KeepItSafe -A KeepItSecret #{client} sysLocation.0")
-            expect(result.stdout).to include("SNMPv2-MIB::sysLocation.0 = STRING: Unknown")
-          end
+    end
+
+    defaultconfig.each do | client|
+      customconfig.each do | remote|
+        it 'should be able to query the remote server over tcp' do
+          result = on(client,"/usr/bin/snmpwalk -u bar -X KeepItSafe -A KeepItSecret tcp:#{remote} sysLocation.0")
+          expect(result.stdout).to include("SNMPv2-MIB::sysLocation.0 = STRING: Over the Rainbow")
         end
       end
     end
   end
+
 end

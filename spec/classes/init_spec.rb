@@ -59,11 +59,12 @@ describe 'simp_snmpd' do
         end
         # Tests for config::usm and v3::users
         context "config::usm  with default params" do
-          let(:expected) { File.read('spec/expected/default_access_usm_conf')}
+          #let(:expected){ "jjunk" }
+          let(:expected){ File.read('spec/expected/default_access_usm_conf')}
           it { is_expected.to contain_class('simp_snmpd::v3::users') }
-          it { is_expected.to  create_file('/etc/snmp/simp_snmpd.d/access_usm.conf') }
-          it { is_expected.to  create_snmp__snmpv3_user('snmp_rw')}
-          it { is_expected.to  create_snmp__snmpv3_user('snmp_ro')}
+          it { is_expected.to create_file('/etc/snmp/simp_snmpd.d/access_usm.conf').with_content(expected) }
+          it { is_expected.to create_snmp__snmpv3_user('snmp_rw')}
+          it { is_expected.to create_snmp__snmpv3_user('snmp_ro')}
         end
         context "simp_snmp class with rsync on" do
           let(:params) {{
@@ -105,7 +106,7 @@ describe 'simp_snmpd' do
           it { is_expected.to_not contain_class('simp_snmpd::config::usm')}
           it { is_expected.to contain_notify('simp_snmpd Security Model')}
         end
-        context "with manage_client sset to true" do
+        context "with manage_client set to true" do
           let(:params) {{
             :manage_client => true,
           }}

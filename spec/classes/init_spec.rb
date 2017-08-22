@@ -21,6 +21,7 @@ describe 'simp_snmpd' do
           let(:expected) { File.read('spec/expected/default_access_usm_conf')}
           let(:params) {{ }}
           it_behaves_like "a structured module"
+          it { is_expected.to_not contain_class('simp_snmpd::rsync')}
           #install.pp
           it { is_expected.to contain_class('snmp').with({
             :agentaddress             => ['udp:localhost:161'],
@@ -40,8 +41,9 @@ describe 'simp_snmpd' do
             :snmp_config              => ['includeFile /etc/snmp/simp_snmp.conf']
             })
           }
+          it { is_expected.to_not create_group('snmp') }
+          it { is_expected.to_not create_user('snmp') }
           it { is_expected.to create_package('snmpd').with_ensure('present') }
-          it { is_expected.to_not contain_class('simp_snmpd::rsync')}
           it { is_expected.to_not contain_class('simp_snmpd::install::client') }
         end
         context "config with default params" do
@@ -117,6 +119,14 @@ describe 'simp_snmpd' do
           }
           it { is_expected.to contain_class('simp_snmpd::install::client')}
           it { is_expected.to contain_file('/etc/snmp/simp_snmp.conf')}
+        end
+        context "with group and uid set" do
+          let(:params) {{
+            :snmpd_gid => 9999,
+            :snmpd_uid => 9999
+          }}
+          it { is_expected.to create_user('snmp')}
+          it { is_expected.to create_group('snmp')}
         end
       end
     end

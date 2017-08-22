@@ -22,6 +22,9 @@ describe 'simp_snmpd' do
           let(:params) {{ }}
           it_behaves_like "a structured module"
           it { is_expected.to_not contain_class('simp_snmpd::rsync')}
+          it { is_expected.to contain_class('simp_snmpd::v3::users') }
+          it { is_expected.to contain_snmp__snmpv3_user('snmp_ro') }
+          it { is_expected.to contain_snmp__snmpv3_user('snmp_rw') }
           #install.pp
           it { is_expected.to contain_class('snmp').with({
             :agentaddress             => ['udp:localhost:161'],

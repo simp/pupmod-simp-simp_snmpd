@@ -34,7 +34,7 @@ describe 'simp_snmpd' do
             :service_enable           => 'true',
             :service_config_perms     => '0750',
             :service_config_dir_group => 'root',
-            :template_snmpd_conf      => 'simp_snmpd/snmpd/snmpd.conf.erb',
+            :template_snmpd_conf      => 'simp_snmpd/snmp/snmpd.conf.erb',
             :snmpd_config             => ['includeDir /etc/snmp/simp_snmpd.d','includeDir /etc/snmp/snmpd.d'],
             :trap_service_ensure      => 'stopped',
             :trap_service_enable      => 'false',

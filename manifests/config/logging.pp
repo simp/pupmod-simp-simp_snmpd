@@ -8,7 +8,7 @@ class simp_snmpd::config::logging {
 
   include '::rsyslog'
 
-  rsyslog::rule::local { '11_snmpd':
+  rsyslog::rule::local { 'XX_snmpd':
     rule            => '$programname == \'snmpd\'',
     target_log_file => '/var/log/snmpd.log',
     stop_processing => true

@@ -16,7 +16,7 @@ class simp_snmpd::config::usm {
     group   => 'root',
     mode    => '0750',
     require => File[$simp_snmpd::simp_snmpd_dir],
-    content => template("${module_name}/snmpd/access_usm.conf.erb"),
+    content => epp("${module_name}/snmpd/access_usm.conf.epp"),
   }
 
   if $simp_snmpd::version == 3 {

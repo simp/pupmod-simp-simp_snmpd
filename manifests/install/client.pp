@@ -19,7 +19,7 @@ class simp_snmpd::install::client {
     owner   => 'root',
     group   => 'root',
     mode    => '0640',
-    content => epp("${module_name}/snmp/snmp_conf.epp")
+    content => epp("${module_name}/snmpd/snmp_conf.epp")
   }
 
 }

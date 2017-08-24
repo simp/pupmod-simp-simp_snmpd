@@ -1,15 +1,17 @@
 # This file is managed by Puppet.  Changes to it will be over written
 # Changes to access should be done in hiera
 # or additions can be added in  /etc/snmpd/snmpd.d
-#  views
-
+#
+# views
 view systemview included .1.3.6.1.2.1.1
 view systemview included .1.3.6.1.2.1.25.1.1
 view iso1 included .1
 
+# groups
 group readonly_group usm snmp_ro
 group readwrite_group usm snmp_rw
 
 #access GROUP CONTEXT {any|v1|v2c|usm|tsm|ksm} LEVEL PREFX READ WRITE NOTIFY
 access readonly_group "" usm priv exact systemview none none
 access readwrite_group "" usm priv exact iso1 systemview none
+

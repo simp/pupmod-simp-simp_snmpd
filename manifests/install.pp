@@ -74,6 +74,7 @@ class simp_snmpd::install {
     do_not_log_traps         => $simp_snmpd::do_not_log_traps,
     do_not_log_tcpwrappers   => $simp_snmpd::do_not_log_tcpwrappers,
     manage_client            => $simp_snmpd::manage_client,
+    snmpd_options            => $simp_snmpd::snmpd_options,
     snmp_config              => $_snmp_config,
   }
 

@@ -1,6 +1,6 @@
 # simp_snmpd::config::usm
 #
-# @summary This file process the user, group, view and access hashes. It will
+# @summary This file processes the user, group, view and access hashes. It will
 # create the v3 users and place the access information in the simp snmpd dir.
 # It uses the VACM  rules for snmpd.conf to create the groups and view. It uses
 # the Type rule, (authaccess) to create the access rule.

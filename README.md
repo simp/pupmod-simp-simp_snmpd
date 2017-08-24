@@ -63,19 +63,12 @@ the package manager.
 
 ## Usage
 
-Set the following in hieradata to configure `snmpd` to:
-
-* Listen on UDP port 161, on the local interface with the ipaddress associated
-  with the hostname.  For more information, see the LISTENING ADDRESS section
+Simp_snmpd configures the snmpd daemon to listen only on the local interface by default.
+Set the following in hieradata to configure `snmpd` to Listen on UDP port 161
+on the local interface and the the interface with the ipaddress associated
+with the hostname.  For more information, see the LISTENING ADDRESS section
   of the `snmpd` man page.
 
-* Allow a read-only and a read-write user, `snmp_ro` and `snmp_rw`
-  respectively, to access `snmpd`, based on the User Security Model (USM). See
-  more information in the Access section, below.
-
-NOTE: The SIMP configuration files are included under `/etc/snmp/simp_snmpd.d`.
-If you wish to add configuration files to the SIMP setup, you can add them to
-`/etc/snmp/user_snmpd.d` directory.
 
 ``` yaml
 ---
@@ -91,26 +84,32 @@ Or, via instantiation:
 
 ``` ruby
 class { simp_snmpd:
-   agentaddress => ["udp:${facts['fqdn']}:161,udp:localhost:161]
+   agentaddress => ["udp:${facts['fqdn']}:161",'udp:localhost:161']
 }
 ```
 
+NOTE: The SIMP configuration files are included under `/etc/snmp/simp_snmpd.d`.
+If you wish to add configuration files to the SIMP setup, you can add them to
+the `simp_snmpd::user_snmpd_dir` directory, by default `/etc/snmp/snmpd.d`.
+
 ### Access
 
-`simp_snmpd` configures access using the USM module and VACM.  By default, it
+`simp_snmpd` configures access using the User-based Security Module (USM)
+and View-based Access Control Model (VACM).  By default, it
 will create two users:
 
 * `snmp_ro`:  A user with readonly access to the system information only
-* `snmp_rw`:  A user with read/write access to all of SNMP variables
+* `snmp_rw`:  A user with read/write access to all SNMP variables
 
-  - Both users and access are configurable via hiera.  See the user guide for
-    more information.
-  - User passwords are automatically generated using passgen.  They can be
-    accessed via passgen using `passgen("snmp_auth_${username}")`
+  - Both users and access are configurable via hiera.  See the SIMP user
+    guide, How To Configure SNMPD for more information.
+  - User passwords are automatically generated using SIMP's passgen from the
+    simplib module.  The SIMP user guide General Administration section gives
+    information on where these passwords are stored.
   - The passwords for the users are configured when SNMP is configured the
     first time.  If you need to change them, you will need to use the `snmpusm`
-    command, or remove the files in `/var/lib/net-snmp` and run puppet again to
-    regenerate them.
+    command, or remove  `/var/lib/net-snmp` and run `puppet` again to
+    regenerate all of them.
 
 ### Logging
 
@@ -118,36 +117,44 @@ will create two users:
 syslog and logrotate are enabled, it will configure rsyslog rules to send
 logging to `/var/log/snmpd.log`.
 
+This is configured via the `simp_snmpd::snmpd_options` setting.  These are
+the options sent to the snmpd daemon on start up.  By default it is logging
+to facility 6 which will be forwarded to the server if log forwarding is enabled.
+
+For more information on these options see the man page for snmpcmd,
+the Logging section.  `Snmpcmd` and its man pages are installed with the 
+`net-snmp-utils` package.
+
 ### Firewall
 
 If `simp_options` firewall is enabled, it will parse the
 `simp_snmpd::agentaddress` list and configure iptables rules to open those
-ports to the trusted nets.  If you want only the snmp manager to be able to
+ports to the trusted nets.  If you want only the SNMP manager to be able to
 access the system, set `simp_snmpd::trusted_nets` to include only the manager
-systems.
+systems addresses.
 
 ### SNMP System Information
 
 `simp_snmpd` configures some basic system information: contact, location,
 system name, and services, in the snmpd configuration directory.  These settings
-can be changed via hiera, instantiation, by creating your own configuration file
-in the user directory.
+can be changed via hiera, instantiation, by creating a configuration file
+in the user directory, default `/etc/snmp/snmpd.d`.
 
-NOTE: If the system variables are set in a configuratioin file then net-snmp
-marks them as not writable and will not allow them to be changed via snmpset
+NOTE: If the system variables are set in a configuration file then `net-snmp`
+marks them as not writable and will not allow them to be changed via `snmpset`
 or other client utilities.
 To be able to set information via a client, set `simp_snmpd::system_info` to
 false and the defaults will not be set in the configuration file.
 
 ### SNMP Client
 
-By default, the snmpd utilities (snmpget, snmpset, etc.) are not included.  To
+By default, the snmpd utilities (`snmpget`, `snmpset`, etc.) are not included.  To
 include them, set `simp_snmp::manage_client` to true.
 
 ## Reference
 
 More information is included in the SIMP User Guide under SIMP HOWTO Guides:
-Setup SNMP. It includes information on copying additional MIBS and modules to
+Configure SNMP. It includes information on copying additional MIBS and modules to
 the system.
 
 ## Limitations

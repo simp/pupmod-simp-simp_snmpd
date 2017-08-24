@@ -65,7 +65,7 @@ simp_snmpd::access_hash:
 # be put in [] for now.
 simp_snmpd::agentaddress:
   - udp:localhost:161
-
+simp_snmpd::snmpd_options: '-LS0-66'
 # Services/packages to install
 # Whether to install (present) or remove (absent)
 #   Install/configure the snmpd deamon
@@ -94,8 +94,7 @@ simp_snmpd::user_trapd_dir: /etc/snmp/snmptrapd.d
 # System Info settings
 # If set_system_info is set to true the the following system settings
 # will be set via hiera and set in a configuration file.  If this is
-# done net-snmp sets these value to not writeable and they can
-# not be changed using set.
+# done net-snmp sets these value to not writeable.
 simp_snmpd::system_info: true
 simp_snmpd::location: 'Unknown'
 simp_snmpd::contact: "root@%{facts.fqdn}"

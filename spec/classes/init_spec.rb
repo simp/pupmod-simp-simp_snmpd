@@ -41,6 +41,7 @@ describe 'simp_snmpd' do
             :do_not_log_traps         => 'no',
             :do_not_log_tcpwrappers   => 'no',
             :manage_client            => 'false',
+            :snmpd_options            => '-LS0-66',
             :snmp_config              => ['includeFile /etc/snmp/simp_snmp.conf']
             })
           }

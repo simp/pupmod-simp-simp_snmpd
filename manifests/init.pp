@@ -8,75 +8,85 @@
 #   absent  make sure they are not installed.
 # @param manage_client
 #   True = install the net-simp-utils.  These are command line utilities.
-# @param  $autoupgrade
+# @param  autoupgrade
 #   if true packages will be installed with "latest"
 #   if false packages will be installed with "present"
-# @param  $version
+# @param  version
 #   The version of snmp protocol to use.
 #   At this time the simp_snmpd profile only manages v3, to configure
 #   older versions use the snmp module directly.
-# @param  $snmp_conf_file,
+# @param  snmp_conf_file,
 #   A file of snmp.conf directives that is included for configuration directives.
 #   this file is managed by puppet.
-# @param  $simp_snmpd_dir,
+# @param  simp_snmpd_dir,
 #   a directory of *.conf files which include snmpd directives.  Files in this
 #   directory are managed by puppet.
-# @param  $user_snmpd_dir,
+# @param  user_snmpd_dir,
 #   a directory where users can include *.conf with snmpd configuration items
 #   that will be included.  This directory is not managed by simp.  Users can put
 #   additional configurations files in this directory.
-# @param   $snmpd_service_ensure, $trap_service_ensure
-#   Set the snmpd/trap daemon service to stopped or running
-# @param $snmpd_service_startatboot, $trap_service_startatboot
-#   Start the snmpd/trap service at boot
+# @param snmpd_service_ensure
+#   Set the snmpd daemon service to stopped or running
+# @param trap_service_ensure
+#   Set the snmptrap daemon service to stopped or running
+# @param snmpd_service_startatboot
+#   Start the snmpd service at boot
+# @param trap_service_startatboot
+#   Start the snmptrap service at boot
 #
 # SNMPD Agent Parameters
+# @param snmpd_options
+#   The options passed to the snmpd daemon at start up.
+#   The default sends info through critical to local6.
+# @see man snmpd for options.
 # @param agentaddress
 # @see man snmpd  in the LISTENING ADDRESSES section for more details.
-#   An array of listening addresses for the snmpd to listen on. Each
-#   element of the array is an array of the form.  This array is
-#   also used by the config/firewall.pp to open ports if iptables
+#   An array of listening addresses for the snmpd to listen on.
+#   This array is also used by the config/firewall.pp to open ports if iptables
 #   is being used.
-#   following:
-# @params $do_not_log_tcpwrappers
+# @param do_not_log_tcpwrappers
 # @see man snmpd.conf AGENT BEHAVIOR section for more information on the
 #   Turn on or off snmpd logging of tcpwrappers
-# @params  $maxgetbulkrepeats,
+# @param  maxgetbulkrepeats,
 # @see man snmpd.conf AGENT BEHAVIOR section for more information on the
-# @params  $maxgetbulkresponses,
+# @param  maxgetbulkresponses,
 # @see man snmpd.conf AGENT BEHAVIOR section for more information on the
-# @params  $leave_pidfile,
+# @param  leave_pidfile,
 #   Leave the pid file when snmpd exits
-# @params  $snmpd_gid
+# @param  snmpd_gid
 #   The group id to change the snmpd to run under.  It will create group snmp
 #   with that group if this is set.
 #
-#
-# @param $rsync_dlmod
+# @param rsync_dlmod
 #   Whether to enable rsync to copy dlmod modules to the dlmod directory
-# @param $rsync_dlmod_dir
+# @param rsync_dlmod_dir
 #   The full path for the directory to use for dlmod rsync.
-# @param $dlmods
+# @param dlmods
 #   List of modules to load into snmpd from the rsync_dlmod directory
-# @param $rsync_mibs
+# @param rsync_mibs
 #   Whether to enable rsync for MIBS
-# @param $rsync_mibs_dir
-#  The full path for the directory to rsync mibs too.  It does not
-#  remove what is already there.
+# @param rsync_mibs_dir
+#   The full path for the directory to rsync mibs too.  It does not
+#   remove what is already there.
 #
 # USM/VACM parameters
-# @params v3_users_hash
+# @param v3_users_hash
 # @see man snmpd.conf  SNMPv3 with the User-based Security Model (USM) section
 #   A hash of users to create for usm access. Also see README for details
-# @param $v3_users_hash,  $view_hash, $group_hash, $access_hash,
-#   These are hashes used to set up access to snmpd.  See
-#   the access_usm.pp module for more information.
-# @param $simp_snmp_file
-#   file to hold snmp configuration directives for client utils.
-# @param $simp_snmpd_dir
+# @param v3_users_hash
+#   hash of users to create for USM.
+# @param view_hash
+#   Hash of views to create for VACM
+# @param group_hash
+#   Hash of groups to create for VACM
+# @param access_hash,
+#   Hash of access entrys to create for VACM.
+# @param simp_snmp_file
+#   File to hold snmp configuration directives for client utils.
+# @param simp_snmpd_dir
 #   Directory to hold configuration files defined by simp and used
 #   by the snmpd daemon.  These files are managed by puppet.
-# @param $user_snmpd_dir
+# @param user_snmpd_dir
 #   Directory to hold additional configuration files created by user.
 #   These files are not managed by puppet.  For settings that are
 #   one off (and not cumulative like groups or access) the last one wins.
@@ -84,45 +94,45 @@
 #   override those settings.
 #
 # snmp.conf access configuration default items
-# @param  $defauthtype,
+# @param  defauthtype,
 #   The default authentication type used for clients.
-# @param  $defprivtype,
+# @param  defprivtype,
 #   The default privacy type used for encrypting communication when using usm.
-# @param  $defsecuritymodel,
+# @param  defsecuritymodel,
 #   currently simp_snmpd only supports the usm security model it will support
 #   tsm  in the near future.  This option determins if usm or tsm access is
 #   configured.
-# @param $defsecuritylevel
+# @param defsecuritylevel
 #   The default security level used by the client and to set up usm users.
 #
 # snmpd.conf system info parameters
 # If the system parameters are set in the snmpd.conf files net-snmp
 # sets them as not writeable and they can not be changed by an 'set' call from
 # an snmpd client or manager.  If you want to set them this way the
-# change $simp_snmpd::set_system_info to false.
-# @param $set_system_info
+# change simp_snmpd::set_system_info to false.
+# @param set_system_info
 #   If true it will set the contact, location, name and services parameters from the
 #   following hiera varaiables:
-# @param $location
+# @param location
 #   sets sysLocation in snmp
-# @param $sysname
+# @param sysname
 #   sets sysName in snmp
-# @param $contact
+# @param contact
 #   sets sysContact in snmp
-# @param $services
+# @param services
 #   sets sysServices in snmp
 #
 # SIMP parameters used
-# @param $firewall
+# @param firewall
 #   Whether include modules that will use agentaddress array to open ports in
 #   iptables.
-# @param $trusted_nets
+# @param trusted_nets
 #   Networks that will be allowed to access the snmp ports opened by the firewall.
-# @param $syslog, $logrotate
-#   The snmp module configure snmp to log to the system log using the daemon.
+# @param syslog
+# @param logrotate
 #   If these variables are set then rules will be added to rsyslog to log
 #   snmp messages to /var/log/snmpd.log and set up log rotation.
-# @params $tcpwrappers
+# @param tcpwrappers
 #   Whether or not the system is using tcpwrappers to control access.
 #
 class simp_snmpd (
@@ -140,6 +150,7 @@ class simp_snmpd (
   Hash                                 $group_hash,
   Hash                                 $access_hash,
   Array[String]                        $agentaddress,
+  String                               $snmpd_options,
   StdLib::AbsolutePath                 $snmp_conf_file,
   StdLib::AbsolutePath                 $simp_snmpd_dir,
   StdLib::AbsolutePath                 $user_snmpd_dir,

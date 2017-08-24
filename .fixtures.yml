@@ -1,7 +1,9 @@
 ---
 fixtures:
   repositories:
-    concat:    https://github.com/simp/puppetlabs-concat
+    concat:
+      repo:    https://github.com/simp/puppetlabs-concat
+      ref:     3.0.0
     iptables:  https://github.com/simp/pupmod-simp-iptables
     logrotate: https://github.com/simp/pupmod-simp-logrotate
     pki:       https://github.com/simp/pupmod-simp-pki
@@ -11,7 +13,7 @@ fixtures:
     simplib:   https://github.com/simp/pupmod-simp-simplib
     snmp:
       repo:  https://github.com/simp/puppet-snmp
-      tag:   3.8.1
+      ref:   3.8.1
     stdlib:  https://github.com/simp/puppetlabs-stdlib
     stunnel: https://github.com/simp/pupmod-simp-stunnel
     tcpwrappers: https://github.com/simp/pupmod-simp-tcpwrappers

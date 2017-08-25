@@ -1,4 +1,17 @@
+# parse the access hash and return strings that for access entries for
+#  the snmpd.conf file
+#  @see The SIMP user guide HOW TO: Configure SNMPD describes the hashes in
+#    detail.
 Puppet::Functions.create_function(:'simp_snmpd::accesslist') do
+  # @param access_hash
+  #    The list of accesses to create.
+  # @param defaultmodel
+  #    The default Security model to use if that entry is not defined in the hash entry
+  # @param defaultlevel
+  #    The default Security level to use if that entry is not defined in the hash entry
+  #
+  # @return
+  #   An array of strings that define VACM access lines for use in snmpd.conf files.
   dispatch :createlist do
     param 'Hash', :access_hash
     param 'String', :defaultmodel

@@ -8,23 +8,27 @@
 #   absent  make sure they are not installed.
 # @param manage_client
 #   True = install the net-simp-utils.  These are command line utilities.
-# @param  autoupgrade
-#   if true packages will be installed with "latest"
-#   if false packages will be installed with "present"
+# @param  package_ensure
+#   If set to "latest" snmp will try to update to the latest version
+#   of the package available, otherwise it will just check it is installed
 # @param  version
 #   The version of snmp protocol to use.
 #   At this time the simp_snmpd profile only manages v3, to configure
 #   older versions use the snmp module directly.
-# @param  snmp_conf_file,
+# @param  snmp_conf_file
 #   A file of snmp.conf directives that is included for configuration directives.
 #   this file is managed by puppet.
-# @param  simp_snmpd_dir,
-#   a directory of *.conf files which include snmpd directives.  Files in this
+# @param  simp_snmpd_dir
+#   Directory of *.conf files which include snmpd directives.  Files in this
 #   directory are managed by puppet.
-# @param  user_snmpd_dir,
-#   a directory where users can include *.conf with snmpd configuration items
+# @param  user_snmpd_dir
+#   Directory where users can include *.conf files with snmpd configuration items
 #   that will be included.  This directory is not managed by simp.  Users can put
 #   additional configurations files in this directory.
+# @param  user_trapd_dir
+#   Directory where users can place snmptrap configuration files.
+#   This profile does not configure snmptrap but buts down a configuration file that tells
+#   the snmptrap daemon to look in this directory for configuration files.
 # @param snmpd_service_ensure
 #   Set the snmpd daemon service to stopped or running
 # @param trap_service_ensure
@@ -46,17 +50,31 @@
 #   is being used.
 # @param do_not_log_tcpwrappers
 # @see man snmpd.conf AGENT BEHAVIOR section for more information on the
-#   Turn on or off snmpd logging of tcpwrappers
-# @param  maxgetbulkrepeats,
+#   This  setting  disables  the  log  messages  for
+#   accepted connections. Denied connections will still be logged.
+# @param  maxgetbulkrepeats
+#   Sets the maximum number of responses allowed for a single variable in a getbulk request
 # @see man snmpd.conf AGENT BEHAVIOR section for more information on the
-# @param  maxgetbulkresponses,
+# @param  maxgetbulkresponses
+#  Sets the maximum number of responses allowed for a getbulk request.
 # @see man snmpd.conf AGENT BEHAVIOR section for more information on the
-# @param  leave_pidfile,
+# @param  leave_pidfile
 #   Leave the pid file when snmpd exits
+# @param  snmpd_uid
+#   This creates the snmp user with this uid.  To have snmpd daemon run as this user
+#   after opening sockets change snmpd_options to include  -u  <snmpd_uid>.
 # @param  snmpd_gid
 #   The group id to change the snmpd to run under.  It will create group snmp
-#   with that group if this is set.
+#   with that group if this is set. Add -g <snmpd_gid> to snmpd_options for it to run
+#   with this gid.
 #
+# Settings for rsync
+# @param rsync_server
+#   The rsync server from which to pull the files.
+# @param rsync_source
+#   The source of the content to be rsync' as defined in the rsyncd.conf file on the rsync server.
+# @param rsync_timeout
+#   The timeout when connecting to the rsync server.
 # @param rsync_dlmod
 #   Whether to enable rsync to copy dlmod modules to the dlmod directory
 # @param rsync_dlmod_dir
@@ -79,9 +97,9 @@
 #   Hash of views to create for VACM
 # @param group_hash
 #   Hash of groups to create for VACM
-# @param access_hash,
+# @param access_hash
 #   Hash of access entrys to create for VACM.
-# @param simp_snmp_file
+# @param snmp_conf_file
 #   File to hold snmp configuration directives for client utils.
 # @param simp_snmpd_dir
 #   Directory to hold configuration files defined by simp and used
@@ -94,11 +112,11 @@
 #   override those settings.
 #
 # snmp.conf access configuration default items
-# @param  defauthtype,
+# @param  defauthtype
 #   The default authentication type used for clients.
-# @param  defprivtype,
+# @param  defprivtype
 #   The default privacy type used for encrypting communication when using usm.
-# @param  defsecuritymodel,
+# @param  defsecuritymodel
 #   currently simp_snmpd only supports the usm security model it will support
 #   tsm  in the near future.  This option determins if usm or tsm access is
 #   configured.
@@ -109,8 +127,8 @@
 # If the system parameters are set in the snmpd.conf files net-snmp
 # sets them as not writeable and they can not be changed by an 'set' call from
 # an snmpd client or manager.  If you want to set them this way the
-# change simp_snmpd::set_system_info to false.
-# @param set_system_info
+# change simp_snmpd::system_info to false.
+# @param system_info
 #   If true it will set the contact, location, name and services parameters from the
 #   following hiera varaiables:
 # @param location
@@ -123,6 +141,9 @@
 #   sets sysServices in snmp
 #
 # SIMP parameters used
+# @param fips
+#   If fips should be enabled or not.  Fips mode does not allow MD5 or DES
+#   macs/ciphers.
 # @param firewall
 #   Whether include modules that will use agentaddress array to open ports in
 #   iptables.
@@ -143,7 +164,6 @@ class simp_snmpd (
   Enum['stopped', 'running']           $trap_service_ensure,
   Boolean                              $trap_service_startatboot,
   Boolean                              $manage_client,
-  Enum['yes','no']                     $do_not_log_traps,
   Enum['yes','no']                     $do_not_log_tcpwrappers,
   Hash                                 $v3_users_hash,
   Hash                                 $view_hash,
@@ -183,18 +203,7 @@ class simp_snmpd (
   Boolean                              $logrotate               = simplib::lookup('simp_options::logrotate',      { 'default_value' => false }),
   Boolean                              $fips                    = simplib::lookup('simp_options::fips',           { 'default_value' => false }),
   Simplib::Netlist                     $trusted_nets            = simplib::lookup('simp_options::trusted_nets',   { 'default_value' => ['127.0.0.1'] }),
-  Variant[Enum['simp'],Boolean]        $pki                     = simplib::lookup('simp_options::pki',            { 'default_value' => false }),
   String                               $package_ensure          = simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' }),
-  Optional[String]                     $tsmreadfp               = undef,
-  Optional[String]                     $tsmwritefp              = undef,
-  Optional[String]                     $tsmreaduser             = undef,
-  Optional[String]                     $tsmwriteuser            = undef,
-  Stdlib::Absolutepath                 $app_pki_dir             = '/etc/pki/simp_apps/snmpd/x509',
-  Stdlib::Absolutepath                 $app_pki_external_source = simplib::lookup('simp_options::pki::source', { 'default_value' => '/etc/pki/simp/x509' }),
-  Stdlib::Absolutepath                 $app_pki_cert            = "${app_pki_dir}/public/${facts['fqdn']}.pub",
-  Stdlib::Absolutepath                 $app_pki_key             = "${app_pki_dir}/private/${facts['fqdn']}.pem",
-  Stdlib::Absolutepath                 $app_pki_cacert          = "${app_pki_dir}/cacerts/cacerts.pem",
-  Array[String]                        $tls_cipher_suite        = simplib::lookup('simp_options::openssl::cipher_suite', { 'default_value' => ['DEFAULT','!MEDIUM'] })
 ) {
 
   if $simp_snmpd::version == 3 {

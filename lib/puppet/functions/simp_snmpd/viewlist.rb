@@ -1,4 +1,15 @@
+# parse the view hash and return strings that for view entries for
+#  the snmpd.conf file
+#  @see The SIMP user guide HOW TO: Configure SNMPD describes the hashes in
+#    detail.
+
 Puppet::Functions.create_function(:'simp_snmpd::viewlist') do
+
+  # @param view_hash
+  #    The list of views to create.
+  #
+  # @return
+  #   An array of strings that define VACM view lines for use in snmpd.conf files.
   dispatch :createlist do
     param 'Hash', :view_hash
   end

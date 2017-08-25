@@ -38,7 +38,6 @@ describe 'simp_snmpd' do
             :snmpd_config             => ['includeDir /etc/snmp/simp_snmpd.d','includeDir /etc/snmp/snmpd.d'],
             :trap_service_ensure      => 'stopped',
             :trap_service_enable      => 'false',
-            :do_not_log_traps         => 'no',
             :do_not_log_tcpwrappers   => 'no',
             :manage_client            => 'false',
             :snmpd_options            => '-LS0-66',
@@ -102,7 +101,7 @@ describe 'simp_snmpd' do
           it { is_expected.to contain_class('simp_snmpd::config::tcpwrappers')}
           it { is_expected.to contain_class('simp_snmpd::config::firewall')}
           it { is_expected.to contain_class('simp_snmpd::config::logging')}
-          it { is_expected.to create_rsyslog__rule__local('11_snmpd')}
+          it { is_expected.to create_rsyslog__rule__local('XX_snmpd')}
           it { is_expected.to create_logrotate__rule('snmpd')}
         end
         context "with default security mode set to something other than usm" do
@@ -131,6 +130,33 @@ describe 'simp_snmpd' do
           }}
           it { is_expected.to create_user('snmp')}
           it { is_expected.to create_group('snmp')}
+        end
+        context "with fips on auth type set to MD5" do
+          let(:params) {{
+            :fips => true,
+            :defauthtype => 'MD5',
+          }}
+          it {is_expected.to compile.and_raise_error(/Invalid default authentication type/)}
+        end
+        context "with fips on priv type set to DES" do
+          let(:params) {{
+            :fips => true,
+            :defauthtype => 'SHA',
+            :defprivtype => 'DES'
+          }}
+          it { is_expected.to compile.and_raise_error(/Invalid default privacy type/)}
+        end
+        context "with fips on and MD5 as authtype in user array" do
+          let(:params) {{
+            :fips => true,
+            :v3_users_hash => {
+               :baduser => {
+                 :authtype => 'MD5',
+                 :authpass => 'Passw0rdPassword'
+               }
+            }
+          }}
+          it { is_expected.to compile.and_raise_error(/failed to create user/)}
         end
       end
     end

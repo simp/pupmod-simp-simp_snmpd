@@ -1,4 +1,15 @@
+# parse the group hash and return strings for group entries for
+#  the snmpd.conf file
+#  @see The SIMP user guide HOW TO: Configure SNMPD describes the hashes in
+#    detail.
 Puppet::Functions.create_function(:'simp_snmpd::grouplist') do
+  # @param group_hash
+  #    The list of groups to create.
+  # @param defaultmodel
+  #    The default Security model to use if that entry is not defined in the hash entry
+  #
+  # @return
+  #   An array of strings that define groups for use for access in snmpd.conf files.
   dispatch :createlist do
     param 'Hash', :group_hash
     param 'String', :defaultmodel

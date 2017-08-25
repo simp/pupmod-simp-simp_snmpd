@@ -21,6 +21,17 @@ class simp_snmpd::install {
     }
   }
 
+# Check if default types are appropriate for fips mode if it is being used.
+  if $simp_snmpd::fips or $facts['fips_enabled'] {
+    if $simp_snmpd::defauthtype == 'MD5' {
+      fail("simp_snmpd:  Invalid default authentication type (simp_snmpd::defauthtype): ${simp_snmpd::defauthtype} for use in fips mode.")
+    }
+    if $simp_snmpd::defprivtype == 'DES' {
+      fail("simp_snmpd:  Invalid default privacy type (simp_snmpd::defprivtype): ${simp_snmpd::defprivtype} for use in fips mode.")
+    }
+  }
+
+
   # Include directories for further configuration.  The last one wins, so put
   # user directory after simp, so they can include files to override, change,
   # and add to what simp creates.
@@ -71,7 +82,6 @@ class simp_snmpd::install {
     snmptrapd_config         => $_snmptrapd_config,
     trap_service_ensure      => $simp_snmpd::trap_service_ensure,
     trap_service_enable      => $simp_snmpd::trap_service_startatboot,
-    do_not_log_traps         => $simp_snmpd::do_not_log_traps,
     do_not_log_tcpwrappers   => $simp_snmpd::do_not_log_tcpwrappers,
     manage_client            => $simp_snmpd::manage_client,
     snmpd_options            => $simp_snmpd::snmpd_options,

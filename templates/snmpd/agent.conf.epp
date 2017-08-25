@@ -10,5 +10,5 @@ agentuser <%= $simp_snmpd::snmpd_uid %>
 agentgroup <%= $simp_snmpd::snmpd_gid %>
 <% } -%>
 maxGetbulkRepeats <%= $simp_snmpd::maxgetbulkrepeats %>
-maxGetbulkresponses <%= $simp_snmpd::maxgetbulkresponses %>
+maxGetbulkResponses <%= $simp_snmpd::maxgetbulkresponses %>
 leave_pidfile <%= $simp_snmpd::leave_pidfile %>

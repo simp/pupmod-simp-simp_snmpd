@@ -9,10 +9,10 @@
 class simp_snmpd::install::client {
 
   case $simp_snmpd::defsecuritylevel {
-          'priv': { $seclevel = 'authPriv'}
-          'auth': { $seclevel = 'authNoPriv'}
-          'noauth': {$seclevel = 'noAuthNoPriv'}
-          default: { $seclevel = 'authPriv'}
+    'priv':   { $seclevel = 'authPriv'}
+    'auth':   { $seclevel = 'authNoPriv'}
+    'noauth': { $seclevel = 'noAuthNoPriv'}
+    default:  { $seclevel = 'authPriv'}
   }
 
   file { $simp_snmpd::snmp_conf_file :

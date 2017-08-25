@@ -9,7 +9,8 @@
   "issues_url": "https://simp-project.atlassian.net",
   "tags": [
     "simp",
-    "snmp"
+    "snmp",
+    "mib"
   ],
   "dependencies": [
     {

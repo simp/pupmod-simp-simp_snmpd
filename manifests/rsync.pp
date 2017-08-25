@@ -27,13 +27,11 @@ class simp_snmpd::rsync{
       timeout      => $simp_snmpd::rsync_timeout,
       delete       => true,
       preserve_acl => false,
-      notify       => [
-        Service['snmpd'],
-      ]
+      notify       => Service['snmpd']
     }
 
     if $simp_snmpd::dlmods {
-      $_dlmods = $simp_snmpd::dlmods.map | $dlname | { "dlmod ${dlname} ${simp_snmpd::rsync_dlmod_dir}/dlmod/${dlname}.so"}
+      $_dlmods = $simp_snmpd::dlmods.map |$dlname| { "dlmod ${dlname} ${simp_snmpd::rsync_dlmod_dir}/dlmod/${dlname}.so"}
       file { "${simp_snmpd::simp_snmpd_dir}/dlmod.conf":
         owner   => 'root',
         group   => 'root',
@@ -62,12 +60,9 @@ class simp_snmpd::rsync{
       timeout  => $simp_snmpd::rsync_timeout,
       source   => "${simp_snmpd::rsync_source}/mibs",
       target   => $simp_snmpd::rsync_mibs_dir,
-      notify   => [
-        Service['snmpd'],
-      ]
+      notify   => Service['snmpd'],
     }
 
   }
 
 }
-

@@ -134,8 +134,8 @@ simp_snmpd::manage_client: true
   end
 
   context 'check remote' do
-    customconfig.each do | client|
-      defaultconfig.each do | remote|
+    customconfig.each do |client|
+      defaultconfig.each do |remote|
         it 'should be able to query the remote server over udp' do
           result = on(client,"/usr/bin/snmpwalk -u snmp_ro -X KeepItSafe -A KeepItSecret #{remote} sysLocation.0")
           expect(result.stdout).to include("SNMPv2-MIB::sysLocation.0 = STRING: Unknown")
@@ -143,8 +143,8 @@ simp_snmpd::manage_client: true
       end
     end
 
-    defaultconfig.each do | client|
-      customconfig.each do | remote|
+    defaultconfig.each do |client|
+      customconfig.each do |remote|
         it 'should be able to query the remote server over tcp' do
           result = on(client,"/usr/bin/snmpwalk -u bar -X KeepItSafe -A KeepItSecret tcp:#{remote} sysLocation.0")
           expect(result.stdout).to include("SNMPv2-MIB::sysLocation.0 = STRING: Over the Rainbow")

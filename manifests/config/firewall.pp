@@ -10,23 +10,23 @@ class simp_snmpd::config::firewall {
   assert_private()
 
   $flist = simp_snmpd::firewalllist($simp_snmpd::agentaddress)
-  $flist.each | Array $part| {
+  $flist.each |Array $part| {
     case $part[0] {
       'udp': {
         iptables::listen::udp { "snmp-udp-${part[1]}-${part[2]}":
           trusted_nets => $simp_snmpd::trusted_nets,
           apply_to     => $part[2],
           dports       => $part[1]
-          }
+        }
       }
-    'tcp': {
+      'tcp': {
         iptables::listen::tcp_stateful { "snmp-tcp-${part[1]}-${part[2]}":
           trusted_nets => $simp_snmpd::trusted_nets,
           apply_to     => $part[2],
           dports       => $part[1]
         }
       }
-    default: {}
+      default: {}
     }
   }
 }

@@ -86,7 +86,7 @@ Puppet::Functions.create_function(:'simp_snmpd::accesslist') do
         else
           fail("simp_snmpd: access_hash definition #{name} is missing either view or groups key.")
         end
-     end
+      end
     }
     accesslist
   end

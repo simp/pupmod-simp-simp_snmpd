@@ -62,7 +62,7 @@ class simp_snmpd::install {
     "includeFile ${simp_snmpd::snmp_conf_file}"
   ]
 
-  $_autoupgrade =  $simp_snmpd::package_ensure ? {
+  $_autoupgrade = $simp_snmpd::package_ensure ? {
     'latest' => true,
     default  => false
   }

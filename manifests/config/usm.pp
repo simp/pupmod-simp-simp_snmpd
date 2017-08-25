@@ -6,8 +6,8 @@
 # the Type rule, (authaccess) to create the access rule.
 class simp_snmpd::config::usm {
 
-  $_viewlist = simp_snmpd::viewlist($simp_snmpd::view_hash)
-  $_grouplist = simp_snmpd::grouplist($simp_snmpd::group_hash,$simp_snmpd::defsecuritymodel)
+  $_viewlist   = simp_snmpd::viewlist($simp_snmpd::view_hash)
+  $_grouplist  = simp_snmpd::grouplist($simp_snmpd::group_hash,$simp_snmpd::defsecuritymodel)
   $_accesslist = simp_snmpd::accesslist($simp_snmpd::access_hash,$simp_snmpd::defsecuritymodel,$simp_snmpd::defsecuritylevel)
 
   file { "${simp_snmpd::simp_snmpd_dir}/access_usm.conf":

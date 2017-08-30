@@ -1,13 +1,15 @@
-* Wed Jul 26 2017 Second Draft  <jeanne.greulich@onyxpoint.com> - 0.0.1
+* Wed Jul 26 2017 <jeanne.greulich@onyxpoint.com> - 0.0.1
+- Second draft of the module, based on user feedback
 - Fixed minor issues before peer review
-- added basic acceptance tests
-- added client install 
-* Tue Jul 18 2017 First Draft of SNMPD profile module <jeanne.greulich@onyxpoint.com> - 0.0.1
+- Added basic acceptance tests
+- Added client install 
+
+* Tue Jul 18 2017 <jeanne.greulich@onyxpoint.com> - 0.0.1
+- First draft of the module
 - Set up initial install
 - Setup data/common variables
 - Outline modules
 - Create access modules
 - Configure client access
 - Configured rsyslog and logrotate
-- setup rsync for mib dirs and dlmod dirs
-
+- Setup rsync for mib dirs and dlmod dirs

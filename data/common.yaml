@@ -2,28 +2,22 @@
 lookup_options:
   simp_snmpd::v3_users_hash:
     merge:
-      strategy: deep
-      knockout_prefix: --
+      strategy: hash
   simp_snmpd::view_hash:
     merge:
-      strategy: deep
-      knockout_prefix: --
+      strategy: hash
   simp_snmpd::group_hash:
     merge:
-      strategy: deep
-      knockout_prefix: --
-  simp_snmpd::group_hash:
+      strategy: hash
+  simp_snmpd::access_hash:
     merge:
-      strategy: deep
-      knockout_prefix: --
-  simp_snmpd::listeningaddr:
-    merge:
-      strategy: deep
-      knockout_prefix: --
+      strategy: hash
 
 # Defaults for creation of users, groups views and access
-#  If not specifically set these will be used.  They are
-#  also used for connections.
+# If not specifically set these will be used.  They are
+# also used for connections if the client utilities are
+# installed.
+simp_snmpd::version: 3
 simp_snmpd::defauthtype: 'SHA'
 simp_snmpd::defprivtype: 'AES'
 simp_snmpd::defsecuritymodel: 'usm'
@@ -32,33 +26,25 @@ simp_snmpd::defsecuritylevel: 'priv'
 #Set password to undefined to have simp autogenerate it.
 simp_snmpd::v3_users_hash:
   snmp_ro:
-    authpass: 'P@ssw0rd'
     authtype: 'SHA'
-    privpass: 'P@ssw0rd'
     privtype: 'AES'
   snmp_rw:
-    authpass: 'P@ssw0rd'
     authtype: 'SHA'
-    privpass: 'P@ssw0rd'
     privtype: 'AES'
-  snmp_test:
-    authpass: undef
 # Views created for VACM and Type access
 simp_snmpd::view_hash:
   systemview:
     included:
-      - ['.1.3.6.1.2.1.1']
-      - ['.1.3.6.1.2.1.25.1.1']
+      - '.1.3.6.1.2.1.1'
+      - '.1.3.6.1.2.1.25.1.1'
   iso1:
     included:
-      - ['.1']
+      - '.1'
 simp_snmpd::group_hash:
   readonly_group:
-    model: default
     secname:
       - snmp_ro
   readwrite_group:
-    model: default
     secname:
       - snmp_rw
 
@@ -78,50 +64,47 @@ simp_snmpd::access_hash:
 # the snmpd daemon listens on. (IPv6 addresses must
 # be put in [] for now.
 simp_snmpd::agentaddress:
-  - [udp, 127.0.0.1, 161]
-  - [udp6, "[::1]", 161]
-simp_snmpd::laddress:
--
-  specifier: udp
-  address:
-    ip: 127.0.0.1
--
-  specifier: udp6
-  address:
-    ip: "::1"
--
-  specifier: udp
-  address:
-    port: 1061
-    ip: ALL
-
-
+  - udp:localhost:161
+simp_snmpd::snmpd_options: '-LS0-66'
 # Services/packages to install
 # Whether to install (present) or remove (absent)
+#   Install/configure the snmpd deamon
 simp_snmpd::ensure: present
 simp_snmpd::autoupgrade: false
 simp_snmpd::snmpd_service_ensure: running
 simp_snmpd::snmpd_service_startatboot: true
-#   Install/configure the snmpd deamon
-simp_snmpd::snmpd: true
 #   Install the snmpd utilities
 simp_snmpd::manage_client: false
+# Trap service sets
 simp_snmpd::trap_service_ensure: stopped
 simp_snmpd::trap_service_startatboot: false
-#simp_snmpd::snmp_gid: undef
-#simp_snmpd::snmp_uid: undef
-simp_snmpd::version: 3
+# Agents setting:
+#simp_snmpd::snmpd_gid: undef
+#simp_snmpd::snmpd_uid: undef
+simp_snmpd::maxgetbulkrepeats: 100
+simp_snmpd::maxgetbulkresponses: 100
+simp_snmpd::leave_pidfile: 'no'
+simp_snmpd::do_not_log_traps: 'no'
+simp_snmpd::do_not_log_tcpwrappers: 'no'
+# Configuration file directories and files
 simp_snmpd::snmp_conf_file: /etc/snmp/simp_snmp.conf
 simp_snmpd::simp_snmpd_dir: /etc/snmp/simp_snmpd.d
 simp_snmpd::user_snmpd_dir: /etc/snmp/snmpd.d
-simp_snmpd::do_not_log_traps: 'no'
-simp_snmpd::do_not_log_tcpwrappers: 'no'
-simp_snmpd::rsync_dlmod_dir:  /usr/lib64/snmp
-simp_snmpd::rsync_mibs_dir:  /usr/share/snmp
+simp_snmpd::user_trapd_dir: /etc/snmp/snmptrapd.d
+# System Info settings
+# If set_system_info is set to true the the following system settings
+# will be set via hiera and set in a configuration file.  If this is
+# done net-snmp sets these value to not writeable.
+simp_snmpd::system_info: true
+simp_snmpd::location: 'Unknown'
+simp_snmpd::contact: "root@%{facts.fqdn}"
+simp_snmpd::sysname: "%{facts.fqdn}"
+simp_snmpd::services: '72'
+# Rsync settings
+# Note:  That each of these directories is a base and will have
+#  dlmod or mibs attached to it respectively.
+simp_snmpd::rsync_source: "snmp_%{::environment}_%{facts.os.name}"
 simp_snmpd::rsync_dlmod: false
+simp_snmpd::rsync_dlmod_dir:  /usr/lib64/snmp
 simp_snmpd::rsync_mibs: false
-# local
-simp_snmpd::local::file: false
-#simp_snmpd::local::file: undef
-simp_snmpd::local::location: 'In the yaml file'
-simp_snmpd::local::contact: 'wonderful@yaml'
+simp_snmpd::rsync_mibs_dir:  /usr/share/snmp

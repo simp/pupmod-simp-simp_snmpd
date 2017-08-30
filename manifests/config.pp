@@ -1,9 +1,27 @@
-# == Class simp_snmpd::config
+# simp_snmpd::config
 #
-# This class is called from simp_snmp for service config.
+# @summary This class is called from simp_snmp for service config.
 #
 class simp_snmpd::config {
   assert_private()
+
+  # Set up access control in the access.conf file
+  case $simp_snmpd::defsecuritymodel {
+    'usm':  { contain simp_snmpd::config::usm }
+    default: {
+      $msg = "The following Security model is not supported by simp_snmpd at this time: ${simp_snmpd::defsecuritymodel}.  Access will not be configured. "
+      notify {'simp_snmpd Security Model':
+        message => $msg
+      }
+    }
+  }
+
+  # Create agent setting in agent.conf
+  contain simp_snmpd::config::agent
+
+  if $simp_snmpd::system_info {
+    include simp_snmpd::config::system_info
+  }
 
   if $simp_snmpd::firewall {
     include simp_snmpd::config::firewall
@@ -17,17 +35,12 @@ class simp_snmpd::config {
     include simp_snmpd::config::logging
   }
 
-  file { [ $simp_snmpd::simp_snmpd_dir, $simp_snmpd::user_snmpd_dir ]:
+  file { [ $simp_snmpd::simp_snmpd_dir, $simp_snmpd::user_snmpd_dir, $simp_snmpd::user_trapd_dir]:
     ensure => directory,
-    owner  => root,
-    group  => root,
+    owner  => 'root',
+    group  => 'root',
     mode   => '0750',
   }
-
-  # Copied this from old simp snmpd module...why does it need
-  # package net-snmp-utils?  I changed it to package net-snmp
-  # if running snmp under a different group make it has read permissions on
-  # the configuration files.
 
   $_mibs_dir = $simp_snmpd::rsync_mibs ? {
     true    => $simp_snmpd::rsync_mibs_dir,
@@ -40,7 +53,6 @@ class simp_snmpd::config {
   exec { 'set_snmp_perms':
     command => "/usr/bin/setfacl -R -m g:snmp:r /etc/snmp ${_dlmod_dir} ${_mibs_dir}",
     onlyif  => '/bin/grep -q "^snmp" /etc/group',
-    #    require => Package['net-snmp-utils']
     require => Package['snmpd']
   }
 

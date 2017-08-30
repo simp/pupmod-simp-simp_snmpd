@@ -1,0 +1,14 @@
+#  This file is created by puppet and contains default agent setting
+#
+# The agentuser and agent group are set here.  If theses settings are missing the agent
+# is runnin as root:root
+
+<% if $simp_snmpd::snmpd_uid { -%>
+agentuser <%= $simp_snmpd::snmpd_uid %>
+<% } -%>
+<% if $simp_snmpd::snmpd_gid { -%>
+agentgroup <%= $simp_snmpd::snmpd_gid %>
+<% } -%>
+maxGetbulkRepeats <%= $simp_snmpd::maxgetbulkrepeats %>
+maxGetbulkResponses <%= $simp_snmpd::maxgetbulkresponses %>
+leave_pidfile <%= $simp_snmpd::leave_pidfile %>

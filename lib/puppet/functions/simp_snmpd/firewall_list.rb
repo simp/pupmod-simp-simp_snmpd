@@ -1,6 +1,6 @@
 # function to return a list of protocol and ports to open in
 # iptables for snmpd to work.
-Puppet::Functions.create_function(:'simp_snmpd::firewalllist') do
+Puppet::Functions.create_function(:'simp_snmpd::firewall_list') do
   # @param agent_array
   #   The array of agent addresses that the snmpd  will listen on.
   #

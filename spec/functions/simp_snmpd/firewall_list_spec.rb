@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'simp_snmpd::firewalllist' do
+describe 'simp_snmpd::firewall_list' do
   context 'With valid params' do
 
     it 'returns an array' do

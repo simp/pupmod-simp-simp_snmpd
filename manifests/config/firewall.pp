@@ -9,7 +9,7 @@
 class simp_snmpd::config::firewall {
   assert_private()
 
-  $flist = simp_snmpd::firewalllist($simp_snmpd::agentaddress)
+  $flist = simp_snmpd::firewall_list($simp_snmpd::agentaddress)
   $flist.each |Array $part| {
     case $part[0] {
       'udp': {

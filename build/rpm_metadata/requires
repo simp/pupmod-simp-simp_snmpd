@@ -7,5 +7,5 @@ Requires: pupmod-simp-iptables >= 6.0.1-0
 Requires: pupmod-simp-iptables < 7.0.0-0
 Requires: pupmod-simp-rsync > 6.0.0-0
 Requires: pupmod-simp-rsync < 7.0.0-0
-Requires: pupmod-razorsedge-puppet-snmp < 4.0.0-0
-Requires: pupmod-razorsedge-puppet-snmp > 3.8.1-0
+Requires: pupmod-razorsedge-snmp < 4.0.0-0
+Requires: pupmod-razorsedge-snmp > 3.8.1-0

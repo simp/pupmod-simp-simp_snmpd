@@ -1,21 +1,2 @@
 * Tue Sep 05 2017 <jeanne.greulich@onyxpoint.com> - 0.0.1
-- updated metadata.json file with correct name for snmp module
-
-* Fri Sep 01 2017 <jeanne.greulich@onyxpoint.com> - 0.0.1
-- updated requires with correct name for snmp module.
-
-* Wed Jul 26 2017 <jeanne.greulich@onyxpoint.com> - 0.0.1
-- Second draft of the module, based on user feedback
-- Fixed minor issues before peer review
-- Added basic acceptance tests
-- Added client install
-
-* Tue Jul 18 2017 <jeanne.greulich@onyxpoint.com> - 0.0.1
-- First draft of the module
-- Set up initial install
-- Setup data/common variables
-- Outline modules
-- Create access modules
-- Configure client access
-- Configured rsyslog and logrotate
-- Setup rsync for mib dirs and dlmod dirs
+- First cut of the SIMP SNMPD profile module

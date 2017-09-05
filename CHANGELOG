@@ -1,3 +1,6 @@
+* Tue Sep 05 2017 <jeanne.greulich@onyxpoint.com> - 0.0.1
+- updated metadata.json file with correct name for snmp module
+
 * Fri Sep 01 2017 <jeanne.greulich@onyxpoint.com> - 0.0.1
 - updated requires with correct name for snmp module.
 

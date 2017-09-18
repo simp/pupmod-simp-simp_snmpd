@@ -1,2 +1,6 @@
+* Mon Sep 18 2017 Liz Nemsick <lnemsick.simp@gmail.com> - 0.0.2-0
+- Remove link in acceptance test to allow module to be published
+  to PuppetForge
+
 * Tue Sep 05 2017 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 0.0.1-0
 - First cut of the SIMP SNMPD profile module

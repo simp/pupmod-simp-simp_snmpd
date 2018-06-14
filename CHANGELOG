@@ -1,3 +1,6 @@
+* Thu Jun 14 2018 Nick Miller <nick.miller@onyxpoint.com> - 0.0.3-0
+- Update fixtures and other assets
+
 * Mon Sep 18 2017 Liz Nemsick <lnemsick.simp@gmail.com> - 0.0.2-0
 - Remove link in acceptance test to allow module to be published
   to PuppetForge

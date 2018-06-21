@@ -1,6 +1,6 @@
 {
   "name": "simp-simp_snmpd",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "SIMP Team",
   "summary": "Configures snmpd agent using v3 USM on the client",
   "license": "Apache-2.0",
@@ -66,4 +66,3 @@
   ],
   "data_provider": "hiera"
 }
-

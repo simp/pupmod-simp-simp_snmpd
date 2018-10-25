@@ -90,11 +90,13 @@ simp_snmpd::manage_client: true
         end
 
         it 'should work with no errors' do
+          # apply twice becausel of rsyslog changes
+          apply_manifest_on(node, manifest, :catch_failures => true)
           apply_manifest_on(node, manifest, :catch_failures => true)
         end
 
         it 'should be idempotent' do
-          apply_manifest_on(node, manifest, :catch_failures => true)
+          apply_manifest_on(node, manifest, :catch_changes => true)
         end
 
         it 'should return snmp data for users' do
@@ -137,7 +139,7 @@ simp_snmpd::manage_client: true
     customconfig.each do |client|
       defaultconfig.each do |remote|
         it 'should be able to query the remote server over udp' do
-          result = on(client,"/usr/bin/snmpwalk -u snmp_ro -X KeepItSafe -A KeepItSecret #{remote} sysLocation.0")
+          result = on(client,"/usr/bin/snmpwalk -u snmp_ro -X KeepItSafe -A KeepItSecret #{remote} sysLocation.0", :accept_all_exit_codes => true)
           expect(result.stdout).to include("SNMPv2-MIB::sysLocation.0 = STRING: Unknown")
         end
       end
@@ -146,7 +148,7 @@ simp_snmpd::manage_client: true
     defaultconfig.each do |client|
       customconfig.each do |remote|
         it 'should be able to query the remote server over tcp' do
-          result = on(client,"/usr/bin/snmpwalk -u bar -X KeepItSafe -A KeepItSecret tcp:#{remote} sysLocation.0")
+          result = on(client,"/usr/bin/snmpwalk -u bar -X KeepItSafe -A KeepItSecret tcp:#{remote} sysLocation.0", :accept_all_exit_codes => true)
           expect(result.stdout).to include("SNMPv2-MIB::sysLocation.0 = STRING: Over the Rainbow")
         end
       end

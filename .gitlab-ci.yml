@@ -142,7 +142,8 @@ default:
   <<: *cache_bundler
   <<: *setup_bundler_env
   variables:
-    PUPPET_VERSION: '~> 4.10.0'
+    PUPPET_VERSION: '~> 5.0'
+    BEAKER_PUPPET_COLLECTION: "puppet5"
   script:
     - bundle exec rake beaker:suites[default]
 
@@ -153,7 +154,8 @@ default-fips:
   <<: *cache_bundler
   <<: *setup_bundler_env
   variables:
-    PUPPET_VERSION: '~> 4.10.0'
+    PUPPET_VERSION: '~> 5.0'
+    BEAKER_PUPPET_COLLECTION: "puppet5"
     BEAKER_fips: 'yes'
   script:
     - bundle exec rake beaker:suites[default]

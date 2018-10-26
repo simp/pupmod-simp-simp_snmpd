@@ -1,7 +1,7 @@
 # The testing matrix considers ruby/puppet versions supported by SIMP and PE:
 # ------------------------------------------------------------------------------
 #  release    pup   ruby      eol
-# PE 2017.2   4.10  2.1.9  TBD
+# PE 2018.1   5.5   2.4.4     TBD
 ---
 language: ruby
 cache: bundler
@@ -27,7 +27,7 @@ jobs:
 
   include:
     - stage: check
-      rvm: 2.4.1
+      rvm: 2.4.4
       env: STRICT_VARIABLES=yes TRUSTED_NODE_DATA=yes PUPPET_VERSION="~> 5"
       script:
         - bundle exec rake check:dot_underscore
@@ -40,7 +40,7 @@ jobs:
         - bundle exec puppet module build
 
     - stage: spec
-      rvm: 2.4.1
+      rvm: 2.4.4
       env: STRICT_VARIABLES=yes TRUSTED_NODE_DATA=yes PUPPET_VERSION="~> 5.0"
       script:
         - bundle exec rake spec
@@ -52,7 +52,7 @@ jobs:
         - bundle exec rake spec
 
     - stage: deploy
-      rvm: 2.4.1
+      rvm: 2.4.4
       script:
         - true
       before_deploy:
@@ -73,5 +73,5 @@ jobs:
             secure: "Wj5ABfR/Ay+n5H1OvHbXJKHdhfXn62ldi0365gtqYAigmrvyPranrfw7EIoeEGvVwjKmRWRCylJZ4Fucm+p7blDGVf/BFZD8U0q3EVR3dNYVb2DWtb78EhPDmubLWkqiK2ZB1D+0iIdUz80uPAQ2qD10LH3ChyH8g33GcpTC3w+4E4S9OSWBXAgFKVrMd+2rY7pssR8ZXxILlBiUYkpbmcYXrghqvIt8xPfMG/i12sxNQilpXHmxxPigdBUtpOttbhcWzMu1Tzz3v+qr2SHNWWfUjCaBBZO58QhQ+FAIZb6hSU/oCoNi60OO90CZ/qeRXKPL/K18kEWk2WW0x0jdklm7q2iGADpWKZTPCWJ7eKmSTV2279O5W+D6SURhMnqnU3BkcjXKYHRoUywhSZp95++Ft8/G614bXzZnptd8pC6X6IFyeXFSURVRZbR1JvqVFT30EBhThSvxtXrlLs+jwxTpdWtAua4LV6ximhzdVUqVp7xONqs/TIhNMxIQZeEOcsN7uwJo2AzVgbphdjGA9ZIXgH2Xgyp6oCK7ZT328ZtiQPq33o7OSBUEJIhX9IxgbJ5KHKji/Q1kRS2eso6F5Treow1L8NUdDMk0Zp6D7xTFy8m1euj+SwqiqH30kIt9Rb+ZVFk1A6NBUdFe+blESgiJy8ZkL8Ms5+4IxYXHIU8="
           on:
             tags: true
-            rvm: 2.4.1
+            rvm: 2.4.4
             condition: '($SKIP_FORGE_PUBLISH != true)'

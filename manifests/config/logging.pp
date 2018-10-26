@@ -10,22 +10,23 @@ class simp_snmpd::config::logging {
 
   rsyslog::rule::local { 'XX_snmpd':
     rule            => '$programname == \'snmpd\'',
-    target_log_file => '/var/log/snmpd.log',
+    target_log_file => $simp_snmpd::logfile,
+    require         => File[$simp_snmpd::logfile],
     stop_processing => true
   }
 
   if $simp_snmpd::logrotate {
     include '::logrotate'
     logrotate::rule { 'snmpd':
-      log_files                 => [ '/var/log/snmpd.log' ],
+      log_files                 => [ $simp_snmpd::logfile ],
       lastaction_restart_logger => true
     }
   }
 
-  file { '/var/log/snmpd.log':
+  file { $simp_snmpd::logfile:
     owner   => 'root',
     group   => 'root',
-    mode    => '0600',
+    mode    => '0640',
     seltype => 'snmpd_log_t',
   }
 

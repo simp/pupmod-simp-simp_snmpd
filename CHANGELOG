@@ -1,3 +1,7 @@
+* Fri Oct 26 2018 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 0.1.0
+- Changed name back to razorsedge because we have not updated
+  the puppet-snmp module yet
+
 * Wed Oct 24 2018 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 0.1.0
 - Update to puppet 5
 - Moved common parameters to init to help ease of use.

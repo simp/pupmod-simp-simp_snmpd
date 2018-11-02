@@ -1,11 +1,11 @@
 * Fri Nov 02 2018 Liz Nemsick <lnemsick.simp@gmail.com> - 0.1.0-0
 - Update badges in README.md
 
-* Fri Oct 26 2018 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 0.1.0
+* Fri Oct 26 2018 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 0.1.0-0
 - Changed name back to razorsedge because we have not updated
   the puppet-snmp module yet
 
-* Wed Oct 24 2018 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 0.1.0
+* Wed Oct 24 2018 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 0.1.0-0
 - Update to puppet 5
 - Moved common parameters to init to help ease of use.
 

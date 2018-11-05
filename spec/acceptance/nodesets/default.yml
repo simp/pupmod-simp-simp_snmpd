@@ -1,3 +1,11 @@
+<%
+  if ENV['BEAKER_HYPERVISOR']
+    hypervisor = ENV['BEAKER_HYPERVISOR']
+  else
+    hypervisor = 'vagrant'
+  end
+-%>
+
 # This nodeset spins up a simple one-host test VM for both EL6 and EL7
 HOSTS:
   centos-7-1:
@@ -7,30 +15,33 @@ HOSTS:
       - default
     platform:   el-7-x86_64
     box:        centos/7
-    hypervisor: vagrant
+    hypervisor: <%= hypervisor %>
   centos-6-1:
     roles:
       - defaultparams
       - el6
     platform:   el-6-x86_64
     box:        centos/6
-    hypervisor: vagrant
+    hypervisor: <%= hypervisor %>
   centos-7-2:
     roles:
       - customparams
       - el7
     platform:   el-7-x86_64
     box:        centos/7
-    hypervisor: vagrant
+    hypervisor: <%= hypervisor %>
   centos-6-2:
     roles:
       - customparams
       - el6
     platform:   el-6-x86_64
     box:        centos/6
-    hypervisor: vagrant
+    hypervisor: <%= hypervisor %>
 CONFIG:
   log_level: verbose
   type:      aio
   vagrant_memsize: 256
+<% if ENV['BEAKER_PUPPET_COLLECTION'] -%>
+  puppet_collection: <%= ENV['BEAKER_PUPPET_COLLECTION'] %>
+<% end -%>
   ## vb_gui: true

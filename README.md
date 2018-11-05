@@ -24,8 +24,7 @@ SNMP v3, and USM configuration.
 
 ### This is a SIMP module
 
-This module is a component of the
-[System Integrity Management Platform](https://github.com/NationalSecurityAgency/SIMP),
+This module is a component of the [System Integrity Management Platform](https://simp-project.com),
 a compliance-management framework built on Puppet.
 
 If you find any issues, they should be submitted to our

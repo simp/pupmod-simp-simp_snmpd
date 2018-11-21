@@ -1,0 +1,51 @@
+<%
+  if ENV['BEAKER_HYPERVISOR']
+    hypervisor = ENV['BEAKER_HYPERVISOR']
+  else
+    hypervisor = 'vagrant'
+  end
+-%>
+
+# This nodeset spins up a simple one-host test VM for both EL6 and EL7
+HOSTS:
+  el7-1:
+    roles:
+      - defaultparams
+      - el7
+      - default
+    platform:    el-7-x86_64
+    box:         onyxpoint/oel-7-x86_64
+    box_version: ">= 0.2.0"
+    hypervisor:  <%= hypervisor %>
+  el6-1:
+    roles:
+      - defaultparams
+      - el6
+    platform:    el-6-x86_64
+    box:         onyxpoint/oel-6-x86_64
+    box_version: ">= 0.2.0"
+    hypervisor:  <%= hypervisor %>
+  el7-2:
+    roles:
+      - customparams
+      - el7
+    platform:    el-7-x86_64
+    box:         onyxpoint/oel-7-x86_64
+    box_version: ">= 0.2.0"
+    hypervisor:  <%= hypervisor %>
+  el6-2:
+    roles:
+      - customparams
+      - el6
+    platform:    el-6-x86_64
+    box:         onyxpoint/oel-6-x86_64
+    box_version: ">= 0.2.0"
+    hypervisor:  <%= hypervisor %>
+CONFIG:
+  log_level: verbose
+  type:      aio
+  vagrant_memsize: 256
+<% if ENV['BEAKER_PUPPET_COLLECTION'] -%>
+  puppet_collection: <%= ENV['BEAKER_PUPPET_COLLECTION'] %>
+<% end -%>
+  ## vb_gui: true

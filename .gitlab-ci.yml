@@ -226,9 +226,8 @@ pup5.5.7-fips:
   script:
     - 'BEAKER_fips=yes bundle exec rake beaker:suites'
 
-# No OEL support yet
-#pup5.5.7-oel:
-#  <<: *pup_5_5_7
-#  <<: *acceptance_tests
-#  script:
-#    - 'bundle exec rake beaker:suites[default,oel]'
+pup5.5.7-oel:
+  <<: *pup_5_5_7
+  <<: *acceptance_tests
+  script:
+    - 'bundle exec rake beaker:suites[default,oel]'

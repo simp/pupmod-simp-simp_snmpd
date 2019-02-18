@@ -1,3 +1,7 @@
+* Tue Feb 12 2019 Liz Nemsick <lnemsick.simp@gmail.com> - 0.1.2-0
+- Use simplib::passgen() in lieu of passgen(), a deprecated simplib
+  Puppet 3 function.
+
 * Wed Nov 21 2018 Adam Yohrling <adam.yohrling@onyxpoint.com> - 0.1.1-0
 - Add Oracle Linux Support
 

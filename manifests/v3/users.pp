@@ -11,12 +11,12 @@ class simp_snmpd::v3::users (
   $simp_snmpd::v3_users_hash.each |String $username, Optional[Hash] $settings| {
     if $settings {
       $_authpass = $settings['authpass'] ? {
-        /(undef|UNDEF)/  => passgen("snmp_auth_${username}"),
-        undef            => passgen("snmp_auth_${username}"),
+        /(undef|UNDEF)/  => simplib::passgen("snmp_auth_${username}"),
+        undef            => simplib::passgen("snmp_auth_${username}"),
         default          => $settings['authpass'] }
       $_privpass = $settings['privpass'] ? {
-        /(undef|UNDEF)/ => passgen("snmp_priv_${username}"),
-        undef           => passgen("snmp_priv_${username}"),
+        /(undef|UNDEF)/ => simplib::passgen("snmp_priv_${username}"),
+        undef           => simplib::passgen("snmp_priv_${username}"),
         default         => $settings['privpass'] }
       $_authtype = $settings['authtype'] ? {
         undef   => $simp_snmpd::defauthtype,

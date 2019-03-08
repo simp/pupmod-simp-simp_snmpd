@@ -26,8 +26,8 @@
       "version_requirement": ">= 6.0.0 < 7.0.0"
     },
     {
-      "name": "razorsedge/snmp",
-      "version_requirement": ">= 3.9.0 < 5.0.0"
+      "name": "puppet/snmp",
+      "version_requirement": ">= 4.1.0 < 5.0.0"
     },
     {
       "name": "simp/rsync",

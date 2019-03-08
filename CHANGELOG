@@ -3,6 +3,9 @@
   Puppet 3 function.
 - Expanded the upper limit of the stdlib Puppet module version
 - Updated a URL in the README.md
+- Update miniminum version of snmp module to 4.1.0.  This project
+  is now maintained by Vox Pupuli and has changed from razorsedge-snmp
+  to puppet-snmp.
 
 * Wed Nov 21 2018 Adam Yohrling <adam.yohrling@onyxpoint.com> - 0.1.1-0
 - Add Oracle Linux Support

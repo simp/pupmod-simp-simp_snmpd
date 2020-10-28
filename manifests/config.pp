@@ -19,10 +19,6 @@ class simp_snmpd::config {
   # Create agent setting in agent.conf
   contain simp_snmpd::config::agent
 
-  if $simp_snmpd::system_info {
-    include simp_snmpd::config::system_info
-  }
-
   if $simp_snmpd::firewall {
     include simp_snmpd::config::firewall
   }

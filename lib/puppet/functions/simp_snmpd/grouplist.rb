@@ -18,7 +18,7 @@ Puppet::Functions.create_function(:'simp_snmpd::grouplist') do
   def createlist(group_hash,defaultmodel)
     grouplist = []
     group_hash.each { |name, values|
-      grouppref = "group #{name}"
+      grouppref = "#{name}"
       if ! values.nil?  and  ! values.empty? then
         if values.has_key?('model') then
           if ['v1','v2c','usm','tsm','ksm'].include? values['model'] then

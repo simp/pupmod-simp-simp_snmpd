@@ -130,9 +130,7 @@
 # sets them as not writeable and they can not be changed by an 'set' call from
 # an snmpd client or manager.  If you want to set them this way the
 # change simp_snmpd::system_info to false.
-# @param system_info
-#   If true it will set the contact, location, name and services parameters from the
-#   following hiera varaiables:
+# @param system_info Deprecated (puppet-snmp does not allow you to not set these).
 # @param location
 #   sets sysLocation in snmp
 # @param sysname
@@ -188,7 +186,7 @@ class simp_snmpd (
   Boolean                        $system_info               = true,
   String                         $location                  = 'Unknown',
   String                         $contact                   = "root@${facts['fqdn']}",
-  String                         $services                  = '72',
+  Integer                        $services                  = 72,
   String                         $sysname                   = $facts['fqdn'],
   String                         $rsync_source              = "snmp_${::environment}_${facts['os']['name']}",
   Boolean                        $rsync_dlmod               = false,

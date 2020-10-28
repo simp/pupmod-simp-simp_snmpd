@@ -11,11 +11,8 @@ fixtures:
       repo: https://github.com/simp/pupmod-puppetlabs-selinux_core.git
       puppet_version: ">= 6.0.0"
     simplib:   https://github.com/simp/pupmod-simp-simplib
-    snmp:
-      repo:  https://github.com/simp/puppet-snmp
-      ref:   v4.1.0
+    snmp:  https://github.com/simp/puppet-snmp
     stdlib:  https://github.com/simp/puppetlabs-stdlib
     systemd:  https://github.com/simp/puppet-systemd
-    tcpwrappers: https://github.com/simp/pupmod-simp-tcpwrappers
   symlinks:
     simp_snmpd: "#{source_dir}"

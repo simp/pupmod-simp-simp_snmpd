@@ -1,6 +1,6 @@
 {
   "name": "simp-simp_snmpd",
-  "version": "0.2.1",
+  "version": "1.0.0",
   "author": "SIMP Team",
   "summary": "Configures snmpd agent using v3 USM on the client",
   "license": "Apache-2.0",
@@ -15,7 +15,7 @@
   "dependencies": [
     {
       "name": "simp/simplib",
-      "version_requirement": ">= 3.5.0 < 5.0.0"
+      "version_requirement": ">= 4.5.0 < 5.0.0"
     },
     {
       "name": "simp/iptables",
@@ -23,11 +23,11 @@
     },
     {
       "name": "simp/logrotate",
-      "version_requirement": ">= 6.0.0 < 7.0.0"
+      "version_requirement": ">= 6.5.0 < 7.0.0"
     },
     {
       "name": "puppet/snmp",
-      "version_requirement": ">= 4.1.0 < 5.0.0"
+      "version_requirement": ">= 5.1.0 < 6.0.0"
     },
     {
       "name": "simp/rsync",
@@ -35,7 +35,7 @@
     },
     {
       "name": "simp/rsyslog",
-      "version_requirement": ">= 7.0.0 < 8.0.0"
+      "version_requirement": ">= 7.6.0 < 8.0.0"
     },
     {
       "name": "puppetlabs/stdlib",
@@ -47,21 +47,24 @@
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
         "6",
-        "7"
+        "7",
+        "8"
       ]
     },
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
         "6",
-        "7"
+        "7",
+        "8"
       ]
     },
     {
       "operatingsystem": "OracleLinux",
       "operatingsystemrelease": [
         "6",
-        "7"
+        "7",
+        "8"
       ]
     }
   ],

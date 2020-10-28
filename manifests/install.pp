@@ -67,6 +67,16 @@ class simp_snmpd::install {
     default  => false
   }
 
+  # build the usm views, access lists, and groups from the hashes in hiera.
+  $_viewlist   = simp_snmpd::viewlist($simp_snmpd::view_hash)
+  $_grouplist  = simp_snmpd::grouplist($simp_snmpd::group_hash,$simp_snmpd::defsecuritymodel)
+  $_accesslist = simp_snmpd::accesslist($simp_snmpd::access_hash,$simp_snmpd::defsecuritymodel,$simp_snmpd::defsecuritylevel)
+
+  # create the users
+  class { 'simp_snmpd::v3::users' :
+      daemon => 'snmpd'
+  }
+
   # TODO: determine snmpd_options Logging?
   class { 'snmp':
     agentaddress             => $simp_snmpd::agentaddress,
@@ -74,10 +84,9 @@ class simp_snmpd::install {
     autoupgrade              => $_autoupgrade,
     service_ensure           => $simp_snmpd::snmpd_service_ensure,
     service_enable           => $simp_snmpd::snmpd_service_startatboot,
+    service_config_dir_owner => 'root',
     service_config_dir_group => 'root',
     service_config_perms     => '0750',
-    template_snmpd_conf      => 'simp_snmpd/snmp/snmpd.conf.erb',
-    template_snmptrapd       => 'simp_snmpd/snmp/snmptrapd.conf.erb',
     snmpd_config             => $_snmpd_config,
     snmptrapd_config         => $_snmptrapd_config,
     trap_service_ensure      => $simp_snmpd::trap_service_ensure,
@@ -86,6 +95,16 @@ class simp_snmpd::install {
     manage_client            => $simp_snmpd::manage_client,
     snmpd_options            => $simp_snmpd::snmpd_options,
     snmp_config              => $_snmp_config,
+    contact                  => $simp_snmpd::contact,
+    location                 => $simp_snmpd::location,
+    sysname                  => $simp_snmpd::sysname,
+    services                 => $simp_snmpd::services,
+    disable_authorization    => 'no',
+    accesses                 => $_accesslist,
+    groups                   => $_viewlist,
+    views                    => $_grouplist
+
   }
+
 
 }

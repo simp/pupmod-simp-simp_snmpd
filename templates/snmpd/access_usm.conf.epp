@@ -12,6 +12,7 @@
 <%= $group %>
 <% } -%>
 
+# access lists
 <% $simp_snmpd::config::usm::_accesslist.each |$access| { -%>
 <%= $access %>
 <% } -%>

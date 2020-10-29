@@ -4,9 +4,11 @@
 #
 # @param daemon
 #   The daemon that the users is meant to access.
-class simp_snmpd::v3::users (
+class simp_snmpd::install::users (
   Enum['snmpd','snmptrapd'] $daemon = 'snmpd'
 ) {
+
+  assert_private()
 
   $simp_snmpd::v3_users_hash.each |String $username, Optional[Hash] $settings| {
     if $settings {

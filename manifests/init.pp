@@ -7,7 +7,8 @@
 #   present (default) will install files and packages
 #   absent  make sure they are not installed.
 # @param manage_client
-#   True = install the net-simp-utils.  These are command line utilities.
+#   tell puppet snmp to manage client.
+#   install the net-simp-utils.  These are command line utilities.
 # @param  package_ensure
 #   If set to "latest" snmp will try to update to the latest version
 #   of the package available, otherwise it will just check it is installed
@@ -167,12 +168,13 @@ class simp_snmpd (
   Boolean                        $snmpd_service_startatboot = true,
   Enum['stopped', 'running']     $trap_service_ensure       = 'stopped',
   Boolean                        $trap_service_startatboot  = false,
-  Boolean                        $manage_client             = false,
+  Boolean                        $manage_client             = true,
   Enum['yes','no']               $do_not_log_tcpwrappers    = 'no',
   Array[String]                  $agentaddress              = [ 'udp:localhost:161'],
   String                         $snmpd_options             = '-LS0-66',
   StdLib::AbsolutePath           $snmp_conf_file            = '/etc/snmp/simp_snmp.conf',
   StdLib::AbsolutePath           $simp_snmpd_dir            = '/etc/snmp/simp_snmpd.d',
+  Boolean                        $include_userdir           = false,
   StdLib::AbsolutePath           $user_snmpd_dir            = '/etc/snmp/snmpd.d',
   StdLib::AbsolutePath           $user_trapd_dir            = '/etc/snmp/snmptrapd.d',
   StdLib::AbsolutePath           $logfile                   = '/var/log/snmpd.log',

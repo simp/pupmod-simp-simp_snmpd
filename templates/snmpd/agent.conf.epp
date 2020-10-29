@@ -1,7 +1,7 @@
 #  This file is created by puppet and contains default agent setting
 #
 # The agentuser and agent group are set here.  If theses settings are missing the agent
-# is runnin as root:root
+# is running as root:root
 
 <% if $simp_snmpd::snmpd_uid { -%>
 agentuser <%= $simp_snmpd::snmpd_uid %>

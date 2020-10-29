@@ -5,6 +5,8 @@
 #
 class simp_snmpd::config::agent {
 
+  assert_private()
+
   file { "${simp_snmpd::simp_snmpd_dir}/agent.conf":
     ensure  => file,
     owner   => 'root',

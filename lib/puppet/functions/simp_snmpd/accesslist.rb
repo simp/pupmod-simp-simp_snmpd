@@ -19,7 +19,8 @@ Puppet::Functions.create_function(:'simp_snmpd::accesslist') do
   end
 
   def createlist(access_hash,defaultmodel,defaultlevel)
-    accesslist = ['#access GROUP CONTEXT {any|v1|v2c|usm|tsm|ksm} LEVEL PREFX READ WRITE NOTIFY']
+   # access GROUP CONTEXT {any|v1|v2c|usm|tsm|ksm} LEVEL PREFX READ WRITE NOTIFY']
+    accesslist = []
     access_hash.each { | name, values|
       if ! values.nil? and ! values.empty?  then
         if  values.has_key?('view') and values.has_key?('groups')  then

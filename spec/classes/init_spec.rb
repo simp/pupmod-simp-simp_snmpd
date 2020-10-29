@@ -34,14 +34,21 @@ describe 'simp_snmpd' do
             :service_enable           => 'true',
             :service_config_perms     => '0750',
             :service_config_dir_group => 'root',
-            :template_snmpd_conf      => 'simp_snmpd/snmp/snmpd.conf.erb',
             :snmpd_config             => ['includeDir /etc/snmp/simp_snmpd.d','includeDir /etc/snmp/snmpd.d'],
             :trap_service_ensure      => 'stopped',
             :trap_service_enable      => 'false',
             :do_not_log_tcpwrappers   => 'no',
             :manage_client            => 'false',
             :snmpd_options            => '-LS0-66',
-            :snmp_config              => ['includeFile /etc/snmp/simp_snmp.conf']
+            :snmp_config              => ['includeFile /etc/snmp/simp_snmp.conf'],
+            :views                    => [ 'systemview included .1.3.6.1.2.1.1',
+                                           'systemview included .1.3.6.1.2.1.25.1.1',
+                                           'iso1 included .1' ],
+            :groups                   => ['readonly_group usm snmp_ro',
+                                          'readwrite_group usm snmp_rw' ],
+            :accesses                 => ['readonly_group "" usm priv exact systemview none none',
+                                          'readwrite_group "" usm priv exact iso1 systemview none'],
+
             })
           }
           it { is_expected.to_not create_group('snmp') }
@@ -53,14 +60,12 @@ describe 'simp_snmpd' do
           it { is_expected.to create_file('/etc/snmp/simp_snmpd.d')}
           it { is_expected.to create_file('/etc/snmp/snmpd.d')}
           it { is_expected.to create_file('/etc/snmp/snmptrapd.d')}
-          it { is_expected.to contain_class('simp_snmpd::config::usm') }
           it { is_expected.to contain_class('simp_snmpd::config::agent') }
           it { is_expected.to create_file('/etc/snmp/simp_snmpd.d/agent.conf') }
           it { is_expected.to_not contain_class('simp_snmpd::config::firewall')}
           it { is_expected.to_not contain_class('simp_snmpd::config::tcpwrappers')}
           it { is_expected.to_not contain_class('simp_snmpd::config::logging')}
           it { is_expected.to contain_exec('set_snmp_perms').with_command('/usr/bin/setfacl -R -m g:snmp:r /etc/snmp  ')}
-          it { is_expected.to contain_class('simp_snmpd::config::system_info') }
         end
         # Tests for config::usm and v3::users
         context "config::usm  with default params" do

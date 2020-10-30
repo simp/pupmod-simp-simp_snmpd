@@ -14,9 +14,9 @@ describe 'simp_snmpd::grouplist' do
                 },
              }
       retval = [
-             'group group1 usm user1',
-             'group group1 usm user2',
-             'group group2 tsm user3',
+             'group1 usm user1',
+             'group1 usm user2',
+             'group2 tsm user3',
              ]
       is_expected.to run.with_params(args,"usm").and_return(retval)
     end
@@ -28,8 +28,8 @@ describe 'simp_snmpd::grouplist' do
                 "group2" => {}
              }
       retval = [
-             'group group1 usm user1',
-             'group group1 usm user2',
+             'group1 usm user1',
+             'group1 usm user2',
              ]
       is_expected.to run.with_params(args,"usm").and_return(retval)
     end

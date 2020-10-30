@@ -12,8 +12,7 @@ describe 'simp_snmpd::accesslist' do
                }
               }
       retval = [
-              '#access GROUP CONTEXT {any|v1|v2c|usm|tsm|ksm} LEVEL PREFX READ WRITE NOTIFY',
-              'access group1 "" usm priv exact myview none none'
+              'group1 "" usm priv exact myview none none'
               ]
       is_expected.to run.with_params(args,"usm", "priv").and_return(retval)
     end
@@ -42,9 +41,8 @@ describe 'simp_snmpd::accesslist' do
                 "empty"  => {}
               }
       retval = [
-              '#access GROUP CONTEXT {any|v1|v2c|usm|tsm|ksm} LEVEL PREFX READ WRITE NOTIFY',
-              'access group1 c usm auth prefix none myview none',
-              'access group2 c usm auth prefix none myview none'
+              'group1 c usm auth prefix none myview none',
+              'group2 c usm auth prefix none myview none'
              ]
 
       is_expected.to run.with_params(args,"usm","priv").and_return(retval)

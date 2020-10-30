@@ -10,10 +10,13 @@ class simp_snmpd::rsync{
 
   if $simp_snmpd::rsync_dlmod {
 
+    $_group = pick($simp_snmpd::snmpd_gid, 'root')
+    $_owner = pick($simp_snmpd::snmpd_uid, 'root')
+
     file { $simp_snmpd::rsync_dlmod_dir :
       ensure => directory,
-      owner  => 'root',
-      group  => 'root',
+      owner  => $_owner,
+      group  => $_group,
       mode   => '0750',
       before => Rsync['snmp_dlmod'],
     }
@@ -33,8 +36,8 @@ class simp_snmpd::rsync{
     if $simp_snmpd::dlmods {
       $_dlmods = $simp_snmpd::dlmods.map |$dlname| { "dlmod ${dlname} ${simp_snmpd::rsync_dlmod_dir}/dlmod/${dlname}.so"}
       file { "${simp_snmpd::simp_snmpd_dir}/dlmod.conf":
-        owner   => 'root',
-        group   => 'root',
+        owner  => $_owner,
+        group  => $_group,
         mode    => '0750',
         content => $_dlmods,
         notify  => Service['snmpd']
@@ -47,8 +50,8 @@ class simp_snmpd::rsync{
 
     file { $simp_snmpd::rsync_mibs_dir :
       ensure => directory,
-      owner  => 'root',
-      group  => 'root',
+      owner  => $_owner,
+      group  => $_group,
       mode   => '0750',
       before => Rsync['snmpd_mibs'],
     }

@@ -39,7 +39,7 @@ class simp_snmpd::install {
   # Include directories for further configuration.  The last one wins, so put
   # user directory after simp, so they can include files to override, change,
   # and add to what simp creates.
-  if $include_userdir {
+  if $simp_snmpd::include_userdir {
     $user_dir_ensure = 'directory'
     $_snmpd_config  = [
       "includeDir ${simp_snmpd::simp_snmpd_dir}",
@@ -58,14 +58,14 @@ class simp_snmpd::install {
     owner  => 'root',
     group  => pick($simp_snmpd::snmpd_gid,'root'),
     mode   => '0750',
-    require => File['/etc/snmp']
+    require => File[$simp_snmpd::snmp_basedir]
   }
   file { $simp_snmpd::user_snmpd_dir:
     ensure => $user_dir_ensure,
     owner  => 'root',
     group  => pick($simp_snmpd::snmpd_gid,'root'),
     mode   => '0750',
-    require => File['/etc/snmp']
+    require => File[$simp_snmpd::snmp_basedir]
   }
 
   if $simp_snmpd::manage_client {
@@ -73,17 +73,17 @@ class simp_snmpd::install {
     $_snmp_config = [
       "defVersion  ${simp_snmpd::version}",
       "defSecurityModel ${simp_snmpd::defsecuritymodel}",
-      "defSecurityLevel ${simp_snmpd::install::client::seclevel}",
+      "defSecurityLevel ${simp_snmpd::defsecuritylevel}",
       "defAuthType ${simp_snmpd::defauthtype}",
       "defPrivType ${simp_snmpd::defprivtype}",
-      "mibdirs /usr/share/snmp/mibs: ${simp_snmpd::rsync_mibs_dir}/mibs",
-      "includeFile ${simp_snmpd::snmp_conf_file}"
+      "mibdirs /usr/share/snmp/mibs:${simp_snmpd::rsync_mibs_dir}/mibs",
     ]
   }
   else {
     # For some reason the snmp module only creates this directory if the
     # client is included.
-    file { '/etc/snmp':
+    $_snmp_config = []
+    file { $simp_snmpd::snmp_basedir:
       ensure => directory,
       owner  => 'root',
       group  => pick($simp_snmpd::snmpd_gid,'root'),
@@ -97,7 +97,7 @@ class simp_snmpd::install {
   }
   # If the trap daemon is set to  be running then create the trap config dir
   # and add an include directive to the trap config file.
-  if $simp_snmpd::trap_service_ensure {
+  if $simp_snmpd::trap_service_ensure != 'stopped' {
     $_snmptrapd_config =  [ "includeDir ${simp_snmpd::user_trapd_dir}" ]
     $_user_trapdir_ensure = 'directory'
   } else {

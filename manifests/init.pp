@@ -121,7 +121,7 @@
 #   The default privacy type used for encrypting communication when using usm.
 # @param  defsecuritymodel
 #   currently simp_snmpd only supports the usm security model it will support
-#   tsm  in the near future.  This option determins if usm or tsm access is
+#   tsm  in the future.  This option determins if usm or tsm access is
 #   configured.
 # @param defsecuritylevel
 #   The default security level used by the client and to set up usm users.
@@ -168,15 +168,16 @@ class simp_snmpd (
   Boolean                        $snmpd_service_startatboot = true,
   Enum['stopped', 'running']     $trap_service_ensure       = 'stopped',
   Boolean                        $trap_service_startatboot  = false,
-  Boolean                        $manage_client             = true,
+  Boolean                        $manage_client             = false,
   Enum['yes','no']               $do_not_log_tcpwrappers    = 'no',
   Array[String]                  $agentaddress              = [ 'udp:localhost:161'],
   String                         $snmpd_options             = '-LS0-66',
-  StdLib::AbsolutePath           $snmp_conf_file            = '/etc/snmp/simp_snmp.conf',
-  StdLib::AbsolutePath           $simp_snmpd_dir            = '/etc/snmp/simp_snmpd.d',
+  Optional[String]               $snmptrapd_options         = undef,
+  StdLib::AbsolutePath           $snmp_basedir              = '/etc/snmp',
+  StdLib::AbsolutePath           $simp_snmpd_dir            = "${simp_snmpd::snmp_basedir}/simp_snmpd.d",
   Boolean                        $include_userdir           = false,
-  StdLib::AbsolutePath           $user_snmpd_dir            = '/etc/snmp/snmpd.d',
-  StdLib::AbsolutePath           $user_trapd_dir            = '/etc/snmp/snmptrapd.d',
+  StdLib::AbsolutePath           $user_snmpd_dir            = "${simp_snmpd::snmp_basedir}/snmpd.d",
+  StdLib::AbsolutePath           $user_trapd_dir            = "${simp_snmpd::snmp_basedir}/snmptrapd.d",
   StdLib::AbsolutePath           $logfile                   = '/var/log/snmpd.log',
   Enum['SHA','MD5']              $defauthtype               = 'SHA',
   Enum['DES', 'AES']             $defprivtype               = 'AES',
@@ -223,7 +224,7 @@ class simp_snmpd (
     }
   }
   else {
-    $msg = "${module_name}: Snmp Version #{simp_snmpd::version} not supported.  This module is only used for snmp version 3."
+    $msg = "${module_name}: Snmp Version #{simp_snmpd::version} not supported.  This module is only used for snmp version 3 at this time. Try using the puppet-snmp module directly"
     notify{  'net-snmp version': message => $msg}
   }
 }

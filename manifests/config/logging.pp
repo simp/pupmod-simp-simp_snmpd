@@ -24,8 +24,8 @@ class simp_snmpd::config::logging {
   }
 
   file { $simp_snmpd::logfile:
-    owner   => 'root',
-    group   => 'root',
+    owner   => pick($simp_snmpd::snmpd_uid,'root'),
+    group   => pick($simp_snmpd::snmpd_gid,'root'),
     mode    => '0640',
     seltype => 'snmpd_log_t',
   }

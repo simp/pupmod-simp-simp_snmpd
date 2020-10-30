@@ -43,6 +43,10 @@ independently.
   [`simp/simp_options`](https://github.com/simp/pupmod-simp-simp_options) for
   details.
 
+This module is a simp profile module and configures snmp using version 3
+with usm authentication.  To configure snmp in a different way use
+puppet-snmpd directly.
+
 ## Setup
 
 ### What simp_snmp Affects
@@ -65,6 +69,7 @@ and `net-snmp-utils` packages and their dependencies must be available through
 the package manager.
 
 ## Usage
+
 
 Simp_snmpd configures the snmpd daemon to listen only on the local interface by default.
 Set the following in hieradata to configure `snmpd` to Listen on UDP port 161
@@ -91,9 +96,13 @@ class { simp_snmpd:
 }
 ```
 
-NOTE: The SIMP configuration files are included under `/etc/snmp/simp_snmpd.d`.
-If you wish to add configuration files to the SIMP setup, you can add them to
-the `simp_snmpd::user_snmpd_dir` directory, by default `/etc/snmp/snmpd.d`.
+See the "Access" section for details on how the access is configured.
+
+There are a few snmp options that can be configured directly from this
+module via hiera.  If you wish to add configuration files to the SIMP setup set
+`simp_snmpd::include_userdir` to true, and add and configuration files
+to the directory defined by `simp_snmpd::user_snmpd_dir`,
+by default `/etc/snmp/snmpd.d`.
 
 ### Access
 
@@ -138,10 +147,10 @@ systems addresses.
 
 ### SNMP System Information
 
-`simp_snmpd` configures some basic system information: contact, location,
+`simp_snmpd` configures some basic system information: contact, location
 system name, and services, in the snmpd configuration directory.  These settings
 can be changed via hiera, instantiation, by creating a configuration file
-in the user directory, default `/etc/snmp/snmpd.d`.
+in the user directory.
 
 NOTE: If the system variables are set in a configuration file then `net-snmp`
 marks them as not writable and will not allow them to be changed via `snmpset`

@@ -1,3 +1,10 @@
+* Fri Oct 30 2020 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 1.0.0.-0
+- This module was updated to use puppet-snmp v5.1.2 and work on EL8 with
+  simp 6.5.
+- The default installation remains unchanged but the following parameters
+  where changed:
+  - services: was a string now accepts only Integers.
+  
 * Thu Jul 23 2020 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 0.2.1-0
 - update the upper bound of simplib for SIMP 6.5 release
 

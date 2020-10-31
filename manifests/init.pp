@@ -16,28 +16,43 @@
 #   The version of snmp protocol to use.
 #   At this time the simp_snmpd profile only manages v3, to configure
 #   older versions use the snmp module directly.
-# @param  snmp_conf_file
-#   A file of snmp.conf directives that is included for configuration directives.
-#   this file is managed by puppet.
+# @param  snmp_basedir
+#   Base directory for snmp configuration files
+# @param logfile
+#  Full path to local log file for snmpd
+# @param  service_config
+#   Location of the snmpd daemon configuration file
 # @param  simp_snmpd_dir
 #   Directory of *.conf files which include snmpd directives.  Files in this
 #   directory are managed by puppet.
+# @param include_userdir
+#   If set to true the user_snmpd_dir will be created and an include directive for it
+#   put in the service_config file.  This will allow users to override values in the service config
+#   file or add values that are not included by the interface.
 # @param  user_snmpd_dir
 #   Directory where users can include *.conf files with snmpd configuration items
 #   that will be included.  This directory is not managed by simp.  Users can put
-#   additional configurations files in this directory.
+#   additional configurations files in this directory. This directory is only included
+#   if include_userdir is set to true.
+# @param snmpd_service_ensure
+#   Set the snmpd daemon service to stopped or running
+# @param snmpd_service_startatboot
+#   Start the snmpd service at boot
+#
+# Trap service parameters
+# @param trap_service_ensure
+#   Set the snmptrap daemon service to stopped or running
+# @param trap_service_startatboot
+#   Start the snmptrap service at boot
+# @param  trap_service_config
+#   Location of the trap configuration file
 # @param  user_trapd_dir
 #   Directory where users can place snmptrap configuration files.
 #   This profile does not configure snmptrap but buts down a configuration file that tells
 #   the snmptrap daemon to look in this directory for configuration files.
-# @param snmpd_service_ensure
-#   Set the snmpd daemon service to stopped or running
-# @param trap_service_ensure
-#   Set the snmptrap daemon service to stopped or running
-# @param snmpd_service_startatboot
-#   Start the snmpd service at boot
-# @param trap_service_startatboot
-#   Start the snmptrap service at boot
+#   This directory is only created if trap_service_ensure is set to running.
+# @param snmptrapd_options
+#   Options to pass to the trap daemon on start up.
 #
 # SNMPD Agent Parameters
 # @param snmpd_options
@@ -100,21 +115,10 @@
 #   Hash of groups to create for VACM
 # @param access_hash
 #   Hash of access entrys to create for VACM.
-# @param snmp_conf_file
-#   File to hold snmp configuration directives for client utils.
-# @param simp_snmpd_dir
-#   Directory to hold configuration files defined by simp and used
-#   by the snmpd daemon.  These files are managed by puppet.
-# @param user_snmpd_dir
-#   Directory to hold additional configuration files created by user.
-#   These files are not managed by puppet.  For settings that are
-#   one off (and not cumulative like groups or access) the last one wins.
-#   This diretory is read after the simp_snmpd directory and will
-#   override those settings.
-# @param logfile
-#  local log file for snmpd
 #
-# snmp.conf access configuration default items
+# snmp.conf access configuration default items.
+# These are also used to set up view and access directives
+# if specific settings are not used in the hash.
 # @param  defauthtype
 #   The default authentication type used for clients.
 # @param  defprivtype
@@ -174,10 +178,12 @@ class simp_snmpd (
   String                         $snmpd_options             = '-LS0-66',
   Optional[String]               $snmptrapd_options         = undef,
   StdLib::AbsolutePath           $snmp_basedir              = '/etc/snmp',
+  StdLib::AbsolutePath           $trap_service_config       = "${simp_snmpd::snmp_basedir}/snmptrapd.conf",
+  StdLib::AbsolutePath           $service_config            = "${simp_snmpd::snmp_basedir}/snmpd.conf",
   StdLib::AbsolutePath           $simp_snmpd_dir            = "${simp_snmpd::snmp_basedir}/simp_snmpd.d",
-  Boolean                        $include_userdir           = false,
   StdLib::AbsolutePath           $user_snmpd_dir            = "${simp_snmpd::snmp_basedir}/snmpd.d",
   StdLib::AbsolutePath           $user_trapd_dir            = "${simp_snmpd::snmp_basedir}/snmptrapd.d",
+  Boolean                        $include_userdir           = false,
   StdLib::AbsolutePath           $logfile                   = '/var/log/snmpd.log',
   Enum['SHA','MD5']              $defauthtype               = 'SHA',
   Enum['DES', 'AES']             $defprivtype               = 'AES',

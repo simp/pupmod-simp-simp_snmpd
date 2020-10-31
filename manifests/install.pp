@@ -132,6 +132,8 @@ class simp_snmpd::install {
     service_config_perms     => '0750',
     snmpd_options            => $simp_snmpd::snmpd_options,
     snmpd_config             => $_snmpd_config,
+    service_config           => $simp_snmpd::service_config,
+    trap_service_config      => $simp_snmpd::trap_service_config,
     snmptrapd_config         => $_snmptrapd_config,
     trap_service_ensure      => $simp_snmpd::trap_service_ensure,
     trap_service_enable      => $simp_snmpd::trap_service_startatboot,

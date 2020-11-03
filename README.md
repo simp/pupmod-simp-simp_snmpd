@@ -45,7 +45,9 @@ independently.
 
 This module is a simp profile module and configures snmp using version 3
 with usm authentication.  To configure snmp in a different way use
-puppet-snmpd directly.
+puppet-snmp directly.
+
+#TODO add tsm and configure snmp to use encryption
 
 ## Setup
 
@@ -73,7 +75,7 @@ the package manager.
 
 Simp_snmpd configures the snmpd daemon to listen only on the local interface by default.
 Set the following in hieradata to configure `snmpd` to Listen on UDP port 161
-on the local interface and the the interface with the ipaddress associated
+on the local interface and tcp on the interface with the ipaddress associated
 with the hostname.  For more information, see the LISTENING ADDRESS section
   of the `snmpd` man page.
 
@@ -82,7 +84,7 @@ with the hostname.  For more information, see the LISTENING ADDRESS section
 ---
 simp_snmpd::agentaddress:
 - udp:localhost:161
-- udp:%{facts.fqdn}:161
+- tcp:%{facts.fqdn}:161
 
 classes:
   - simp_snmpd
@@ -99,8 +101,9 @@ class { simp_snmpd:
 See the "Access" section for details on how the access is configured.
 
 There are a few snmp options that can be configured directly from this
-module via hiera.  If you wish to add configuration files to the SIMP setup set
-`simp_snmpd::include_userdir` to true, and add and configuration files
+module via hiera. Other changes to the configuration can be done
+by adding configuration files to the user snmpd dir. Set
+`simp_snmpd::include_userdir` to true in hiera, and add configuration files
 to the directory defined by `simp_snmpd::user_snmpd_dir`,
 by default `/etc/snmp/snmpd.d`.
 
@@ -134,7 +137,7 @@ the options sent to the snmpd daemon on start up.  By default it is logging
 to facility 6 which will be forwarded to the server if log forwarding is enabled.
 
 For more information on these options see the man page for snmpcmd,
-the Logging section.  `Snmpcmd` and its man pages are installed with the 
+the Logging section.  `Snmpcmd` and its man pages are installed with the
 `net-snmp-utils` package.
 
 ### Firewall

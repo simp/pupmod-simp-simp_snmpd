@@ -1,10 +1,26 @@
 * Fri Oct 30 2020 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 1.0.0-0
 - This module was updated to use puppet-snmp v5.1.2 and work on EL8 with
   simp 6.5.
-- The default installation remains unchanged but the following parameters
-  where changed:
-  - services: was a string now accepts only Integers.
-  
+- The user configuration directories for snmpd are not included by default. To
+  include and create these directories set simp_snmpd::include_userdir to true.
+- Parameters to allow the user to change the owner, group and permissions
+  of the snmp configuration directories and files have been added.
+- The default security level for VACM access directives was changed to
+  simp_snmpd::defvacmlevel from simp_snmpd::defsecuritylevel.
+  simp_snmpd::defsecuritylevel was used to set
+  both the client and VACM levels but this did not work correctly because
+  the client uses different values.  Use simp_snmpd::defvacmlevel to change the
+  default security level of the VACM access statements. (The default has not changed,
+  it is still 'priv'.)
+- Added in the permission options for the configuration files and directory
+  so users could  change them.
+- simp_snmpd::services was changed from a String to and Integer to be compatible
+  with the new module.
+- The permissions on the mib and dlmod dirs are  set using basic group settings
+  instead of acls.
+- The default options for the snmpd daemon for el6 were updated to include setting
+  the pid file.  Without this restarting the daemon in el6 failed.
+
 * Thu Jul 23 2020 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 0.2.1-0
 - update the upper bound of simplib for SIMP 6.5 release
 

@@ -5,25 +5,8 @@
 #
 class simp_snmpd::install {
 
-  if $simp_snmpd::snmpd_gid {
-    group { 'snmp':
-      ensure => present,
-      gid    => $simp_snmpd::snmpd_gid,
-      system => 'no'
-    }
-  }
-
-  $_service_config_dir_group = $simp_snmpd::snmpd_gid ? {
-    undef   => 'root',
-    default => 'snmp'
-  }
-
-  if $simp_snmpd::snmpd_uid {
-    user { 'snmp':
-      ensure => present,
-      uid    => $simp_snmpd::snmpd_uid,
-      system => 'no'
-    }
+  if $simp_snmpd::manage_snmpd_user or $simp_snmpd::manage_snmpd_group {
+    include 'simp_snmpd::install::snmpduser'
   }
 
 # Check if default types are appropriate for fips mode if it is being used.
@@ -54,17 +37,20 @@ class simp_snmpd::install {
   }
 
   file { $simp_snmpd::simp_snmpd_dir:
-    ensure => 'directory',
-    owner  => 'root',
-    group  => pick($simp_snmpd::snmpd_gid,'root'),
-    mode   => '0750',
+    ensure  => 'directory',
+    owner   => $simp_snmpd::service_config_dir_owner,
+    group   => $simp_snmpd::service_config_dir_group,
+    mode    => $simp_snmpd::service_config_dir_perms,
+    recurse => 'true',
+    purge   => 'true',
     require => File[$simp_snmpd::snmp_basedir]
   }
+
   file { $simp_snmpd::user_snmpd_dir:
-    ensure => $user_dir_ensure,
-    owner  => 'root',
-    group  => pick($simp_snmpd::snmpd_gid,'root'),
-    mode   => '0750',
+    ensure  => $user_dir_ensure,
+    owner   => $simp_snmpd::service_config_dir_owner,
+    group   => $simp_snmpd::service_config_dir_group,
+    mode    => $simp_snmpd::service_config_dir_perms,
     require => File[$simp_snmpd::snmp_basedir]
   }
 
@@ -85,9 +71,9 @@ class simp_snmpd::install {
     $_snmp_config = []
     file { $simp_snmpd::snmp_basedir:
       ensure => directory,
-      owner  => 'root',
-      group  => pick($simp_snmpd::snmpd_gid,'root'),
-      mode   => '0750'
+      owner  => $simp_snmpd::service_config_dir_owner,
+      group  => $simp_snmpd::service_config_dir_group,
+      mode   => $simp_snmpd::service_config_dir_perms
     }
   }
 
@@ -106,18 +92,18 @@ class simp_snmpd::install {
   }
   file { $simp_snmpd::user_trapd_dir:
     ensure => $_user_trapdir_ensure,
-    owner  => 'root',
-    group  => pick($simp_snmpd::snmpd_gid,'root'),
+    owner  => $simp_snmpd::service_config_dir_owner,
+    group  => $simp_snmpd::service_config_dir_group,
     mode   => '0750'
   }
 
   # build the usm views, access lists, and groups from the hashes in hiera.
   $_viewlist   = simp_snmpd::viewlist($simp_snmpd::view_hash)
   $_grouplist  = simp_snmpd::grouplist($simp_snmpd::group_hash,$simp_snmpd::defsecuritymodel)
-  $_accesslist = simp_snmpd::accesslist($simp_snmpd::access_hash,$simp_snmpd::defsecuritymodel,$simp_snmpd::defsecuritylevel)
+  $_accesslist = simp_snmpd::accesslist($simp_snmpd::access_hash,$simp_snmpd::defsecuritymodel,$simp_snmpd::defvacmlevel)
 
   # create the users
-  class { 'simp_snmpd::install::users' :
+  class { 'simp_snmpd::install::vacmusers' :
       daemon => 'snmpd'
   }
 
@@ -127,12 +113,13 @@ class simp_snmpd::install {
     autoupgrade              => $_autoupgrade,
     service_ensure           => $simp_snmpd::snmpd_service_ensure,
     service_enable           => $simp_snmpd::snmpd_service_startatboot,
-    service_config_dir_owner => 'root',
-    service_config_dir_group => $_service_config_dir_group,
-    service_config_perms     => '0750',
+    service_config_dir_owner => $simp_snmpd::service_config_dir_owner,
+    service_config_dir_group => $simp_snmpd::service_config_dir_group,
     snmpd_options            => $simp_snmpd::snmpd_options,
     snmpd_config             => $_snmpd_config,
     service_config           => $simp_snmpd::service_config,
+    service_config_perms     => $simp_snmpd::service_config_perms,
+    service_config_dir_perms => $simp_snmpd::service_config_dir_perms,
     trap_service_config      => $simp_snmpd::trap_service_config,
     snmptrapd_config         => $_snmptrapd_config,
     trap_service_ensure      => $simp_snmpd::trap_service_ensure,

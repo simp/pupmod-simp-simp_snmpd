@@ -4,7 +4,7 @@
 #
 # @param daemon
 #   The daemon that the users is meant to access.
-class simp_snmpd::install::users (
+class simp_snmpd::install::vacmusers (
   Enum['snmpd','snmptrapd'] $daemon = 'snmpd'
 ) {
 

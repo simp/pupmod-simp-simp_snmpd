@@ -24,24 +24,24 @@ describe 'simp_snmpd' do
           it { is_expected.to_not contain_class('simp_snmpd::rsync')}
         end
         context "install manifest with default parameters" do
-          it { is_expected.to contain_class('simp_snmpd::install::users') }
+          it { is_expected.to contain_class('simp_snmpd::install::vacmusers') }
           #install.pp
           it { is_expected.to contain_class('snmp').with({
-            :agentaddress             => ['udp:localhost:161'],
+            :agentaddress             => ['udp:127.0.0.1:161'],
             :ensure                   => 'present',
             :autoupgrade              => 'false',
             :service_ensure           => 'running',
             :service_enable           => 'true',
-            :service_config_perms     => '0750',
             :service_config_dir_owner => 'root',
             :service_config_dir_group => 'root',
+            :service_config_perms     => '0600',
+            :service_config_dir_perms => '0750',
             :snmpd_config             => ['includeDir /etc/snmp/simp_snmpd.d'],
             :snmptrapd_config         => [],
             :trap_service_ensure      => 'stopped',
             :trap_service_enable      => 'false',
             :do_not_log_tcpwrappers   => 'no',
             :manage_client            => 'false',
-            :snmpd_options            => '-LS0-66',
             :snmp_config              => [],
             :views                    => [ 'systemview included .1.3.6.1.2.1.1',
                                            'systemview included .1.3.6.1.2.1.25.1.1',
@@ -53,8 +53,7 @@ describe 'simp_snmpd' do
 
             })
           }
-          it { is_expected.to_not create_group('snmp') }
-          it { is_expected.to_not create_user('snmp') }
+          it { is_expected.to_not contain_class('simp_snmpd::install::snmpduser') }
           it { is_expected.to_not contain_class('simp_snmpd::install::client') }
           it { is_expected.to create_file('/etc/snmp/simp_snmpd.d')}
           it { is_expected.to create_file('/etc/snmp/snmpd.d').with({
@@ -128,7 +127,7 @@ describe 'simp_snmpd' do
               :snmp_config   =>  [
                  "defVersion  3",
                  "defSecurityModel usm",
-                 "defSecurityLevel priv",
+                 "defSecurityLevel authPriv",
                  "defAuthType SHA",
                  "defPrivType AES",
                  "mibdirs /usr/share/snmp/mibs:/usr/share/snmp/mibs",
@@ -146,15 +145,21 @@ describe 'simp_snmpd' do
              :manage_client => true,
           })}
         end
-        context "with group and uid set" do
+        context "with manage users" do
           let(:params) {{
             :snmpd_gid => 9999,
-            :snmpd_uid => 9999
+            :snmpd_uid => 9999,
+            :manage_snmpd_user => true,
+            :manage_snmpd_group => true,
+            :service_config_dir_owner => 'snmp',
+            :service_config_dir_group => 'snmp'
           }}
-          it { is_expected.to create_user('snmp')}
+          it { is_expected.to contain_class('simp_snmpd::install::snmpduser')}
           it { is_expected.to create_group('snmp')}
+          it { is_expected.to create_user('snmp')}
           it { is_expected.to contain_class('snmp').with({
                :service_config_dir_group => 'snmp',
+               :service_config_dir_owner => 'snmp',
           })}
         end
         context "with fips on auth type set to MD5" do

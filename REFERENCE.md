@@ -13,7 +13,9 @@
 * [`simp_snmpd::config::logging`](#simp_snmpdconfiglogging): This class is meant to be called from simp_snmp.
 * [`simp_snmpd::config::tcpwrappers`](#simp_snmpdconfigtcpwrappers): This class is meant to be called from simp_snmp.
 * [`simp_snmpd::install`](#simp_snmpdinstall): Set up snmp group/user if needed, and subsequently change
-* [`simp_snmpd::install::users`](#simp_snmpdinstallusers): Create v3 users from user hash
+* [`simp_snmpd::install::snmpduser`](#simp_snmpdinstallsnmpduser): Create systems users for running snmpd daemon
+and owning the snmpd files
+* [`simp_snmpd::install::vacmusers`](#simp_snmpdinstallvacmusers): Create v3 users from user hash
 * [`simp_snmpd::rsync`](#simp_snmpdrsync): Set up MIBs in rsync.
 
 ### Functions
@@ -25,8 +27,9 @@
 
 ### Data types
 
-* [`Simp_snmpd::Auth`](#simp_snmpdauth)
+* [`Simp_snmpd::Seclevel`](#simp_snmpdseclevel): The default authentication level for the client to use in snmp.conf
 * [`Simp_snmpd::Secmodel`](#simp_snmpdsecmodel): type Simp_snmpd::Secmodel = Enum['usm','v1','v2c','tsm','ksm'] Right now usm is the only type suppoerted by this module. If you want to use a
+* [`Simp_snmpd::Vacmlevel`](#simp_snmpdvacmlevel): The default type to use in VACM access directives
 
 ## Classes
 
@@ -231,15 +234,13 @@ Data type: `String`
 The options passed to the snmpd daemon at start up.
 The default sends info through critical to local6.
 
-Default value: `'-LS0-66'`
-
 ##### `agentaddress`
 
 Data type: `Array[String]`
 
 
 
-Default value: `[ 'udp:localhost:161']`
+Default value: `['udp:127.0.0.1:161']`
 
 ##### `do_not_log_tcpwrappers`
 
@@ -273,12 +274,59 @@ Leave the pid file when snmpd exits
 
 Default value: `'no'`
 
+##### `service_config_perms`
+
+Data type: `Stdlib::Filemode`
+
+permissions on the configuration files
+
+Default value: `'0600'`
+
+##### `service_config_dir_perms`
+
+Data type: `Stdlib::Filemode`
+
+permissions on the configuration directories
+
+Default value: `'0750'`
+
+##### `service_config_dir_owner`
+
+Data type: `String`
+
+owner of configuration files/dirs
+
+Default value: `'root'`
+
+##### `service_config_dir_group`
+
+Data type: `String`
+
+group of configuration files/dirs
+
+Default value: `'root'`
+
+##### `manage_snmpd_user`
+
+Data type: `Boolean`
+
+Set to true if you want puppet to create the user for config files
+
+Default value: ``false``
+
+##### `manage_snmpd_group`
+
+Data type: `Boolean`
+
+Set to true if you want puppet to create the group for config files
+
+Default value: ``false``
+
 ##### `snmpd_uid`
 
 Data type: `Optional[Integer]`
 
-This creates the snmp user with this uid.  To have snmpd daemon run as this user
-after opening sockets change snmpd_options to include  -u  <snmpd_uid>.
+The uid used when creating the service_config_dir_owner
 
 Default value: ``undef``
 
@@ -286,9 +334,7 @@ Default value: ``undef``
 
 Data type: `Optional[Integer]`
 
-The group id to change the snmpd to run under.  It will create group snmp
-with that group if this is set. Add -g <snmpd_gid> to snmpd_options for it to run
-with this gid.
+The gid used when creating the service_config_dir_group
 
 Default value: ``undef``
 
@@ -405,17 +451,23 @@ Default value: `'AES'`
 
 Data type: `Simp_snmpd::Secmodel`
 
-currently simp_snmpd only supports the usm security model it will support
-tsm  in the future.  This option determins if usm or tsm access is
-configured.
+currently simp_snmpd only supports the usm security model.
 
 Default value: `'usm'`
 
 ##### `defsecuritylevel`
 
-Data type: `Simp_snmpd::Auth`
+Data type: `Simp_snmpd::Seclevel`
 
-The default security level used by the client and to set up usm users.
+The default security level used by the client
+
+Default value: `'authPriv'`
+
+##### `defvacmlevel`
+
+Data type: `Simp_snmpd::Vacmlevel`
+
+The default security level for the VACM access directives.
 
 Default value: `'priv'`
 
@@ -547,13 +599,17 @@ simp_snmpd::install
 
 permissions.  Set defaults in snmp.conf.  Disable v2 setup.
 
-### `simp_snmpd::install::users`
+### `simp_snmpd::install::snmpduser`
+
+simp_snmpd::install::snmpdusers
+
+### `simp_snmpd::install::vacmusers`
 
 simp_snmpd::v3::users
 
 #### Parameters
 
-The following parameters are available in the `simp_snmpd::install::users` class.
+The following parameters are available in the `simp_snmpd::install::vacmusers` class.
 
 ##### `daemon`
 
@@ -681,11 +737,11 @@ The list of views to create.
 
 ## Data types
 
-### `Simp_snmpd::Auth`
+### `Simp_snmpd::Seclevel`
 
-The Simp_snmpd::Auth data type.
+The default authentication level for the client to use in snmp.conf
 
-Alias of `Enum['noauth', 'auth', 'priv']`
+Alias of `Enum['noAuthNoPriv', 'authNoPriv', 'authPriv']`
 
 ### `Simp_snmpd::Secmodel`
 
@@ -694,4 +750,10 @@ Right now usm is the only type suppoerted by this module.
 If you want to use another type, use the puppet/snmp module directly
 
 Alias of `Enum['usm']`
+
+### `Simp_snmpd::Vacmlevel`
+
+The default type to use in VACM access directives
+
+Alias of `Enum['noauth', 'auth', 'priv']`
 

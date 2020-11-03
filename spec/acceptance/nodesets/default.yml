@@ -8,34 +8,24 @@
 
 # This nodeset spins up a simple one-host test VM for both EL6 and EL7
 HOSTS:
-  centos-7-1:
+  el6:
     roles:
-      - defaultparams
+      - el6
+    platform:   el-6-x86_64
+    box:        centos/6
+    hypervisor: <%= hypervisor %>
+  el7:
+    roles:
       - el7
       - default
     platform:   el-7-x86_64
     box:        centos/7
     hypervisor: <%= hypervisor %>
-  centos-6-1:
+  el8:
     roles:
-      - defaultparams
-      - el6
-    platform:   el-6-x86_64
-    box:        centos/6
-    hypervisor: <%= hypervisor %>
-  centos-7-2:
-    roles:
-      - customparams
-      - el7
-    platform:   el-7-x86_64
-    box:        centos/7
-    hypervisor: <%= hypervisor %>
-  centos-6-2:
-    roles:
-      - customparams
-      - el6
-    platform:   el-6-x86_64
-    box:        centos/6
+      - el8
+    platform:   el-8-x86_64
+    box:        centos/8
     hypervisor: <%= hypervisor %>
 CONFIG:
   log_level: verbose

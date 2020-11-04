@@ -1,7 +1,4 @@
-# simp_snmpd::config::agent
-#
-# @summary This sets up some defaults for the agent, they can be changed in
-# hiera
+# @summary Set up sensible agent defaults
 #
 class simp_snmpd::config::agent {
 
@@ -15,5 +12,4 @@ class simp_snmpd::config::agent {
     require => File[$simp_snmpd::simp_snmpd_dir],
     content => epp("${module_name}/snmpd/agent.conf.epp"),
   }
-
 }

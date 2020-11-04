@@ -1,7 +1,6 @@
-# The simp_snmpd init class
-#
 # @summary Configures the snmpd daemon. Currently, it only uses v3 USM.
-# This module does not configure the snmptrap service.
+#
+# * This module does not configure the snmptrap service.
 #
 # @param ensure
 #   present (default) will install files and packages
@@ -156,7 +155,7 @@
 #
 # SIMP parameters used
 # @param fips
-#   If fips should be enabled or not.  Fips mode does not allow MD5 or DES
+#   If FIPS should be enabled or not.  FIPS mode does not allow MD5 or DES
 #   macs/ciphers.
 # @param firewall
 #   Whether include modules that will use agentaddress array to open ports in

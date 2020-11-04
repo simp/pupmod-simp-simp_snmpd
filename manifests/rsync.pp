@@ -1,12 +1,12 @@
-# simp_snmpd::rsync
-#
-# @summary Set up MIBs in rsync.
+# @summary Set up MIBs in rsync
 #
 class simp_snmpd::rsync{
 
-  include 'rsync'
-  $_downcase_os_name = downcase($facts['os']['name'])
+  simplib::assert_optional_dependency($module_name, 'simp/rsync')
 
+  include 'rsync'
+
+  $_downcase_os_name = downcase($facts['os']['name'])
 
   if $simp_snmpd::rsync_dlmod {
 
@@ -62,7 +62,5 @@ class simp_snmpd::rsync{
       target   => $simp_snmpd::rsync_mibs_dir,
       notify   => Service['snmpd'],
     }
-
   }
-
 }

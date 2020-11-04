@@ -1,6 +1,4 @@
-# simp_snmpd::config
-#
-# @summary This class is called from simp_snmp for service config.
+# @summary Configure the SNMPD service
 #
 class simp_snmpd::config {
   assert_private()

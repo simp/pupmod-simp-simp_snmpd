@@ -7,16 +7,16 @@
 ### Classes
 
 * [`simp_snmpd`](#simp_snmpd): Configures the snmpd daemon. Currently, it only uses v3 USM.
-* [`simp_snmpd::config`](#simp_snmpdconfig): This class is called from simp_snmp for service config.
-* [`simp_snmpd::config::agent`](#simp_snmpdconfigagent): This sets up some defaults for the agent, they can be changed in
-* [`simp_snmpd::config::firewall`](#simp_snmpdconfigfirewall): This class is meant to be called from simp_snmp.
-* [`simp_snmpd::config::logging`](#simp_snmpdconfiglogging): This class is meant to be called from simp_snmp.
+* [`simp_snmpd::config`](#simp_snmpdconfig): Configure the SNMPD service
+* [`simp_snmpd::config::agent`](#simp_snmpdconfigagent): Set up sensible agent defaults
+* [`simp_snmpd::config::firewall`](#simp_snmpdconfigfirewall): Ensure that firewall rules are defined
+* [`simp_snmpd::config::logging`](#simp_snmpdconfiglogging): Ensures that appropriate logging rules are defined
 * [`simp_snmpd::config::tcpwrappers`](#simp_snmpdconfigtcpwrappers): This class is meant to be called from simp_snmp.
-* [`simp_snmpd::install`](#simp_snmpdinstall): Set up snmp group/user if needed, and subsequently change
+* [`simp_snmpd::install`](#simp_snmpdinstall): Set up snmp group/user if needed, and subsequently change permissions
 * [`simp_snmpd::install::snmpduser`](#simp_snmpdinstallsnmpduser): Create systems users for running snmpd daemon
 and owning the snmpd files
 * [`simp_snmpd::install::vacmusers`](#simp_snmpdinstallvacmusers): Create v3 users from user hash
-* [`simp_snmpd::rsync`](#simp_snmpdrsync): Set up MIBs in rsync.
+* [`simp_snmpd::rsync`](#simp_snmpdrsync): Set up MIBs in rsync
 
 ### Functions
 
@@ -35,9 +35,7 @@ and owning the snmpd files
 
 ### `simp_snmpd`
 
-The simp_snmpd init class
-
-This module does not configure the snmptrap service.
+* This module does not configure the snmptrap service.
 
 Trap service parameters
 SNMPD Agent Parameters
@@ -515,7 +513,7 @@ Default value: `72`
 
 Data type: `Boolean`
 
-If fips should be enabled or not.  Fips mode does not allow MD5 or DES
+If FIPS should be enabled or not.  FIPS mode does not allow MD5 or DES
 macs/ciphers.
 
 Default value: `simplib::lookup('simp_options::fips',           { 'default_value' => false })`
@@ -564,28 +562,24 @@ Default value: `simplib::lookup('simp_options::tcpwrappers',    { 'default_value
 
 ### `simp_snmpd::config`
 
-simp_snmpd::config
+Configure the SNMPD service
 
 ### `simp_snmpd::config::agent`
 
-simp_snmpd::config::agent
-
-hiera
+Set up sensible agent defaults
 
 ### `simp_snmpd::config::firewall`
 
-simp_snmpd::config::firewall
+For anything in the `$listenagent` array, it will determine if ports on the
+firewall need to be opened.
 
-It ensures that firewall rules are defined. For anything in the listenagent
-array, it will determine if ports on the firewall need to be opened.
-It ignores any entries for ipx or pvc at this time. IPTABLES calls will have
-to be set up manually if these transport services are being used.
+* Ignores any entries for `ipx` or `pvc` at this time
+  * Firewall rules will have to be set up manually if these transport
+    services are being used.
 
 ### `simp_snmpd::config::logging`
 
-simp_snmpd::config::logging
-
-It ensures that logging rules are defined.
+Ensures that appropriate logging rules are defined
 
 ### `simp_snmpd::config::tcpwrappers`
 
@@ -595,17 +589,17 @@ It ensures that tcpwrappers rules are defined.
 
 ### `simp_snmpd::install`
 
-simp_snmpd::install
-
-permissions.  Set defaults in snmp.conf.  Disable v2 setup.
+* Set defaults in snmp.conf
+* Disable v2 setup
 
 ### `simp_snmpd::install::snmpduser`
 
-simp_snmpd::install::snmpdusers
+Create systems users for running snmpd daemon
+and owning the snmpd files
 
 ### `simp_snmpd::install::vacmusers`
 
-simp_snmpd::v3::users
+Create v3 users from user hash
 
 #### Parameters
 
@@ -621,7 +615,7 @@ Default value: `'snmpd'`
 
 ### `simp_snmpd::rsync`
 
-simp_snmpd::rsync
+Set up MIBs in rsync
 
 ## Functions
 

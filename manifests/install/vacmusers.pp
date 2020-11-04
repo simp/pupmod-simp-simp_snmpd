@@ -1,5 +1,3 @@
-# simp_snmpd::v3::users
-#
 # @summary Create v3 users from user hash
 #
 # @param daemon

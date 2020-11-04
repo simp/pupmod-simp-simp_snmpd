@@ -1,7 +1,7 @@
-# simp_snmpd::install
+# @summary Set up snmp group/user if needed, and subsequently change permissions
 #
-# @summary Set up snmp group/user if needed, and subsequently change
-# permissions.  Set defaults in snmp.conf.  Disable v2 setup.
+# * Set defaults in snmp.conf
+# * Disable v2 setup
 #
 class simp_snmpd::install {
 
@@ -9,7 +9,7 @@ class simp_snmpd::install {
     include 'simp_snmpd::install::snmpduser'
   }
 
-# Check if default types are appropriate for fips mode if it is being used.
+  # Check if default types are appropriate for FIPS mode if it is being used.
   if $simp_snmpd::fips or $facts['fips_enabled'] {
     if $simp_snmpd::defauthtype == 'MD5' {
       fail("simp_snmpd:  Invalid default authentication type (simp_snmpd::defauthtype): ${simp_snmpd::defauthtype} for use in fips mode.")
@@ -140,5 +140,4 @@ class simp_snmpd::install {
     groups                   => $_grouplist
 
   }
-
 }

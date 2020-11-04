@@ -1,12 +1,11 @@
-# simp_snmpd::config::logging
-#
-# @summary This class is meant to be called from simp_snmp.
-# It ensures that logging rules are defined.
+# @summary Ensures that appropriate logging rules are defined
 #
 class simp_snmpd::config::logging {
   assert_private()
 
-  include '::rsyslog'
+  simplib::assert_optional_dependency($module_name, 'simp/rsyslog')
+
+  include 'rsyslog'
 
   rsyslog::rule::local { 'XX_snmpd':
     rule            => '$programname == \'snmpd\'',
@@ -16,7 +15,10 @@ class simp_snmpd::config::logging {
   }
 
   if $simp_snmpd::logrotate {
-    include '::logrotate'
+    simplib::assert_optional_dependency($module_name, 'simp/logrotate')
+
+    include 'logrotate'
+
     logrotate::rule { 'snmpd':
       log_files                 => [ $simp_snmpd::logfile ],
       lastaction_restart_logger => true
@@ -29,5 +31,4 @@ class simp_snmpd::config::logging {
     mode    => '0640',
     seltype => 'snmpd_log_t',
   }
-
 }

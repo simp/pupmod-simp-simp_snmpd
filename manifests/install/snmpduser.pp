@@ -1,5 +1,3 @@
-# simp_snmpd::install::snmpdusers
-#
 # @summary Create systems users for running snmpd daemon
 #    and owning the snmpd files
 #

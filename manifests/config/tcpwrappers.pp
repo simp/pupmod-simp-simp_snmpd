@@ -6,7 +6,9 @@
 class simp_snmpd::config::tcpwrappers {
   assert_private()
 
-  include '::tcpwrappers'
+  simplib::assert_optional_dependency($module_name, 'simp/tcpwrappers')
+
+  include 'tcpwrappers'
 
   tcpwrappers::allow { 'snmpd':
     pattern => $simp_snmpd::trusted_nets

@@ -1,13 +1,13 @@
-# The simp_snmpd init class
-#
 # @summary Configures the snmpd daemon. Currently, it only uses v3 USM.
-# This module does not configure the snmptrap service.
+#
+# * This module does not configure the snmptrap service.
 #
 # @param ensure
 #   present (default) will install files and packages
 #   absent  make sure they are not installed.
 # @param manage_client
-#   True = install the net-simp-utils.  These are command line utilities.
+#   tell puppet snmp to manage client.
+#   install the net-simp-utils.  These are command line utilities.
 # @param  package_ensure
 #   If set to "latest" snmp will try to update to the latest version
 #   of the package available, otherwise it will just check it is installed
@@ -15,28 +15,43 @@
 #   The version of snmp protocol to use.
 #   At this time the simp_snmpd profile only manages v3, to configure
 #   older versions use the snmp module directly.
-# @param  snmp_conf_file
-#   A file of snmp.conf directives that is included for configuration directives.
-#   this file is managed by puppet.
+# @param  snmp_basedir
+#   Base directory for snmp configuration files
+# @param logfile
+#  Full path to local log file for snmpd
+# @param  service_config
+#   Location of the snmpd daemon configuration file
 # @param  simp_snmpd_dir
 #   Directory of *.conf files which include snmpd directives.  Files in this
 #   directory are managed by puppet.
+# @param include_userdir
+#   If set to true the user_snmpd_dir will be created and an include directive for it
+#   put in the service_config file.  This will allow users to override values in the service config
+#   file or add values that are not included by the interface.
 # @param  user_snmpd_dir
 #   Directory where users can include *.conf files with snmpd configuration items
 #   that will be included.  This directory is not managed by simp.  Users can put
-#   additional configurations files in this directory.
+#   additional configurations files in this directory. This directory is only included
+#   if include_userdir is set to true.
+# @param snmpd_service_ensure
+#   Set the snmpd daemon service to stopped or running
+# @param snmpd_service_startatboot
+#   Start the snmpd service at boot
+#
+# Trap service parameters
+# @param trap_service_ensure
+#   Set the snmptrap daemon service to stopped or running
+# @param trap_service_startatboot
+#   Start the snmptrap service at boot
+# @param  trap_service_config
+#   Location of the trap configuration file
 # @param  user_trapd_dir
 #   Directory where users can place snmptrap configuration files.
 #   This profile does not configure snmptrap but buts down a configuration file that tells
 #   the snmptrap daemon to look in this directory for configuration files.
-# @param snmpd_service_ensure
-#   Set the snmpd daemon service to stopped or running
-# @param trap_service_ensure
-#   Set the snmptrap daemon service to stopped or running
-# @param snmpd_service_startatboot
-#   Start the snmpd service at boot
-# @param trap_service_startatboot
-#   Start the snmptrap service at boot
+#   This directory is only created if trap_service_ensure is set to running.
+# @param snmptrapd_options
+#   Options to pass to the trap daemon on start up.
 #
 # SNMPD Agent Parameters
 # @param snmpd_options
@@ -60,13 +75,22 @@
 # @see man snmpd.conf AGENT BEHAVIOR section for more information on the
 # @param  leave_pidfile
 #   Leave the pid file when snmpd exits
+# @param service_config_perms
+#   permissions on the configuration files
+# @param service_config_dir_perms
+#   permissions on the configuration directories
+# @param service_config_dir_owner
+#   owner of configuration files/dirs
+# @param service_config_dir_group
+#   group of configuration files/dirs
+# @param manage_snmpd_user
+#   Set to true if you want puppet to create the user for config files
+# @param manage_snmpd_group
+#   Set to true if you want puppet to create the group for config files
 # @param  snmpd_uid
-#   This creates the snmp user with this uid.  To have snmpd daemon run as this user
-#   after opening sockets change snmpd_options to include  -u  <snmpd_uid>.
+#   The uid used when creating the service_config_dir_owner
 # @param  snmpd_gid
-#   The group id to change the snmpd to run under.  It will create group snmp
-#   with that group if this is set. Add -g <snmpd_gid> to snmpd_options for it to run
-#   with this gid.
+#   The gid used when creating the service_config_dir_group
 #
 # Settings for rsync
 # @param rsync_server
@@ -99,40 +123,27 @@
 #   Hash of groups to create for VACM
 # @param access_hash
 #   Hash of access entrys to create for VACM.
-# @param snmp_conf_file
-#   File to hold snmp configuration directives for client utils.
-# @param simp_snmpd_dir
-#   Directory to hold configuration files defined by simp and used
-#   by the snmpd daemon.  These files are managed by puppet.
-# @param user_snmpd_dir
-#   Directory to hold additional configuration files created by user.
-#   These files are not managed by puppet.  For settings that are
-#   one off (and not cumulative like groups or access) the last one wins.
-#   This diretory is read after the simp_snmpd directory and will
-#   override those settings.
-# @param logfile
-#  local log file for snmpd
 #
-# snmp.conf access configuration default items
+# snmp.conf access configuration default items.
+# These are also used to set up view and access directives
+# if specific settings are not used in the hash.
 # @param  defauthtype
 #   The default authentication type used for clients.
 # @param  defprivtype
 #   The default privacy type used for encrypting communication when using usm.
 # @param  defsecuritymodel
-#   currently simp_snmpd only supports the usm security model it will support
-#   tsm  in the near future.  This option determins if usm or tsm access is
-#   configured.
+#   currently simp_snmpd only supports the usm security model.
 # @param defsecuritylevel
-#   The default security level used by the client and to set up usm users.
+#   The default security level used by the client
+# @param defvacmlevel
+#   The default security level for the VACM access directives.
 #
 # snmpd.conf system info parameters
 # If the system parameters are set in the snmpd.conf files net-snmp
 # sets them as not writeable and they can not be changed by an 'set' call from
 # an snmpd client or manager.  If you want to set them this way the
 # change simp_snmpd::system_info to false.
-# @param system_info
-#   If true it will set the contact, location, name and services parameters from the
-#   following hiera varaiables:
+# @param system_info Deprecated (puppet-snmp does not allow you to not set these).
 # @param location
 #   sets sysLocation in snmp
 # @param sysname
@@ -144,7 +155,7 @@
 #
 # SIMP parameters used
 # @param fips
-#   If fips should be enabled or not.  Fips mode does not allow MD5 or DES
+#   If FIPS should be enabled or not.  FIPS mode does not allow MD5 or DES
 #   macs/ciphers.
 # @param firewall
 #   Whether include modules that will use agentaddress array to open ports in
@@ -163,6 +174,7 @@ class simp_snmpd (
   Hash                           $view_hash,     # See module data
   Hash                           $group_hash,    # See module data
   Hash                           $access_hash,   # See module data
+  String                         $snmpd_options,
   Enum['present','absent']       $ensure                    = 'present',
   Integer                        $version                   = 3,
   Enum['stopped', 'running']     $snmpd_service_ensure      = 'running',
@@ -171,24 +183,32 @@ class simp_snmpd (
   Boolean                        $trap_service_startatboot  = false,
   Boolean                        $manage_client             = false,
   Enum['yes','no']               $do_not_log_tcpwrappers    = 'no',
-  Array[String]                  $agentaddress              = [ 'udp:localhost:161'],
-  String                         $snmpd_options             = '-LS0-66',
-  StdLib::AbsolutePath           $snmp_conf_file            = '/etc/snmp/simp_snmp.conf',
-  StdLib::AbsolutePath           $simp_snmpd_dir            = '/etc/snmp/simp_snmpd.d',
-  StdLib::AbsolutePath           $user_snmpd_dir            = '/etc/snmp/snmpd.d',
-  StdLib::AbsolutePath           $user_trapd_dir            = '/etc/snmp/snmptrapd.d',
+  Array[String]                  $agentaddress              = ['udp:127.0.0.1:161'],
+  Optional[String]               $snmptrapd_options         = undef,
+  StdLib::AbsolutePath           $snmp_basedir              = '/etc/snmp',
+  StdLib::AbsolutePath           $trap_service_config       = "${simp_snmpd::snmp_basedir}/snmptrapd.conf",
+  StdLib::AbsolutePath           $service_config            = "${simp_snmpd::snmp_basedir}/snmpd.conf",
+  StdLib::AbsolutePath           $simp_snmpd_dir            = "${simp_snmpd::snmp_basedir}/simp_snmpd.d",
+  StdLib::AbsolutePath           $user_snmpd_dir            = "${simp_snmpd::snmp_basedir}/snmpd.d",
+  StdLib::AbsolutePath           $user_trapd_dir            = "${simp_snmpd::snmp_basedir}/snmptrapd.d",
+  Stdlib::Filemode               $service_config_perms      = '0600',
+  Stdlib::Filemode               $service_config_dir_perms  = '0750',
+  String                         $service_config_dir_owner  = 'root',
+  String                         $service_config_dir_group  = 'root',
+  Boolean                        $include_userdir           = false,
   StdLib::AbsolutePath           $logfile                   = '/var/log/snmpd.log',
   Enum['SHA','MD5']              $defauthtype               = 'SHA',
   Enum['DES', 'AES']             $defprivtype               = 'AES',
   Simp_snmpd::Secmodel           $defsecuritymodel          = 'usm',
-  Simp_snmpd::Auth               $defsecuritylevel          = 'priv',
+  Simp_snmpd::Seclevel           $defsecuritylevel          = 'authPriv',
+  Simp_snmpd::Vacmlevel          $defvacmlevel               = 'priv',
   Integer                        $maxgetbulkrepeats         = 100,
   Enum['yes','no']               $leave_pidfile             = 'no',
   Integer                        $maxgetbulkresponses       = 100,
   Boolean                        $system_info               = true,
   String                         $location                  = 'Unknown',
   String                         $contact                   = "root@${facts['fqdn']}",
-  String                         $services                  = '72',
+  Integer                        $services                  = 72,
   String                         $sysname                   = $facts['fqdn'],
   String                         $rsync_source              = "snmp_${::environment}_${facts['os']['name']}",
   Boolean                        $rsync_dlmod               = false,
@@ -198,6 +218,8 @@ class simp_snmpd (
   Optional[Array[String]]        $dlmods                    = undef,
   Optional[Integer]              $snmpd_gid                 = undef,
   Optional[Integer]              $snmpd_uid                 = undef,
+  Boolean                        $manage_snmpd_user         = false,
+  Boolean                        $manage_snmpd_group        = false,
   Simplib::Host                  $rsync_server              = simplib::lookup('simp_options::rsync::server',  { 'default_value' => '127.0.0.1' }),
   Integer                        $rsync_timeout             = simplib::lookup('simp_options::rsync::timeout', { 'default_value' => 2 }),
   Boolean                        $firewall                  = simplib::lookup('simp_options::firewall',       { 'default_value' => false }),
@@ -223,7 +245,7 @@ class simp_snmpd (
     }
   }
   else {
-    $msg = "${module_name}: Snmp Version #{simp_snmpd::version} not supported.  This module is only used for snmp version 3."
+    $msg = "${module_name}: Snmp Version #{simp_snmpd::version} not supported.  This module is only used for snmp version 3 at this time. Try using the puppet-snmp module directly"
     notify{  'net-snmp version': message => $msg}
   }
 }

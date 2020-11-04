@@ -13,10 +13,10 @@ describe 'simp_snmpd::viewlist' do
                { "included" => "My::Mib", }
              }
       retval = [
-             'view first_view included .1.2.3.4',
-             'view first_view excluded 6.7.5.6',
-             'view first_view excluded .9',
-             'view second_view included My::Mib',
+             'first_view included .1.2.3.4',
+             'first_view excluded 6.7.5.6',
+             'first_view excluded .9',
+             'second_view included My::Mib',
              ]
       is_expected.to run.with_params(args).and_return(retval)
     end

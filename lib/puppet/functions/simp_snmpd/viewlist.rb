@@ -17,7 +17,7 @@ Puppet::Functions.create_function(:'simp_snmpd::viewlist') do
   def createlist(view_hash)
     viewlist = []
     view_hash.each { | name, values|
-       viewpref = "view #{name}"
+       viewpref = "#{name}"
        if ! values.nil? and ! values.empty? then
          values.each { |type, oids|
            case "#{type}"

@@ -1,12 +1,12 @@
-# simp_snmpd::v3::users
-#
 # @summary Create v3 users from user hash
 #
 # @param daemon
 #   The daemon that the users is meant to access.
-class simp_snmpd::v3::users (
+class simp_snmpd::install::vacmusers (
   Enum['snmpd','snmptrapd'] $daemon = 'snmpd'
 ) {
+
+  assert_private()
 
   $simp_snmpd::v3_users_hash.each |String $username, Optional[Hash] $settings| {
     if $settings {

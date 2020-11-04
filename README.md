@@ -43,6 +43,12 @@ independently.
   [`simp/simp_options`](https://github.com/simp/pupmod-simp-simp_options) for
   details.
 
+This module is a simp profile module and configures snmp using version 3
+with usm authentication.  To configure snmp in a different way use
+puppet-snmp directly.
+
+#TODO add tsm and configure snmp to use encryption
+
 ## Setup
 
 ### What simp_snmp Affects
@@ -66,9 +72,10 @@ the package manager.
 
 ## Usage
 
+
 Simp_snmpd configures the snmpd daemon to listen only on the local interface by default.
 Set the following in hieradata to configure `snmpd` to Listen on UDP port 161
-on the local interface and the the interface with the ipaddress associated
+on the local interface and tcp on the interface with the ipaddress associated
 with the hostname.  For more information, see the LISTENING ADDRESS section
   of the `snmpd` man page.
 
@@ -77,7 +84,7 @@ with the hostname.  For more information, see the LISTENING ADDRESS section
 ---
 simp_snmpd::agentaddress:
 - udp:localhost:161
-- udp:%{facts.fqdn}:161
+- tcp:%{facts.fqdn}:161
 
 classes:
   - simp_snmpd
@@ -91,9 +98,14 @@ class { simp_snmpd:
 }
 ```
 
-NOTE: The SIMP configuration files are included under `/etc/snmp/simp_snmpd.d`.
-If you wish to add configuration files to the SIMP setup, you can add them to
-the `simp_snmpd::user_snmpd_dir` directory, by default `/etc/snmp/snmpd.d`.
+See the "Access" section for details on how the access is configured.
+
+There are a few snmp options that can be configured directly from this
+module via hiera. Other changes to the configuration can be done
+by adding configuration files to the user snmpd dir. Set
+`simp_snmpd::include_userdir` to true in hiera, and add configuration files
+to the directory defined by `simp_snmpd::user_snmpd_dir`,
+by default `/etc/snmp/snmpd.d`.
 
 ### Access
 
@@ -125,7 +137,7 @@ the options sent to the snmpd daemon on start up.  By default it is logging
 to facility 6 which will be forwarded to the server if log forwarding is enabled.
 
 For more information on these options see the man page for snmpcmd,
-the Logging section.  `Snmpcmd` and its man pages are installed with the 
+the Logging section.  `Snmpcmd` and its man pages are installed with the
 `net-snmp-utils` package.
 
 ### Firewall
@@ -138,10 +150,10 @@ systems addresses.
 
 ### SNMP System Information
 
-`simp_snmpd` configures some basic system information: contact, location,
+`simp_snmpd` configures some basic system information: contact, location
 system name, and services, in the snmpd configuration directory.  These settings
 can be changed via hiera, instantiation, by creating a configuration file
-in the user directory, default `/etc/snmp/snmpd.d`.
+in the user directory.
 
 NOTE: If the system variables are set in a configuration file then `net-snmp`
 marks them as not writable and will not allow them to be changed via `snmpset`

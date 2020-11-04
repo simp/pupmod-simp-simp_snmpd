@@ -1,13 +1,16 @@
-# simp_snmpd::config::firewall
+# @summary Ensure that firewall rules are defined
 #
-# @summary This class is meant to be called from simp_snmp.
-# It ensures that firewall rules are defined. For anything in the listenagent
-# array, it will determine if ports on the firewall need to be opened.
-# It ignores any entries for ipx or pvc at this time. IPTABLES calls will have
-# to be set up manually if these transport services are being used.
+# For anything in the `$listenagent` array, it will determine if ports on the
+# firewall need to be opened.
+#
+# * Ignores any entries for `ipx` or `pvc` at this time
+#   * Firewall rules will have to be set up manually if these transport
+#     services are being used.
 #
 class simp_snmpd::config::firewall {
   assert_private()
+
+  simplib::assert_optional_dependency($module_name, 'simp/iptables')
 
   $flist = simp_snmpd::firewall_list($simp_snmpd::agentaddress)
   $flist.each |Array $part| {

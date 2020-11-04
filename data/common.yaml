@@ -49,3 +49,5 @@ simp_snmpd::access_hash:
       write: systemview
     groups:
      - readwrite_group
+
+simp_snmpd::snmpd_options: '-LS0-6d'

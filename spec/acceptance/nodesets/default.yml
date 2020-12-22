@@ -8,12 +8,6 @@
 
 # This nodeset spins up a simple one-host test VM for both EL6 and EL7
 HOSTS:
-  el6:
-    roles:
-      - el6
-    platform:   el-6-x86_64
-    box:        centos/6
-    hypervisor: <%= hypervisor %>
   el7:
     roles:
       - el7

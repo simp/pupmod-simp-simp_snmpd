@@ -17,28 +17,12 @@ HOSTS:
     box:         onyxpoint/oel-7-x86_64
     box_version: ">= 0.2.0"
     hypervisor:  <%= hypervisor %>
-  el6-1:
-    roles:
-      - defaultparams
-      - el6
-    platform:    el-6-x86_64
-    box:         onyxpoint/oel-6-x86_64
-    box_version: ">= 0.2.0"
-    hypervisor:  <%= hypervisor %>
   el7-2:
     roles:
       - customparams
       - el7
     platform:    el-7-x86_64
     box:         onyxpoint/oel-7-x86_64
-    box_version: ">= 0.2.0"
-    hypervisor:  <%= hypervisor %>
-  el6-2:
-    roles:
-      - customparams
-      - el6
-    platform:    el-6-x86_64
-    box:         onyxpoint/oel-6-x86_64
     box_version: ">= 0.2.0"
     hypervisor:  <%= hypervisor %>
 CONFIG:

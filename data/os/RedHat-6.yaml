@@ -1,3 +1,0 @@
----
-
-simp_snmpd::snmpd_options: '-LS0-6d  -p /var/run/snmpd.pid'

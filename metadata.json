@@ -1,6 +1,6 @@
 {
   "name": "simp-simp_snmpd",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "author": "SIMP Team",
   "summary": "Configures snmpd agent using v3 USM on the client",
   "license": "Apache-2.0",
@@ -23,7 +23,7 @@
     },
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 4.13.0 < 7.0.0"
+      "version_requirement": ">= 6.18.0 < 8.0.0"
     }
   ],
   "simp": {
@@ -76,7 +76,7 @@
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 5.0.0 < 7.0.0"
+      "version_requirement": ">= 6.22.1 < 8.0.0"
     }
   ]
 }

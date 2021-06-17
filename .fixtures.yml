@@ -1,21 +1,21 @@
 ---
 fixtures:
   repositories:
-    concat:         https://github.com/simp/puppetlabs-concat
-    firewalld:      https://github.com/simp/pupmod-voxpupuli-firewalld
-    iptables:       https://github.com/simp/pupmod-simp-iptables
-    logrotate:      https://github.com/simp/pupmod-simp-logrotate
-    pki:            https://github.com/simp/pupmod-simp-pki
-    rsync:          https://github.com/simp/pupmod-simp-rsync
-    rsyslog:        https://github.com/simp/pupmod-simp-rsyslog
+    concat: https://github.com/simp/puppetlabs-concat.git
+    firewalld: https://github.com/simp/pupmod-voxpupuli-firewalld.git
+    iptables: https://github.com/simp/pupmod-simp-iptables.git
+    logrotate: https://github.com/simp/pupmod-simp-logrotate.git
+    pki: https://github.com/simp/pupmod-simp-pki.git
+    rsync: https://github.com/simp/pupmod-simp-rsync.git
+    rsyslog: https://github.com/simp/pupmod-simp-rsyslog.git
     selinux_core:
       repo: https://github.com/simp/pupmod-puppetlabs-selinux_core.git
       puppet_version: ">= 6.0.0"
-    simp_firewalld: https://github.com/simp/pupmod-simp-simp_firewalld
-    simplib:        https://github.com/simp/pupmod-simp-simplib
-    snmp:           https://github.com/simp/puppet-snmp
-    stdlib:         https://github.com/simp/puppetlabs-stdlib
-    systemd:        https://github.com/simp/puppet-systemd
-    tcpwrappers:    https://github.com/simp/pupmod-simp-tcpwrappers
+    simp_firewalld: https://github.com/simp/pupmod-simp-simp_firewalld.git
+    simplib: https://github.com/simp/pupmod-simp-simplib.git
+    snmp: https://github.com/simp/puppet-snmp.git
+    stdlib: https://github.com/simp/puppetlabs-stdlib.git
+    systemd: https://github.com/simp/puppet-systemd.git
+    tcpwrappers: https://github.com/simp/pupmod-simp-tcpwrappers.git
   symlinks:
     simp_snmpd: "#{source_dir}"

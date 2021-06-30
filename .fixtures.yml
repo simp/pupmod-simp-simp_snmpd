@@ -8,9 +8,7 @@ fixtures:
     pki: https://github.com/simp/pupmod-simp-pki.git
     rsync: https://github.com/simp/pupmod-simp-rsync.git
     rsyslog: https://github.com/simp/pupmod-simp-rsyslog.git
-    selinux_core:
-      repo: https://github.com/simp/pupmod-puppetlabs-selinux_core.git
-      puppet_version: ">= 6.0.0"
+    selinux_core: https://github.com/simp/pupmod-puppetlabs-selinux_core.git
     simp_firewalld: https://github.com/simp/pupmod-simp-simp_firewalld.git
     simplib: https://github.com/simp/pupmod-simp-simplib.git
     snmp: https://github.com/simp/puppet-snmp.git

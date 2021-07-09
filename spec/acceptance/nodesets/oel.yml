@@ -6,24 +6,16 @@
   end
 -%>
 
-# This nodeset spins up a simple one-host test VM for both EL6 and EL7
 HOSTS:
-  el7-1:
+  oel7:
     roles:
-      - defaultparams
-      - el7
       - default
     platform:    el-7-x86_64
-    box:         onyxpoint/oel-7-x86_64
-    box_version: ">= 0.2.0"
+    box:         generic/oracle7
     hypervisor:  <%= hypervisor %>
-  el7-2:
-    roles:
-      - customparams
-      - el7
-    platform:    el-7-x86_64
-    box:         onyxpoint/oel-7-x86_64
-    box_version: ">= 0.2.0"
+  oel8:
+    platform:    el-8-x86_64
+    box:         generic/oracle8
     hypervisor:  <%= hypervisor %>
 CONFIG:
   log_level: verbose

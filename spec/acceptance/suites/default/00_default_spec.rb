@@ -87,9 +87,6 @@ simp_snmpd::manage_client: true
     EOH2
   }
 
-  defaultconfig = hosts_with_role( hosts, 'defaultparams' )
-  customconfig = hosts_with_role( hosts, 'customparams' )
-
   context 'with default setting on snmpd agent and client installed' do
    hosts.each do |node|
       it 'should set the hiera data' do

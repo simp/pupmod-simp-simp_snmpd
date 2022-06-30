@@ -1,3 +1,6 @@
+* Thu Jun 30 2022 Andy Adrian <andy@sicura.us> - 1.1.1
+- Expanded puppet/snmp dependency range to < 7.0.0
+
 * Thu Jun 17 2021 Chris Tessmer <chris.tessmer@onyxpoint.com> - 1.1.0
 - Removed support for Puppet 5
 - Ensured support for Puppet 7 in requirements and stdlib

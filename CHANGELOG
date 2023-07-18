@@ -1,3 +1,6 @@
+* Mon Jul 17 2023 Chris Tessmer <chris.tessmer@onyxpoint.com> - 1.2.0
+- Add RockyLinux 8 support
+
 * Thu Jun 30 2022 Andy Adrian <andy@sicura.us> - 1.1.1
 - Expanded puppet/snmp dependency range to < 7.0.0
 

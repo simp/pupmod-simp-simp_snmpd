@@ -19,8 +19,8 @@ class simp_snmpd::rsync{
     }
 
     rsync { 'snmp_dlmod':
-      user         => "snmp_${::environment}_${_downcase_os_name}",
-      password     => simplib::passgen("snmp_${::environment}_${_downcase_os_name}"),
+      user         => "snmp_${environment}_${_downcase_os_name}",
+      password     => simplib::passgen("snmp_${environment}_${_downcase_os_name}"),
       source       => "${simp_snmpd::rsync_source}/dlmod",
       target       => $simp_snmpd::rsync_dlmod_dir,
       server       => $simp_snmpd::rsync_server,
@@ -54,8 +54,8 @@ class simp_snmpd::rsync{
     }
 
     rsync { 'snmpd_mibs':
-      user     => "snmp_${::environment}_${_downcase_os_name}",
-      password => simplib::passgen("snmp_${::environment}_${_downcase_os_name}"),
+      user     => "snmp_${environment}_${_downcase_os_name}",
+      password => simplib::passgen("snmp_${environment}_${_downcase_os_name}"),
       server   => $simp_snmpd::rsync_server,
       timeout  => $simp_snmpd::rsync_timeout,
       source   => "${simp_snmpd::rsync_source}/mibs",

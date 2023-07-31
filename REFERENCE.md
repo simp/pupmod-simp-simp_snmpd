@@ -7,33 +7,33 @@
 ### Classes
 
 * [`simp_snmpd`](#simp_snmpd): Configures the snmpd daemon. Currently, it only uses v3 USM.
-* [`simp_snmpd::config`](#simp_snmpdconfig): Configure the SNMPD service
-* [`simp_snmpd::config::agent`](#simp_snmpdconfigagent): Set up sensible agent defaults
-* [`simp_snmpd::config::firewall`](#simp_snmpdconfigfirewall): Ensure that firewall rules are defined
-* [`simp_snmpd::config::logging`](#simp_snmpdconfiglogging): Ensures that appropriate logging rules are defined
-* [`simp_snmpd::config::tcpwrappers`](#simp_snmpdconfigtcpwrappers): This class is meant to be called from simp_snmp.
-* [`simp_snmpd::install`](#simp_snmpdinstall): Set up snmp group/user if needed, and subsequently change permissions
-* [`simp_snmpd::install::snmpduser`](#simp_snmpdinstallsnmpduser): Create systems users for running snmpd daemon
+* [`simp_snmpd::config`](#simp_snmpd--config): Configure the SNMPD service
+* [`simp_snmpd::config::agent`](#simp_snmpd--config--agent): Set up sensible agent defaults
+* [`simp_snmpd::config::firewall`](#simp_snmpd--config--firewall): Ensure that firewall rules are defined
+* [`simp_snmpd::config::logging`](#simp_snmpd--config--logging): Ensures that appropriate logging rules are defined
+* [`simp_snmpd::config::tcpwrappers`](#simp_snmpd--config--tcpwrappers): This class is meant to be called from simp_snmp.
+* [`simp_snmpd::install`](#simp_snmpd--install): Set up snmp group/user if needed, and subsequently change permissions
+* [`simp_snmpd::install::snmpduser`](#simp_snmpd--install--snmpduser): Create systems users for running snmpd daemon
 and owning the snmpd files
-* [`simp_snmpd::install::vacmusers`](#simp_snmpdinstallvacmusers): Create v3 users from user hash
-* [`simp_snmpd::rsync`](#simp_snmpdrsync): Set up MIBs in rsync
+* [`simp_snmpd::install::vacmusers`](#simp_snmpd--install--vacmusers): Create v3 users from user hash
+* [`simp_snmpd::rsync`](#simp_snmpd--rsync): Set up MIBs in rsync
 
 ### Functions
 
-* [`simp_snmpd::accesslist`](#simp_snmpdaccesslist): parse the access hash and return strings that for access entries for  the snmpd.conf file  @see The SIMP user guide HOW TO: Configure SNMPD d
-* [`simp_snmpd::firewall_list`](#simp_snmpdfirewall_list): function to return a list of protocol and ports to open in iptables for snmpd to work.
-* [`simp_snmpd::grouplist`](#simp_snmpdgrouplist): parse the group hash and return strings for group entries for  the snmpd.conf file  @see The SIMP user guide HOW TO: Configure SNMPD describe
-* [`simp_snmpd::viewlist`](#simp_snmpdviewlist): parse the view hash and return strings that for view entries for  the snmpd.conf file  @see The SIMP user guide HOW TO: Configure SNMPD descr
+* [`simp_snmpd::accesslist`](#simp_snmpd--accesslist): parse the access hash and return strings that for access entries for  the snmpd.conf file  @see The SIMP user guide HOW TO: Configure SNMPD d
+* [`simp_snmpd::firewall_list`](#simp_snmpd--firewall_list): function to return a list of protocol and ports to open in iptables for snmpd to work.
+* [`simp_snmpd::grouplist`](#simp_snmpd--grouplist): parse the group hash and return strings for group entries for  the snmpd.conf file  @see The SIMP user guide HOW TO: Configure SNMPD describe
+* [`simp_snmpd::viewlist`](#simp_snmpd--viewlist): parse the view hash and return strings that for view entries for  the snmpd.conf file  @see The SIMP user guide HOW TO: Configure SNMPD descr
 
 ### Data types
 
-* [`Simp_snmpd::Seclevel`](#simp_snmpdseclevel): The default authentication level for the client to use in snmp.conf
-* [`Simp_snmpd::Secmodel`](#simp_snmpdsecmodel): type Simp_snmpd::Secmodel = Enum['usm','v1','v2c','tsm','ksm'] Right now usm is the only type suppoerted by this module. If you want to use a
-* [`Simp_snmpd::Vacmlevel`](#simp_snmpdvacmlevel): The default type to use in VACM access directives
+* [`Simp_snmpd::Seclevel`](#Simp_snmpd--Seclevel): The default authentication level for the client to use in snmp.conf
+* [`Simp_snmpd::Secmodel`](#Simp_snmpd--Secmodel): type Simp_snmpd::Secmodel = Enum['usm','v1','v2c','tsm','ksm'] Right now usm is the only type suppoerted by this module. If you want to use a
+* [`Simp_snmpd::Vacmlevel`](#Simp_snmpd--Vacmlevel): The default type to use in VACM access directives
 
 ## Classes
 
-### `simp_snmpd`
+### <a name="simp_snmpd"></a>`simp_snmpd`
 
 * This module does not configure the snmptrap service.
 
@@ -73,9 +73,70 @@ A hash of users to create for usm access. Also see README for details
 
 #### Parameters
 
-The following parameters are available in the `simp_snmpd` class.
+The following parameters are available in the `simp_snmpd` class:
 
-##### `ensure`
+* [`ensure`](#-simp_snmpd--ensure)
+* [`manage_client`](#-simp_snmpd--manage_client)
+* [`package_ensure`](#-simp_snmpd--package_ensure)
+* [`version`](#-simp_snmpd--version)
+* [`snmp_basedir`](#-simp_snmpd--snmp_basedir)
+* [`logfile`](#-simp_snmpd--logfile)
+* [`service_config`](#-simp_snmpd--service_config)
+* [`simp_snmpd_dir`](#-simp_snmpd--simp_snmpd_dir)
+* [`include_userdir`](#-simp_snmpd--include_userdir)
+* [`user_snmpd_dir`](#-simp_snmpd--user_snmpd_dir)
+* [`snmpd_service_ensure`](#-simp_snmpd--snmpd_service_ensure)
+* [`snmpd_service_startatboot`](#-simp_snmpd--snmpd_service_startatboot)
+* [`trap_service_ensure`](#-simp_snmpd--trap_service_ensure)
+* [`trap_service_startatboot`](#-simp_snmpd--trap_service_startatboot)
+* [`trap_service_config`](#-simp_snmpd--trap_service_config)
+* [`user_trapd_dir`](#-simp_snmpd--user_trapd_dir)
+* [`snmptrapd_options`](#-simp_snmpd--snmptrapd_options)
+* [`snmpd_options`](#-simp_snmpd--snmpd_options)
+* [`agentaddress`](#-simp_snmpd--agentaddress)
+* [`do_not_log_tcpwrappers`](#-simp_snmpd--do_not_log_tcpwrappers)
+* [`maxgetbulkrepeats`](#-simp_snmpd--maxgetbulkrepeats)
+* [`maxgetbulkresponses`](#-simp_snmpd--maxgetbulkresponses)
+* [`leave_pidfile`](#-simp_snmpd--leave_pidfile)
+* [`service_config_perms`](#-simp_snmpd--service_config_perms)
+* [`service_config_dir_perms`](#-simp_snmpd--service_config_dir_perms)
+* [`service_config_dir_owner`](#-simp_snmpd--service_config_dir_owner)
+* [`service_config_dir_group`](#-simp_snmpd--service_config_dir_group)
+* [`manage_snmpd_user`](#-simp_snmpd--manage_snmpd_user)
+* [`manage_snmpd_group`](#-simp_snmpd--manage_snmpd_group)
+* [`snmpd_uid`](#-simp_snmpd--snmpd_uid)
+* [`snmpd_gid`](#-simp_snmpd--snmpd_gid)
+* [`rsync_server`](#-simp_snmpd--rsync_server)
+* [`rsync_source`](#-simp_snmpd--rsync_source)
+* [`rsync_timeout`](#-simp_snmpd--rsync_timeout)
+* [`rsync_dlmod`](#-simp_snmpd--rsync_dlmod)
+* [`rsync_dlmod_dir`](#-simp_snmpd--rsync_dlmod_dir)
+* [`dlmods`](#-simp_snmpd--dlmods)
+* [`rsync_mibs`](#-simp_snmpd--rsync_mibs)
+* [`rsync_mibs_dir`](#-simp_snmpd--rsync_mibs_dir)
+* [`v3_users_hash`](#-simp_snmpd--v3_users_hash)
+* [`v3_users_hash`](#-simp_snmpd--v3_users_hash)
+* [`view_hash`](#-simp_snmpd--view_hash)
+* [`group_hash`](#-simp_snmpd--group_hash)
+* [`access_hash`](#-simp_snmpd--access_hash)
+* [`defauthtype`](#-simp_snmpd--defauthtype)
+* [`defprivtype`](#-simp_snmpd--defprivtype)
+* [`defsecuritymodel`](#-simp_snmpd--defsecuritymodel)
+* [`defsecuritylevel`](#-simp_snmpd--defsecuritylevel)
+* [`defvacmlevel`](#-simp_snmpd--defvacmlevel)
+* [`system_info`](#-simp_snmpd--system_info)
+* [`location`](#-simp_snmpd--location)
+* [`sysname`](#-simp_snmpd--sysname)
+* [`contact`](#-simp_snmpd--contact)
+* [`services`](#-simp_snmpd--services)
+* [`fips`](#-simp_snmpd--fips)
+* [`firewall`](#-simp_snmpd--firewall)
+* [`trusted_nets`](#-simp_snmpd--trusted_nets)
+* [`syslog`](#-simp_snmpd--syslog)
+* [`logrotate`](#-simp_snmpd--logrotate)
+* [`tcpwrappers`](#-simp_snmpd--tcpwrappers)
+
+##### <a name="-simp_snmpd--ensure"></a>`ensure`
 
 Data type: `Enum['present','absent']`
 
@@ -84,16 +145,16 @@ absent  make sure they are not installed.
 
 Default value: `'present'`
 
-##### `manage_client`
+##### <a name="-simp_snmpd--manage_client"></a>`manage_client`
 
 Data type: `Boolean`
 
 tell puppet snmp to manage client.
 install the net-simp-utils.  These are command line utilities.
 
-Default value: ``false``
+Default value: `false`
 
-##### `package_ensure`
+##### <a name="-simp_snmpd--package_ensure"></a>`package_ensure`
 
 Data type: `String`
 
@@ -102,7 +163,7 @@ of the package available, otherwise it will just check it is installed
 
 Default value: `simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' })`
 
-##### `version`
+##### <a name="-simp_snmpd--version"></a>`version`
 
 Data type: `Integer`
 
@@ -112,7 +173,7 @@ older versions use the snmp module directly.
 
 Default value: `3`
 
-##### `snmp_basedir`
+##### <a name="-simp_snmpd--snmp_basedir"></a>`snmp_basedir`
 
 Data type: `StdLib::AbsolutePath`
 
@@ -120,7 +181,7 @@ Base directory for snmp configuration files
 
 Default value: `'/etc/snmp'`
 
-##### `logfile`
+##### <a name="-simp_snmpd--logfile"></a>`logfile`
 
 Data type: `StdLib::AbsolutePath`
 
@@ -128,7 +189,7 @@ Full path to local log file for snmpd
 
 Default value: `'/var/log/snmpd.log'`
 
-##### `service_config`
+##### <a name="-simp_snmpd--service_config"></a>`service_config`
 
 Data type: `StdLib::AbsolutePath`
 
@@ -136,7 +197,7 @@ Location of the snmpd daemon configuration file
 
 Default value: `"${simp_snmpd::snmp_basedir}/snmpd.conf"`
 
-##### `simp_snmpd_dir`
+##### <a name="-simp_snmpd--simp_snmpd_dir"></a>`simp_snmpd_dir`
 
 Data type: `StdLib::AbsolutePath`
 
@@ -145,7 +206,7 @@ directory are managed by puppet.
 
 Default value: `"${simp_snmpd::snmp_basedir}/simp_snmpd.d"`
 
-##### `include_userdir`
+##### <a name="-simp_snmpd--include_userdir"></a>`include_userdir`
 
 Data type: `Boolean`
 
@@ -153,9 +214,9 @@ If set to true the user_snmpd_dir will be created and an include directive for i
 put in the service_config file.  This will allow users to override values in the service config
 file or add values that are not included by the interface.
 
-Default value: ``false``
+Default value: `false`
 
-##### `user_snmpd_dir`
+##### <a name="-simp_snmpd--user_snmpd_dir"></a>`user_snmpd_dir`
 
 Data type: `StdLib::AbsolutePath`
 
@@ -166,7 +227,7 @@ if include_userdir is set to true.
 
 Default value: `"${simp_snmpd::snmp_basedir}/snmpd.d"`
 
-##### `snmpd_service_ensure`
+##### <a name="-simp_snmpd--snmpd_service_ensure"></a>`snmpd_service_ensure`
 
 Data type: `Enum['stopped', 'running']`
 
@@ -174,15 +235,15 @@ Set the snmpd daemon service to stopped or running
 
 Default value: `'running'`
 
-##### `snmpd_service_startatboot`
+##### <a name="-simp_snmpd--snmpd_service_startatboot"></a>`snmpd_service_startatboot`
 
 Data type: `Boolean`
 
 Start the snmpd service at boot
 
-Default value: ``true``
+Default value: `true`
 
-##### `trap_service_ensure`
+##### <a name="-simp_snmpd--trap_service_ensure"></a>`trap_service_ensure`
 
 Data type: `Enum['stopped', 'running']`
 
@@ -190,15 +251,15 @@ Set the snmptrap daemon service to stopped or running
 
 Default value: `'stopped'`
 
-##### `trap_service_startatboot`
+##### <a name="-simp_snmpd--trap_service_startatboot"></a>`trap_service_startatboot`
 
 Data type: `Boolean`
 
 Start the snmptrap service at boot
 
-Default value: ``false``
+Default value: `false`
 
-##### `trap_service_config`
+##### <a name="-simp_snmpd--trap_service_config"></a>`trap_service_config`
 
 Data type: `StdLib::AbsolutePath`
 
@@ -206,7 +267,7 @@ Location of the trap configuration file
 
 Default value: `"${simp_snmpd::snmp_basedir}/snmptrapd.conf"`
 
-##### `user_trapd_dir`
+##### <a name="-simp_snmpd--user_trapd_dir"></a>`user_trapd_dir`
 
 Data type: `StdLib::AbsolutePath`
 
@@ -217,22 +278,22 @@ This directory is only created if trap_service_ensure is set to running.
 
 Default value: `"${simp_snmpd::snmp_basedir}/snmptrapd.d"`
 
-##### `snmptrapd_options`
+##### <a name="-simp_snmpd--snmptrapd_options"></a>`snmptrapd_options`
 
 Data type: `Optional[String]`
 
 Options to pass to the trap daemon on start up.
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `snmpd_options`
+##### <a name="-simp_snmpd--snmpd_options"></a>`snmpd_options`
 
 Data type: `String`
 
 The options passed to the snmpd daemon at start up.
 The default sends info through critical to local6.
 
-##### `agentaddress`
+##### <a name="-simp_snmpd--agentaddress"></a>`agentaddress`
 
 Data type: `Array[String]`
 
@@ -240,7 +301,7 @@ Data type: `Array[String]`
 
 Default value: `['udp:127.0.0.1:161']`
 
-##### `do_not_log_tcpwrappers`
+##### <a name="-simp_snmpd--do_not_log_tcpwrappers"></a>`do_not_log_tcpwrappers`
 
 Data type: `Enum['yes','no']`
 
@@ -248,7 +309,7 @@ Data type: `Enum['yes','no']`
 
 Default value: `'no'`
 
-##### `maxgetbulkrepeats`
+##### <a name="-simp_snmpd--maxgetbulkrepeats"></a>`maxgetbulkrepeats`
 
 Data type: `Integer`
 
@@ -256,7 +317,7 @@ Sets the maximum number of responses allowed for a single variable in a getbulk 
 
 Default value: `100`
 
-##### `maxgetbulkresponses`
+##### <a name="-simp_snmpd--maxgetbulkresponses"></a>`maxgetbulkresponses`
 
 Data type: `Integer`
 
@@ -264,7 +325,7 @@ Sets the maximum number of responses allowed for a getbulk request.
 
 Default value: `100`
 
-##### `leave_pidfile`
+##### <a name="-simp_snmpd--leave_pidfile"></a>`leave_pidfile`
 
 Data type: `Enum['yes','no']`
 
@@ -272,7 +333,7 @@ Leave the pid file when snmpd exits
 
 Default value: `'no'`
 
-##### `service_config_perms`
+##### <a name="-simp_snmpd--service_config_perms"></a>`service_config_perms`
 
 Data type: `Stdlib::Filemode`
 
@@ -280,7 +341,7 @@ permissions on the configuration files
 
 Default value: `'0600'`
 
-##### `service_config_dir_perms`
+##### <a name="-simp_snmpd--service_config_dir_perms"></a>`service_config_dir_perms`
 
 Data type: `Stdlib::Filemode`
 
@@ -288,7 +349,7 @@ permissions on the configuration directories
 
 Default value: `'0750'`
 
-##### `service_config_dir_owner`
+##### <a name="-simp_snmpd--service_config_dir_owner"></a>`service_config_dir_owner`
 
 Data type: `String`
 
@@ -296,7 +357,7 @@ owner of configuration files/dirs
 
 Default value: `'root'`
 
-##### `service_config_dir_group`
+##### <a name="-simp_snmpd--service_config_dir_group"></a>`service_config_dir_group`
 
 Data type: `String`
 
@@ -304,39 +365,39 @@ group of configuration files/dirs
 
 Default value: `'root'`
 
-##### `manage_snmpd_user`
+##### <a name="-simp_snmpd--manage_snmpd_user"></a>`manage_snmpd_user`
 
 Data type: `Boolean`
 
 Set to true if you want puppet to create the user for config files
 
-Default value: ``false``
+Default value: `false`
 
-##### `manage_snmpd_group`
+##### <a name="-simp_snmpd--manage_snmpd_group"></a>`manage_snmpd_group`
 
 Data type: `Boolean`
 
 Set to true if you want puppet to create the group for config files
 
-Default value: ``false``
+Default value: `false`
 
-##### `snmpd_uid`
+##### <a name="-simp_snmpd--snmpd_uid"></a>`snmpd_uid`
 
 Data type: `Optional[Integer]`
 
 The uid used when creating the service_config_dir_owner
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `snmpd_gid`
+##### <a name="-simp_snmpd--snmpd_gid"></a>`snmpd_gid`
 
 Data type: `Optional[Integer]`
 
 The gid used when creating the service_config_dir_group
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `rsync_server`
+##### <a name="-simp_snmpd--rsync_server"></a>`rsync_server`
 
 Data type: `Simplib::Host`
 
@@ -344,15 +405,15 @@ The rsync server from which to pull the files.
 
 Default value: `simplib::lookup('simp_options::rsync::server',  { 'default_value' => '127.0.0.1' })`
 
-##### `rsync_source`
+##### <a name="-simp_snmpd--rsync_source"></a>`rsync_source`
 
 Data type: `String`
 
 The source of the content to be rsync' as defined in the rsyncd.conf file on the rsync server.
 
-Default value: `"snmp_${::environment}_${facts['os']['name']}"`
+Default value: `"snmp_${environment}_${facts['os']['name']}"`
 
-##### `rsync_timeout`
+##### <a name="-simp_snmpd--rsync_timeout"></a>`rsync_timeout`
 
 Data type: `Integer`
 
@@ -360,76 +421,76 @@ The timeout when connecting to the rsync server.
 
 Default value: `simplib::lookup('simp_options::rsync::timeout', { 'default_value' => 2 })`
 
-##### `rsync_dlmod`
+##### <a name="-simp_snmpd--rsync_dlmod"></a>`rsync_dlmod`
 
 Data type: `Boolean`
 
 Whether to enable rsync to copy dlmod modules to the dlmod directory
 
-Default value: ``false``
+Default value: `false`
 
-##### `rsync_dlmod_dir`
+##### <a name="-simp_snmpd--rsync_dlmod_dir"></a>`rsync_dlmod_dir`
 
-Data type: `Optional[StdLib::AbsolutePath]`
+Data type: `StdLib::AbsolutePath`
 
 The full path for the directory to use for dlmod rsync.
 
 Default value: `'/usr/lib64/snmp'`
 
-##### `dlmods`
+##### <a name="-simp_snmpd--dlmods"></a>`dlmods`
 
 Data type: `Optional[Array[String]]`
 
 List of modules to load into snmpd from the rsync_dlmod directory
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `rsync_mibs`
+##### <a name="-simp_snmpd--rsync_mibs"></a>`rsync_mibs`
 
 Data type: `Boolean`
 
 Whether to enable rsync for MIBS
 
-Default value: ``false``
+Default value: `false`
 
-##### `rsync_mibs_dir`
+##### <a name="-simp_snmpd--rsync_mibs_dir"></a>`rsync_mibs_dir`
 
-Data type: `Optional[StdLib::AbsolutePath]`
+Data type: `StdLib::AbsolutePath`
 
 The full path for the directory to rsync mibs too.  It does not
 remove what is already there.
 
 Default value: `'/usr/share/snmp'`
 
-##### `v3_users_hash`
+##### <a name="-simp_snmpd--v3_users_hash"></a>`v3_users_hash`
 
 Data type: `Hash`
 
 
 
-##### `v3_users_hash`
+##### <a name="-simp_snmpd--v3_users_hash"></a>`v3_users_hash`
 
 hash of users to create for USM.
 
-##### `view_hash`
+##### <a name="-simp_snmpd--view_hash"></a>`view_hash`
 
 Data type: `Hash`
 
 Hash of views to create for VACM
 
-##### `group_hash`
+##### <a name="-simp_snmpd--group_hash"></a>`group_hash`
 
 Data type: `Hash`
 
 Hash of groups to create for VACM
 
-##### `access_hash`
+##### <a name="-simp_snmpd--access_hash"></a>`access_hash`
 
 Data type: `Hash`
 
 Hash of access entrys to create for VACM.
 
-##### `defauthtype`
+##### <a name="-simp_snmpd--defauthtype"></a>`defauthtype`
 
 Data type: `Enum['SHA','MD5']`
 
@@ -437,7 +498,7 @@ The default authentication type used for clients.
 
 Default value: `'SHA'`
 
-##### `defprivtype`
+##### <a name="-simp_snmpd--defprivtype"></a>`defprivtype`
 
 Data type: `Enum['DES', 'AES']`
 
@@ -445,7 +506,7 @@ The default privacy type used for encrypting communication when using usm.
 
 Default value: `'AES'`
 
-##### `defsecuritymodel`
+##### <a name="-simp_snmpd--defsecuritymodel"></a>`defsecuritymodel`
 
 Data type: `Simp_snmpd::Secmodel`
 
@@ -453,7 +514,7 @@ currently simp_snmpd only supports the usm security model.
 
 Default value: `'usm'`
 
-##### `defsecuritylevel`
+##### <a name="-simp_snmpd--defsecuritylevel"></a>`defsecuritylevel`
 
 Data type: `Simp_snmpd::Seclevel`
 
@@ -461,7 +522,7 @@ The default security level used by the client
 
 Default value: `'authPriv'`
 
-##### `defvacmlevel`
+##### <a name="-simp_snmpd--defvacmlevel"></a>`defvacmlevel`
 
 Data type: `Simp_snmpd::Vacmlevel`
 
@@ -469,15 +530,15 @@ The default security level for the VACM access directives.
 
 Default value: `'priv'`
 
-##### `system_info`
+##### <a name="-simp_snmpd--system_info"></a>`system_info`
 
 Data type: `Boolean`
 
 Deprecated (puppet-snmp does not allow you to not set these).
 
-Default value: ``true``
+Default value: `true`
 
-##### `location`
+##### <a name="-simp_snmpd--location"></a>`location`
 
 Data type: `String`
 
@@ -485,23 +546,23 @@ sets sysLocation in snmp
 
 Default value: `'Unknown'`
 
-##### `sysname`
+##### <a name="-simp_snmpd--sysname"></a>`sysname`
 
 Data type: `String`
 
 sets sysName in snmp
 
-Default value: `$facts['fqdn']`
+Default value: `$facts['networking']['fqdn']`
 
-##### `contact`
+##### <a name="-simp_snmpd--contact"></a>`contact`
 
 Data type: `String`
 
 sets sysContact in snmp
 
-Default value: `"root@${facts['fqdn']}"`
+Default value: `"root@${facts['networking']['fqdn']}"`
 
-##### `services`
+##### <a name="-simp_snmpd--services"></a>`services`
 
 Data type: `Integer`
 
@@ -509,7 +570,7 @@ sets sysServices in snmp
 
 Default value: `72`
 
-##### `fips`
+##### <a name="-simp_snmpd--fips"></a>`fips`
 
 Data type: `Boolean`
 
@@ -518,7 +579,7 @@ macs/ciphers.
 
 Default value: `simplib::lookup('simp_options::fips',           { 'default_value' => false })`
 
-##### `firewall`
+##### <a name="-simp_snmpd--firewall"></a>`firewall`
 
 Data type: `Boolean`
 
@@ -527,7 +588,7 @@ iptables.
 
 Default value: `simplib::lookup('simp_options::firewall',       { 'default_value' => false })`
 
-##### `trusted_nets`
+##### <a name="-simp_snmpd--trusted_nets"></a>`trusted_nets`
 
 Data type: `Simplib::Netlist`
 
@@ -535,7 +596,7 @@ Networks that will be allowed to access the snmp ports opened by the firewall.
 
 Default value: `simplib::lookup('simp_options::trusted_nets',   { 'default_value' => ['127.0.0.1'] })`
 
-##### `syslog`
+##### <a name="-simp_snmpd--syslog"></a>`syslog`
 
 Data type: `Boolean`
 
@@ -543,7 +604,7 @@ Data type: `Boolean`
 
 Default value: `simplib::lookup('simp_options::syslog',         { 'default_value' => false })`
 
-##### `logrotate`
+##### <a name="-simp_snmpd--logrotate"></a>`logrotate`
 
 Data type: `Boolean`
 
@@ -552,7 +613,7 @@ snmp messages to /var/log/snmpd.log and set up log rotation.
 
 Default value: `simplib::lookup('simp_options::logrotate',      { 'default_value' => false })`
 
-##### `tcpwrappers`
+##### <a name="-simp_snmpd--tcpwrappers"></a>`tcpwrappers`
 
 Data type: `Boolean`
 
@@ -560,15 +621,15 @@ Whether or not the system is using tcpwrappers to control access.
 
 Default value: `simplib::lookup('simp_options::tcpwrappers',    { 'default_value' => false })`
 
-### `simp_snmpd::config`
+### <a name="simp_snmpd--config"></a>`simp_snmpd::config`
 
 Configure the SNMPD service
 
-### `simp_snmpd::config::agent`
+### <a name="simp_snmpd--config--agent"></a>`simp_snmpd::config::agent`
 
 Set up sensible agent defaults
 
-### `simp_snmpd::config::firewall`
+### <a name="simp_snmpd--config--firewall"></a>`simp_snmpd::config::firewall`
 
 For anything in the `$listenagent` array, it will determine if ports on the
 firewall need to be opened.
@@ -577,35 +638,37 @@ firewall need to be opened.
   * Firewall rules will have to be set up manually if these transport
     services are being used.
 
-### `simp_snmpd::config::logging`
+### <a name="simp_snmpd--config--logging"></a>`simp_snmpd::config::logging`
 
 Ensures that appropriate logging rules are defined
 
-### `simp_snmpd::config::tcpwrappers`
+### <a name="simp_snmpd--config--tcpwrappers"></a>`simp_snmpd::config::tcpwrappers`
 
 simp_snmpd::config::tcpwrappers
 
 It ensures that tcpwrappers rules are defined.
 
-### `simp_snmpd::install`
+### <a name="simp_snmpd--install"></a>`simp_snmpd::install`
 
 * Set defaults in snmp.conf
 * Disable v2 setup
 
-### `simp_snmpd::install::snmpduser`
+### <a name="simp_snmpd--install--snmpduser"></a>`simp_snmpd::install::snmpduser`
 
 Create systems users for running snmpd daemon
 and owning the snmpd files
 
-### `simp_snmpd::install::vacmusers`
+### <a name="simp_snmpd--install--vacmusers"></a>`simp_snmpd::install::vacmusers`
 
 Create v3 users from user hash
 
 #### Parameters
 
-The following parameters are available in the `simp_snmpd::install::vacmusers` class.
+The following parameters are available in the `simp_snmpd::install::vacmusers` class:
 
-##### `daemon`
+* [`daemon`](#-simp_snmpd--install--vacmusers--daemon)
+
+##### <a name="-simp_snmpd--install--vacmusers--daemon"></a>`daemon`
 
 Data type: `Enum['snmpd','snmptrapd']`
 
@@ -613,13 +676,13 @@ The daemon that the users is meant to access.
 
 Default value: `'snmpd'`
 
-### `simp_snmpd::rsync`
+### <a name="simp_snmpd--rsync"></a>`simp_snmpd::rsync`
 
 Set up MIBs in rsync
 
 ## Functions
 
-### `simp_snmpd::accesslist`
+### <a name="simp_snmpd--accesslist"></a>`simp_snmpd::accesslist`
 
 Type: Ruby 4.x API
 
@@ -655,7 +718,7 @@ Data type: `String`
 
 The default Security level to use if that entry is not defined in the hash entry
 
-### `simp_snmpd::firewall_list`
+### <a name="simp_snmpd--firewall_list"></a>`simp_snmpd::firewall_list`
 
 Type: Ruby 4.x API
 
@@ -675,7 +738,7 @@ Data type: `Array`
 
 The array of agent addresses that the snmpd  will listen on.
 
-### `simp_snmpd::grouplist`
+### <a name="simp_snmpd--grouplist"></a>`simp_snmpd::grouplist`
 
 Type: Ruby 4.x API
 
@@ -705,7 +768,7 @@ Data type: `String`
 
 The default Security model to use if that entry is not defined in the hash entry
 
-### `simp_snmpd::viewlist`
+### <a name="simp_snmpd--viewlist"></a>`simp_snmpd::viewlist`
 
 Type: Ruby 4.x API
 
@@ -731,13 +794,13 @@ The list of views to create.
 
 ## Data types
 
-### `Simp_snmpd::Seclevel`
+### <a name="Simp_snmpd--Seclevel"></a>`Simp_snmpd::Seclevel`
 
 The default authentication level for the client to use in snmp.conf
 
 Alias of `Enum['noAuthNoPriv', 'authNoPriv', 'authPriv']`
 
-### `Simp_snmpd::Secmodel`
+### <a name="Simp_snmpd--Secmodel"></a>`Simp_snmpd::Secmodel`
 
 type Simp_snmpd::Secmodel = Enum['usm','v1','v2c','tsm','ksm']
 Right now usm is the only type suppoerted by this module.
@@ -745,7 +808,7 @@ If you want to use another type, use the puppet/snmp module directly
 
 Alias of `Enum['usm']`
 
-### `Simp_snmpd::Vacmlevel`
+### <a name="Simp_snmpd--Vacmlevel"></a>`Simp_snmpd::Vacmlevel`
 
 The default type to use in VACM access directives
 

@@ -1,6 +1,6 @@
 {
   "name": "simp-simp_snmpd",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "author": "SIMP Team",
   "summary": "Configures snmpd agent using v3 USM on the client",
   "license": "Apache-2.0",
@@ -30,7 +30,7 @@
     "optional_dependencies": [
       {
         "name": "simp/iptables",
-        "version_requirement": ">= 6.5.3 < 7.0.0"
+        "version_requirement": ">= 6.5.3 < 8.0.0"
       },
       {
         "name": "simp/logrotate",

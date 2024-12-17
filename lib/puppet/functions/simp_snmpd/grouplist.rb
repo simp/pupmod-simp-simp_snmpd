@@ -15,33 +15,29 @@ Puppet::Functions.create_function(:'simp_snmpd::grouplist') do
     param 'String', :defaultmodel
   end
 
-  def createlist(group_hash,defaultmodel)
+  def createlist(group_hash, defaultmodel)
     grouplist = []
-    group_hash.each { |name, values|
-      grouppref = "#{name}"
-      if ! values.nil?  and  ! values.empty? then
-        if values.has_key?('model') then
-          if ['v1','v2c','usm','tsm','ksm'].include? values['model'] then
-            model = values['model']
-          else
-            fail("simp_snmpd: Badly formed group for key #{name}. model is #{values['model']} but must be one of 'v1','v2c','usm','tsm','ksm'")
-          end
-        else
-          model = defaultmodel
+    group_hash.each do |name, values|
+      grouppref = name.to_s
+      next unless !values.nil? && !values.empty?
+      if values.key?('model')
+        unless ['v1', 'v2c', 'usm', 'tsm', 'ksm'].include? values['model']
+          raise("simp_snmpd: Badly formed group for key #{name}. model is #{values['model']} but must be one of 'v1','v2c','usm','tsm','ksm'")
         end
-        if values.has_key?('secname') and values['secname'].length > 0 then
-          if values['secname'].is_a?(Array) then
-            values['secname'].each { |user|
-              grouplist.push("#{grouppref} #{model} #{user}")
-            }
-          else
-            grouplist.push("#{grouppref} #{model} #{values['secname']}")
-          end
-        else
-          fail("simp_snmpd: Badly formed group for key #{name}. It must include a value for secname")
-        end
+        model = values['model']
+
+      else
+        model = defaultmodel
       end
-    }
+      raise("simp_snmpd: Badly formed group for key #{name}. It must include a value for secname") unless values.key?('secname') && !values['secname'].empty?
+      if values['secname'].is_a?(Array)
+        values['secname'].each do |user|
+          grouplist.push("#{grouppref} #{model} #{user}")
+        end
+      else
+        grouplist.push("#{grouppref} #{model} #{values['secname']}")
+      end
+    end
     grouplist
   end
 end

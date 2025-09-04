@@ -4,7 +4,7 @@ test_name 'SIMP SNMPD Profile'
 
 describe 'simp_snmpd class' do
   let(:manifest) do
-    <<-EOM
+    <<~EOM
       # Allow ssh incase you need to troubleshoot
       iptables::listen::tcp_stateful { 'allow_sshd':
         order => 8,
@@ -17,75 +17,75 @@ describe 'simp_snmpd class' do
   end
 
   let(:snmphieradata) do
-    <<-EOH
----
-simp_options::firewall: true
-simp_options::syslog: true
-simp_options::logrotate: true
-simp_options::trusted_nets: ['ALL']
-simp_snmpd::v3_users_hash:
-  snmp_ro:
-    authpass: 'KeepItSecret'
-    privpass: 'KeepItSafe'
-  snmp_rw:
-    authpass: 'KeepItSecret'
-    privpass: 'KeepItSafe'
-# Listen on all interfaces
-simp_snmpd::agentaddress:
- - udp:161
-simp_snmpd::manage_client: true
+    <<~EOH
+      ---
+      simp_options::firewall: true
+      simp_options::syslog: true
+      simp_options::logrotate: true
+      simp_options::trusted_nets: ['ALL']
+      simp_snmpd::v3_users_hash:
+        snmp_ro:
+          authpass: 'KeepItSecret'
+          privpass: 'KeepItSafe'
+        snmp_rw:
+          authpass: 'KeepItSecret'
+          privpass: 'KeepItSafe'
+      # Listen on all interfaces
+      simp_snmpd::agentaddress:
+      - udp:161
+      simp_snmpd::manage_client: true
     EOH
   end
   let(:snmphieradata2) do
-    <<-EOH2
----
-simp_options::firewall: true
-simp_options::syslog: true
-simp_options::logrotate: true
-simp_options::trusted_nets: ['ALL']
-simp_snmpd::v3_users_hash:
-  snmp_ro:
-  bar:
-    authpass: 'KeepItSecret'
-    privpass: 'KeepItSafe'
-  foo:
-    authpass: 'KeepItSecret'
-    privpass: 'KeepItSafe'
-simp_snmpd::group_hash:
-  foo_group:
-    secname:
-      - foo
-  bar_group:
-    secname:
-      - bar
-  readonly_group:
-simp_snmpd::access_hash:
-  bar:
-    view:
-      read: iso1
-      write: iso1
-    level: priv
-    groups:
-      - bar_group
-  foo:
-    view:
-      read: newsystemview
-    level: auth
-    groups:
-      - foo_group
-  systemwrite:
-simp_snmpd::view_hash:
-  systemview:
-  newsystemview:
-    included:
-      - '.1.3.6.1.2.1.1'
-      - '.1.3.6.1.2.1.25'
-simp_snmpd::system_info: false
-simp_snmpd::agentaddress:
- - udp:127.0.0.1:161
- - udp:%{facts.fqdn}:161
- - tcp:%{facts.fqdn}:161
-simp_snmpd::manage_client: true
+    <<~EOH2
+      ---
+      simp_options::firewall: true
+      simp_options::syslog: true
+      simp_options::logrotate: true
+      simp_options::trusted_nets: ['ALL']
+      simp_snmpd::v3_users_hash:
+        snmp_ro:
+        bar:
+          authpass: 'KeepItSecret'
+          privpass: 'KeepItSafe'
+        foo:
+          authpass: 'KeepItSecret'
+          privpass: 'KeepItSafe'
+      simp_snmpd::group_hash:
+        foo_group:
+          secname:
+            - foo
+        bar_group:
+          secname:
+            - bar
+        readonly_group:
+      simp_snmpd::access_hash:
+        bar:
+          view:
+            read: iso1
+            write: iso1
+          level: priv
+          groups:
+            - bar_group
+        foo:
+          view:
+            read: newsystemview
+          level: auth
+          groups:
+            - foo_group
+        systemwrite:
+      simp_snmpd::view_hash:
+        systemview:
+        newsystemview:
+          included:
+            - '.1.3.6.1.2.1.1'
+            - '.1.3.6.1.2.1.25'
+      simp_snmpd::system_info: false
+      simp_snmpd::agentaddress:
+      - udp:127.0.0.1:161
+      - udp:%{facts.fqdn}:161
+      - tcp:%{facts.fqdn}:161
+      simp_snmpd::manage_client: true
     EOH2
   end
 

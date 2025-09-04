@@ -10,11 +10,9 @@ describe 'simp_snmpd' do
   end
 
   context 'supported operating systems' do
-    on_supported_os.each do |os, facts|
+    on_supported_os.each do |os, os_facts|
       context "on #{os}" do
-        let(:facts) do
-          facts
-        end
+        let(:facts) { os_facts }
 
         context 'simp_snmp class without any parameters' do
           let(:expected) { File.read('spec/expected/default_access_usm_conf') }
@@ -26,47 +24,48 @@ describe 'simp_snmpd' do
         context 'install manifest with default parameters' do
           it { is_expected.to contain_class('simp_snmpd::install::vacmusers') }
           # install.pp
-          it {
-            is_expected.to contain_class('snmp').with({
-                                                        agentaddress: ['udp:127.0.0.1:161'],
-            ensure: 'present',
-            autoupgrade: 'false',
-            service_ensure: 'running',
-            service_enable: 'true',
-            service_config_dir_owner: 'root',
-            service_config_dir_group: 'root',
-            service_config_perms: '0600',
-            service_config_dir_perms: '0750',
-            snmpd_config: ['includeDir /etc/snmp/simp_snmpd.d'],
-            snmptrapd_config: [],
-            trap_service_ensure: 'stopped',
-            trap_service_enable: 'false',
-            do_not_log_tcpwrappers: 'no',
-            manage_client: 'false',
-            snmp_config: [],
-            views: [ 'systemview included .1.3.6.1.2.1.1',
-                     'systemview included .1.3.6.1.2.1.25.1.1',
-                     'iso1 included .1' ],
-            groups: ['readonly_group usm snmp_ro',
-                     'readwrite_group usm snmp_rw' ],
-            accesses: ['readonly_group "" usm priv exact systemview none none',
-                       'readwrite_group "" usm priv exact iso1 systemview none'],
-
-                                                      })
-          }
+          it do
+            is_expected.to contain_class('snmp').with(
+              agentaddress: ['udp:127.0.0.1:161'],
+              ensure: 'present',
+              autoupgrade: 'false',
+              service_ensure: 'running',
+              service_enable: 'true',
+              service_config_dir_owner: 'root',
+              service_config_dir_group: 'root',
+              service_config_perms: '0600',
+              service_config_dir_perms: '0750',
+              snmpd_config: ['includeDir /etc/snmp/simp_snmpd.d'],
+              snmptrapd_config: [],
+              trap_service_ensure: 'stopped',
+              trap_service_enable: 'false',
+              do_not_log_tcpwrappers: 'no',
+              manage_client: 'false',
+              snmp_config: [],
+              views: [
+                'systemview included .1.3.6.1.2.1.1',
+                'systemview included .1.3.6.1.2.1.25.1.1',
+                'iso1 included .1',
+              ],
+              groups: [
+                'readonly_group usm snmp_ro',
+                'readwrite_group usm snmp_rw',
+              ],
+              accesses: [
+                'readonly_group "" usm priv exact systemview none none',
+                'readwrite_group "" usm priv exact iso1 systemview none',
+              ],
+            )
+          end
           it { is_expected.not_to contain_class('simp_snmpd::install::snmpduser') }
           it { is_expected.not_to contain_class('simp_snmpd::install::client') }
           it { is_expected.to create_file('/etc/snmp/simp_snmpd.d') }
-          it {
-            is_expected.to create_file('/etc/snmp/snmpd.d').with({
-                                                                   ensure: 'absent'
-                                                                 })
-          }
-          it {
-            is_expected.to create_file('/etc/snmp/snmptrapd.d').with({
-                                                                       ensure: 'absent'
-                                                                     })
-          }
+          it do
+            is_expected.to create_file('/etc/snmp/snmpd.d').with(ensure: 'absent')
+          end
+          it do
+            is_expected.to create_file('/etc/snmp/snmptrapd.d').with(ensure: 'absent')
+          end
         end
         context 'config with default params' do
           it { is_expected.to create_file('/etc/snmp/snmptrapd.d') }
@@ -77,28 +76,28 @@ describe 'simp_snmpd' do
           it { is_expected.not_to contain_class('simp_snmpd::config::logging') }
         end
         context 'install/users with default parameters' do
-          it {
-            is_expected.to contain_snmp__snmpv3_user('snmp_ro').with({
-                                                                       authtype: 'SHA',
-            privtype: 'AES'
-                                                                     })
-          }
-          it {
-            is_expected.to contain_snmp__snmpv3_user('snmp_rw').with({
-                                                                       authtype: 'SHA',
-            privtype: 'AES'
-                                                                     })
-          }
+          it do
+            is_expected.to contain_snmp__snmpv3_user('snmp_ro').with(
+              authtype: 'SHA',
+              privtype: 'AES',
+            )
+          end
+          it do
+            is_expected.to contain_snmp__snmpv3_user('snmp_rw').with(
+              authtype: 'SHA',
+              privtype: 'AES',
+            )
+          end
         end
 
         context 'simp_snmp class with rsync on' do
           let(:params) do
             {
               rsync_dlmod: true,
-           rsync_mibs: true,
-           rsync_mibs_dir: '/etc/mibs_here',
-           rsync_dlmod_dir: '/etc/dlmod_there',
-           dlmods: ['mod1', 'mod2']
+              rsync_mibs: true,
+              rsync_mibs_dir: '/etc/mibs_here',
+              rsync_dlmod_dir: '/etc/dlmod_there',
+              dlmods: ['mod1', 'mod2'],
             }
           end
 
@@ -121,9 +120,9 @@ describe 'simp_snmpd' do
           let(:params) do
             {
               firewall: true,
-           tcpwrappers: true,
-           syslog: true,
-           logrotate: true,
+              tcpwrappers: true,
+              syslog: true,
+              logrotate: true,
             }
           end
 
@@ -138,14 +137,14 @@ describe 'simp_snmpd' do
           let(:params) do
             {
               manage_client: true,
-           include_userdir: true,
+              include_userdir: true,
             }
           end
 
           it_behaves_like 'a structured module'
-          it {
-            is_expected.to contain_class('snmp').with({
-                                                        manage_client: 'true',
+          it do
+            is_expected.to contain_class('snmp').with(
+              manage_client: 'true',
               snmp_config: [
                 'defVersion  3',
                 'defSecurityModel usm',
@@ -153,51 +152,51 @@ describe 'simp_snmpd' do
                 'defAuthType SHA',
                 'defPrivType AES',
                 'mibdirs /usr/share/snmp/mibs:/usr/share/snmp/mibs',
-              ]
-                                                      })
-          }
-          it {
-            is_expected.to contain_file('/etc/snmp/snmpd.d').with({
-                                                                    ensure: 'directory'
-                                                                  })
-          }
-          it {
-            is_expected.to contain_class('snmp').with({
-                                                        snmpd_config: [
-                                                          'includeDir /etc/snmp/simp_snmpd.d',
-                                                          'includeDir /etc/snmp/snmpd.d',
-                                                        ],
-             manage_client: true,
-                                                      })
-          }
+              ],
+            )
+          end
+          it do
+            is_expected.to contain_file('/etc/snmp/snmpd.d').with(
+              ensure: 'directory',
+            )
+          end
+          it do
+            is_expected.to contain_class('snmp').with(
+              snmpd_config: [
+                'includeDir /etc/snmp/simp_snmpd.d',
+                'includeDir /etc/snmp/snmpd.d',
+              ],
+              manage_client: true,
+            )
+          end
         end
         context 'with manage users' do
           let(:params) do
             {
               snmpd_gid: 9999,
-           snmpd_uid: 9999,
-           manage_snmpd_user: true,
-           manage_snmpd_group: true,
-           service_config_dir_owner: 'snmp',
-           service_config_dir_group: 'snmp'
+              snmpd_uid: 9999,
+              manage_snmpd_user: true,
+              manage_snmpd_group: true,
+              service_config_dir_owner: 'snmp',
+              service_config_dir_group: 'snmp',
             }
           end
 
           it { is_expected.to contain_class('simp_snmpd::install::snmpduser') }
           it { is_expected.to create_group('snmp') }
           it { is_expected.to create_user('snmp') }
-          it {
-            is_expected.to contain_class('snmp').with({
-                                                        service_config_dir_group: 'snmp',
-               service_config_dir_owner: 'snmp',
-                                                      })
-          }
+          it do
+            is_expected.to contain_class('snmp').with(
+              service_config_dir_group: 'snmp',
+              service_config_dir_owner: 'snmp',
+            )
+          end
         end
         context 'with fips on auth type set to MD5' do
           let(:params) do
             {
               fips: true,
-           defauthtype: 'MD5',
+              defauthtype: 'MD5',
             }
           end
 
@@ -207,8 +206,8 @@ describe 'simp_snmpd' do
           let(:params) do
             {
               fips: true,
-           defauthtype: 'SHA',
-           defprivtype: 'DES'
+              defauthtype: 'SHA',
+              defprivtype: 'DES'
             }
           end
 
@@ -218,12 +217,12 @@ describe 'simp_snmpd' do
           let(:params) do
             {
               fips: true,
-           v3_users_hash: {
-             baduser: {
-               authtype: 'MD5',
-               authpass: 'Passw0rdPassword'
-             }
-           }
+              v3_users_hash: {
+                baduser: {
+                  authtype: 'MD5',
+                  authpass: 'Passw0rdPassword',
+                },
+              },
             }
           end
 

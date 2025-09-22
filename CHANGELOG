@@ -1,3 +1,6 @@
+* Mon Sep 22 2025 Steven Pritchard <steve@sicura.us> - 1.8.1
+- Cleanup for latest rubocop
+
 * Thu Sep 04 2025 Steven Pritchard <steve@sicura.us> - 1.8.0
 - Update module dependencies to support simp-rsync 7.x
 - Cleanup for rubocop

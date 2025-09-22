@@ -56,7 +56,7 @@ Puppet::Functions.create_function(:'simp_snmpd::firewall_list') do
         # No "else" because there is either one part and it is taken take care of in the next section
         # or no parts and nothing needs to be done.
       end
-      next unless parts.count == 1
+      next unless parts.one?
       # Check it parts is a port.  If not it is a specifier without
       # a port so we set the default
       x = parts[0].to_i

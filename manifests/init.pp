@@ -166,9 +166,6 @@
 # @param logrotate
 #   If these variables are set then rules will be added to rsyslog to log
 #   snmp messages to /var/log/snmpd.log and set up log rotation.
-# @param tcpwrappers
-#   Whether or not the system is using tcpwrappers to control access.
-#
 class simp_snmpd (
   Hash                           $v3_users_hash, # See module data
   Hash                           $view_hash,     # See module data
@@ -223,7 +220,6 @@ class simp_snmpd (
   Simplib::Host                  $rsync_server              = simplib::lookup('simp_options::rsync::server',  { 'default_value' => '127.0.0.1' }),
   Integer                        $rsync_timeout             = simplib::lookup('simp_options::rsync::timeout', { 'default_value' => 2 }),
   Boolean                        $firewall                  = simplib::lookup('simp_options::firewall',       { 'default_value' => false }),
-  Boolean                        $tcpwrappers               = simplib::lookup('simp_options::tcpwrappers',    { 'default_value' => false }),
   Boolean                        $syslog                    = simplib::lookup('simp_options::syslog',         { 'default_value' => false }),
   Boolean                        $logrotate                 = simplib::lookup('simp_options::logrotate',      { 'default_value' => false }),
   Boolean                        $fips                      = simplib::lookup('simp_options::fips',           { 'default_value' => false }),

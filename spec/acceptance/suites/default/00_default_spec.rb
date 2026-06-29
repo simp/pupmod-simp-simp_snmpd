@@ -81,10 +81,19 @@ describe 'simp_snmpd class' do
             - '.1.3.6.1.2.1.1'
             - '.1.3.6.1.2.1.25'
       simp_snmpd::system_info: false
+      # Listen on all interfaces (0.0.0.0) for both UDP and TCP so the
+      # 'check remote' tests can reach the daemon from the other host.
+      #
+      # The previous value bound to the node's FQDN. On the Vagrant boxes the
+      # FQDN resolves to the 127.0.1.1 loopback alias (the box ships a
+      # '127.0.1.1 <fqdn> <hostname>' line in /etc/hosts that precedes Beaker's
+      # routable entry), so snmpd only listened on loopback and remote queries
+      # got 'Connection refused'. A bare 'udp:161'/'tcp:161' binds to 0.0.0.0.
+      # Note: do NOT also list 'udp:127.0.0.1:161' here -- it overlaps the
+      # wildcard bind and snmpd fails to start with EADDRINUSE.
       simp_snmpd::agentaddress:
-      - udp:127.0.0.1:161
-      - udp:%{facts.networking.fqdn}:161
-      - tcp:%{facts.networking.fqdn}:161
+      - udp:161
+      - tcp:161
       simp_snmpd::manage_client: true
     EOH2
   end

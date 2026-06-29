@@ -3,20 +3,6 @@ require 'spec_helper_acceptance'
 test_name 'SIMP SNMPD Profile'
 
 describe 'simp_snmpd class' do
-  # Returns true when the snmpd service has actually started and is answering
-  # on the loopback interface.  Under the rootless-podman + seccomp runtime used
-  # in CI, systemd-managed services such as snmpd may fail to start even though
-  # the catalog applies cleanly, so we probe the live SUT rather than assuming a
-  # running daemon.  On Vagrant and root Docker the service starts normally and
-  # this returns true, keeping the SNMP query assertions live there.
-  def snmpd_running?(node)
-    on(
-      node,
-      'systemctl is-active snmpd',
-      accept_all_exit_codes: true,
-    ).stdout.strip == 'active'
-  end
-
   let(:manifest) do
     <<~EOM
       # Allow ssh incase you need to troubleshoot
@@ -120,14 +106,12 @@ describe 'simp_snmpd class' do
       end
 
       it 'returns snmp data for users' do
-        skip('snmpd service is not running (expected under rootless podman); SNMP query coverage stays live on Vagrant/root Docker') unless snmpd_running?(node)
         result = on(node, '/usr/bin/snmpwalk -u snmp_ro -X KeepItSafe -A KeepItSecret localhost sysLocation.0')
         expect(result.stdout).to include('SNMPv2-MIB::sysLocation.0 = STRING: Unknown')
         result = on(node, '/usr/bin/snmpwalk -u snmp_rw -X KeepItSafe -A KeepItSecret localhost .1')
         expect(result.stdout).to include('SNMPv2-MIB::sysLocation.0 = STRING: Unknown')
       end
       it 'does not work for undefined users' do
-        skip('snmpd service is not running (expected under rootless podman); SNMP query coverage stays live on Vagrant/root Docker') unless snmpd_running?(node)
         result = on(node, '/usr/bin/snmpwalk -u snmp_rx -X KeepItSafe -A KeepItSecret localhost 0', { acceptable_exit_codes: [0, 1] })
         expect(result.exit_code).not_to eq(0)
         expect(result.stderr).to include('Unknown user name')
@@ -160,12 +144,10 @@ describe 'simp_snmpd class' do
       #        expect(result.stdout).to include("SNMPv2-MIB::sysLocation.0 = STRING: Over the Rainbow")
       #      end
       it 'creates user foo and add give it read access with auth only' do
-        skip('snmpd service is not running (expected under rootless podman); SNMP query coverage stays live on Vagrant/root Docker') unless snmpd_running?(node)
         result = on(node, '/usr/bin/snmpwalk -u foo -l authNoPriv -A KeepItSecret localhost sysLocation.0')
         expect(result.stdout).to include('SNMPv2-MIB::sysLocation.0 = STRING: Unknown')
       end
       it 'does not create  snmp_ro user' do
-        skip('snmpd service is not running (expected under rootless podman); SNMP query coverage stays live on Vagrant/root Docker') unless snmpd_running?(node)
         result = on(node, '/usr/bin/snmpwalk -u snmp_ro -X KeepItSafe -A KeepItSecret localhost sysLocation.0', accept_all_exit_codes: true)
         expect(result.stderr).to include('Unknown user name')
       end

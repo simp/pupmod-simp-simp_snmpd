@@ -8,27 +8,27 @@
 # @param manage_client
 #   tell puppet snmp to manage client.
 #   install the net-simp-utils.  These are command line utilities.
-# @param  package_ensure
+# @param package_ensure
 #   If set to "latest" snmp will try to update to the latest version
 #   of the package available, otherwise it will just check it is installed
-# @param  version
+# @param version
 #   The version of snmp protocol to use.
 #   At this time the simp_snmpd profile only manages v3, to configure
 #   older versions use the snmp module directly.
-# @param  snmp_basedir
+# @param snmp_basedir
 #   Base directory for snmp configuration files
 # @param logfile
 #  Full path to local log file for snmpd
-# @param  service_config
+# @param service_config
 #   Location of the snmpd daemon configuration file
-# @param  simp_snmpd_dir
+# @param simp_snmpd_dir
 #   Directory of *.conf files which include snmpd directives.  Files in this
 #   directory are managed by puppet.
 # @param include_userdir
 #   If set to true the user_snmpd_dir will be created and an include directive for it
 #   put in the service_config file.  This will allow users to override values in the service config
 #   file or add values that are not included by the interface.
-# @param  user_snmpd_dir
+# @param user_snmpd_dir
 #   Directory where users can include *.conf files with snmpd configuration items
 #   that will be included.  This directory is not managed by simp.  Users can put
 #   additional configurations files in this directory. This directory is only included
@@ -43,9 +43,9 @@
 #   Set the snmptrap daemon service to stopped or running
 # @param trap_service_startatboot
 #   Start the snmptrap service at boot
-# @param  trap_service_config
+# @param trap_service_config
 #   Location of the trap configuration file
-# @param  user_trapd_dir
+# @param user_trapd_dir
 #   Directory where users can place snmptrap configuration files.
 #   This profile does not configure snmptrap but buts down a configuration file that tells
 #   the snmptrap daemon to look in this directory for configuration files.
@@ -67,13 +67,13 @@
 # @see man snmpd.conf AGENT BEHAVIOR section for more information on the
 #   This  setting  disables  the  log  messages  for
 #   accepted connections. Denied connections will still be logged.
-# @param  maxgetbulkrepeats
+# @param maxgetbulkrepeats
 #   Sets the maximum number of responses allowed for a single variable in a getbulk request
 # @see man snmpd.conf AGENT BEHAVIOR section for more information on the
-# @param  maxgetbulkresponses
+# @param maxgetbulkresponses
 #  Sets the maximum number of responses allowed for a getbulk request.
 # @see man snmpd.conf AGENT BEHAVIOR section for more information on the
-# @param  leave_pidfile
+# @param leave_pidfile
 #   Leave the pid file when snmpd exits
 # @param service_config_perms
 #   permissions on the configuration files
@@ -87,9 +87,9 @@
 #   Set to true if you want puppet to create the user for config files
 # @param manage_snmpd_group
 #   Set to true if you want puppet to create the group for config files
-# @param  snmpd_uid
+# @param snmpd_uid
 #   The uid used when creating the service_config_dir_owner
-# @param  snmpd_gid
+# @param snmpd_gid
 #   The gid used when creating the service_config_dir_group
 #
 # Settings for rsync
@@ -113,10 +113,8 @@
 #
 # USM/VACM parameters
 # @param v3_users_hash
+#   A hash of users to create for USM access. Also see README for details
 # @see man snmpd.conf  SNMPv3 with the User-based Security Model (USM) section
-#   A hash of users to create for usm access. Also see README for details
-# @param v3_users_hash
-#   hash of users to create for USM.
 # @param view_hash
 #   Hash of views to create for VACM
 # @param group_hash
@@ -127,11 +125,11 @@
 # snmp.conf access configuration default items.
 # These are also used to set up view and access directives
 # if specific settings are not used in the hash.
-# @param  defauthtype
+# @param defauthtype
 #   The default authentication type used for clients.
-# @param  defprivtype
+# @param defprivtype
 #   The default privacy type used for encrypting communication when using usm.
-# @param  defsecuritymodel
+# @param defsecuritymodel
 #   currently simp_snmpd only supports the usm security model.
 # @param defsecuritylevel
 #   The default security level used by the client
@@ -220,18 +218,17 @@ class simp_snmpd (
   Optional[Integer]              $snmpd_uid                 = undef,
   Boolean                        $manage_snmpd_user         = false,
   Boolean                        $manage_snmpd_group        = false,
-  Simplib::Host                  $rsync_server              = simplib::lookup('simp_options::rsync::server',  { 'default_value' => '127.0.0.1' }),
+  Simplib::Host                  $rsync_server              = simplib::lookup('simp_options::rsync::server', { 'default_value' => '127.0.0.1' }),
   Integer                        $rsync_timeout             = simplib::lookup('simp_options::rsync::timeout', { 'default_value' => 2 }),
-  Boolean                        $firewall                  = simplib::lookup('simp_options::firewall',       { 'default_value' => false }),
-  Boolean                        $tcpwrappers               = simplib::lookup('simp_options::tcpwrappers',    { 'default_value' => false }),
-  Boolean                        $syslog                    = simplib::lookup('simp_options::syslog',         { 'default_value' => false }),
-  Boolean                        $logrotate                 = simplib::lookup('simp_options::logrotate',      { 'default_value' => false }),
-  Boolean                        $fips                      = simplib::lookup('simp_options::fips',           { 'default_value' => false }),
-  Simplib::Netlist               $trusted_nets              = simplib::lookup('simp_options::trusted_nets',   { 'default_value' => ['127.0.0.1'] }),
+  Boolean                        $firewall                  = simplib::lookup('simp_options::firewall', { 'default_value' => false }),
+  Boolean                        $tcpwrappers               = simplib::lookup('simp_options::tcpwrappers', { 'default_value' => false }),
+  Boolean                        $syslog                    = simplib::lookup('simp_options::syslog', { 'default_value' => false }),
+  Boolean                        $logrotate                 = simplib::lookup('simp_options::logrotate', { 'default_value' => false }),
+  Boolean                        $fips                      = simplib::lookup('simp_options::fips', { 'default_value' => false }),
+  Simplib::Netlist               $trusted_nets              = simplib::lookup('simp_options::trusted_nets', { 'default_value' => ['127.0.0.1'] }),
   String                         $package_ensure            = simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' }),
 ) {
-
-  if $simp_snmpd::version == 3 {
+  if $simp_snmpd::version == 3 { # lint:ignore:version_comparison $version is an Integer, not a version string
     include simp_snmpd::install
     include simp_snmpd::config
 
@@ -246,6 +243,6 @@ class simp_snmpd (
   }
   else {
     $msg = "${module_name}: Snmp Version #{simp_snmpd::version} not supported.  This module is only used for snmp version 3 at this time. Try using the puppet-snmp module directly"
-    notify{  'net-snmp version': message => $msg}
+    notify { 'net-snmp version': message => $msg }
   }
 }

@@ -1,12 +1,12 @@
 {
   "name": "simp-simp_snmpd",
-  "version": "1.8.1",
+  "version": "2.0.0",
   "author": "SIMP Team",
   "summary": "Configures snmpd agent using v3 USM on the client",
   "license": "Apache-2.0",
   "source": "https://github.com/simp/pupmod-simp-simp_snmpd",
   "project_page": "https://github.com/simp/pupmod-simp-simp_snmpd",
-  "issues_url": "https://simp-project.atlassian.net",
+  "issues_url": "https://github.com/simp/pupmod-simp-simp_snmpd/issues",
   "tags": [
     "simp",
     "snmp",
@@ -15,11 +15,11 @@
   "dependencies": [
     {
       "name": "simp/simplib",
-      "version_requirement": ">= 4.9.0 < 5.0.0"
+      "version_requirement": ">= 4.9.0 < 6.0.0"
     },
     {
       "name": "puppet/snmp",
-      "version_requirement": ">= 5.1.0 < 8.0.0"
+      "version_requirement": ">= 5.1.0 < 9.0.0"
     },
     {
       "name": "puppetlabs/stdlib",
@@ -30,19 +30,19 @@
     "optional_dependencies": [
       {
         "name": "simp/iptables",
-        "version_requirement": ">= 6.5.3 < 8.0.0"
+        "version_requirement": ">= 6.5.3 < 9.0.0"
       },
       {
         "name": "simp/logrotate",
-        "version_requirement": ">= 6.5.0 < 7.0.0"
+        "version_requirement": ">= 6.5.0 < 8.0.0"
       },
       {
         "name": "simp/rsync",
-        "version_requirement": ">= 6.1.1 < 8.0.0"
+        "version_requirement": ">= 6.1.1 < 9.0.0"
       },
       {
         "name": "simp/rsyslog",
-        "version_requirement": ">= 7.6.0 < 9.0.0"
+        "version_requirement": ">= 7.6.0 < 10.0.0"
       },
       {
         "name": "simp/tcpwrappers",
@@ -54,46 +54,47 @@
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
-        "7",
-        "8",
-        "9"
+        "9",
+        "10"
       ]
     },
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
-        "7",
         "8",
-        "9"
+        "9",
+        "10"
       ]
     },
     {
       "operatingsystem": "OracleLinux",
       "operatingsystemrelease": [
-        "7",
         "8",
-        "9"
+        "9",
+        "10"
       ]
     },
     {
       "operatingsystem": "Rocky",
       "operatingsystemrelease": [
         "8",
-        "9"
+        "9",
+        "10"
       ]
     },
     {
       "operatingsystem": "AlmaLinux",
       "operatingsystemrelease": [
         "8",
-        "9"
+        "9",
+        "10"
       ]
     }
   ],
   "requirements": [
     {
-      "name": "puppet",
-      "version_requirement": ">= 7.0.0 < 9.0.0"
+      "name": "openvox",
+      "version_requirement": ">= 8.0.0 < 9.0.0"
     }
   ]
 }

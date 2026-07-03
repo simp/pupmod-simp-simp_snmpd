@@ -1,7 +1,6 @@
 # @summary Set up MIBs in rsync
 #
-class simp_snmpd::rsync{
-
+class simp_snmpd::rsync {
   simplib::assert_optional_dependency($module_name, 'simp/rsync')
 
   include 'rsync'
@@ -9,7 +8,6 @@ class simp_snmpd::rsync{
   $_downcase_os_name = downcase($facts['os']['name'])
 
   if $simp_snmpd::rsync_dlmod {
-
     file { $simp_snmpd::rsync_dlmod_dir :
       ensure => directory,
       owner  => $simp_snmpd::service_config_dir_owner,
@@ -31,7 +29,7 @@ class simp_snmpd::rsync{
     }
 
     if $simp_snmpd::dlmods {
-      $_dlmods = $simp_snmpd::dlmods.map |$dlname| { "dlmod ${dlname} ${simp_snmpd::rsync_dlmod_dir}/dlmod/${dlname}.so"}
+      $_dlmods = $simp_snmpd::dlmods.map |$dlname| { "dlmod ${dlname} ${simp_snmpd::rsync_dlmod_dir}/dlmod/${dlname}.so" }
       file { "${simp_snmpd::simp_snmpd_dir}/dlmod.conf":
         owner   => $simp_snmpd::service_config_dir_owner,
         group   => $simp_snmpd::service_config_dir_group,
@@ -44,7 +42,6 @@ class simp_snmpd::rsync{
 
   # Set up MIBs in rsync
   if $simp_snmpd::rsync_mibs {
-
     file { $simp_snmpd::rsync_mibs_dir :
       ensure => directory,
       owner  => $simp_snmpd::service_config_dir_owner,

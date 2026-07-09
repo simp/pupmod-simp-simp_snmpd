@@ -9,7 +9,7 @@ This file provides guidance to AI agents when working with code in this reposito
 SIMP-flavoured, **SNMPv3 USM-only** opinion. It does *not* configure the
 `snmptrap` service (only puts down enough config to point the trap daemon at a
 user directory), and it explicitly refuses any protocol version other than 3
-(`manifests/init.pp:3,234-250`, `types/secmodel.pp:4`).
+(`manifests/init.pp`, `types/secmodel.pp`).
 
 The core job is to translate four Hiera hashes — users, views, groups, and
 access entries — into the `snmp.conf`/`snmpd.conf` USM and VACM directives that
@@ -21,8 +21,8 @@ host normally wants. The install → config flow is a fixed chain:
 Class['simp_snmpd::install'] -> Class['simp_snmpd::config'] ~> Service['snmpd']
 ```
 
-(`manifests/init.pp:238-240`), with `simp_snmpd::rsync` appended after `config`
-when either rsync toggle is on (`init.pp:242-245`).
+(`manifests/init.pp`), with `simp_snmpd::rsync` appended after `config`
+when either rsync toggle is on (`init.pp`).
 
 ### Business logic
 
@@ -31,62 +31,62 @@ The public entry class is `simp_snmpd`; everything else is `assert_private()`'d
 private *parameterized* class (it takes a `$daemon`), and the four functions plus
 three types are the data-transformation layer.
 
-- **`simp_snmpd` (`manifests/init.pp:172-251`)** — Public class. Four **required,
+- **`simp_snmpd` (`manifests/init.pp`)** — Public class. Four **required,
   defaultless** `Hash` parameters — `$v3_users_hash`, `$view_hash`,
-  `$group_hash`, `$access_hash` (`init.pp:173-176`) — are supplied from module
+  `$group_hash`, `$access_hash` (`init.pp`) — are supplied from module
   data (`data/common.yaml`) and deep-merged (all four have `merge: strategy:
-  hash` `lookup_options`, `data/common.yaml:2-13`). `$snmpd_options` is likewise
+  hash` `lookup_options`, `data/common.yaml`). `$snmpd_options` is likewise
   required and comes from data (`data/common.yaml` → `'-LS0-6d'`). Version-gates
   on `$version == 3`: any other value just emits a `notify` telling you to use
-  `puppet/snmp` directly (`init.pp:247-250`). The nine `simp_options::*` defaults
+  `puppet/snmp` directly (`init.pp`). The nine `simp_options::*` defaults
   are the config seam (see the table below).
 
 - **`simp_snmpd::install` (`manifests/install.pp`)** — Runs *before* config.
   Key behaviours:
-  - **FIPS pre-flight** (`install.pp:13-20`): if `$fips` **or** the
+  - **FIPS pre-flight** (`install.pp`): if `$fips` **or** the
     `fips_enabled` fact is true, `fail()`s when `$defauthtype == 'MD5'` or
     `$defprivtype == 'DES'` — those algorithms are not FIPS-allowed. (The same
     check is repeated per-user in `vacmusers`, see below.)
-  - **includeDir wiring** (`install.pp:25-37`): always adds `includeDir
+  - **includeDir wiring** (`install.pp`): always adds `includeDir
     ${simp_snmpd_dir}`; when `$include_userdir` is true it *also* creates and
     includes `${user_snmpd_dir}`. Order matters — "last one wins", so the
     user directory is listed after the SIMP directory so operators can override
-    SIMP's files (`install.pp:22-24`).
+    SIMP's files (`install.pp`).
   - Manages `${simp_snmpd_dir}` as a **recursed, purged** directory
-    (`install.pp:39-47`) — files not managed by Puppet in there are removed.
-  - `manage_client` (`install.pp:57-78`): when true, seeds `snmp.conf` client
+    (`install.pp`) — files not managed by Puppet in there are removed.
+  - `manage_client` (`install.pp`): when true, seeds `snmp.conf` client
     defaults (`defVersion`/`defSecurityModel`/`defSecurityLevel`/`defAuthType`/
     `defPrivType`/`mibdirs`). When false, `$_snmp_config = []` and the class
     creates `${snmp_basedir}` itself, because `puppet/snmp` only creates that
-    directory when the client is managed (`install.pp:68-78`).
+    directory when the client is managed (`install.pp`).
   - `$_autoupgrade` is derived from `$package_ensure`: `true` only when it is
-    `'latest'` (`install.pp:80-83`).
-  - Trap config dir (`install.pp:84-98`): the user trap dir + `includeDir` line
+    `'latest'` (`install.pp`).
+  - Trap config dir (`install.pp`): the user trap dir + `includeDir` line
     are only created when `$trap_service_ensure != 'stopped'`.
-  - **Data transform** (`install.pp:100-103`): calls the three list functions to
+  - **Data transform** (`install.pp`): calls the three list functions to
     turn the view/group/access hashes into arrays of `snmpd.conf` directive
     strings, then declares `class { 'simp_snmpd::install::vacmusers': daemon =>
-    'snmpd' }` and the big `class { 'snmp': ... }` (`install.pp:106-142`),
+    'snmpd' }` and the big `class { 'snmp': ... }` (`install.pp`),
     passing the generated `views`/`groups`/`accesses` arrays and forcing
     `com2sec`/`com2sec6` empty (USM-only, no community strings).
 
 - **`simp_snmpd::install::vacmusers` (`manifests/install/vacmusers.pp`)** —
   Private, `$daemon`-parameterized. Iterates `$v3_users_hash` and declares a
-  `snmp::snmpv3_user` per user (`vacmusers.pp:37-43`). Per user:
+  `snmp::snmpv3_user` per user (`vacmusers.pp`). Per user:
   - `authpass`/`privpass`: if the hash value is `undef`/`UNDEF` (string or real
     undef) it **auto-generates a stable password** via
     `simplib::passgen("snmp_auth_${user}")` / `passgen("snmp_priv_${user}")`;
-    otherwise it uses the supplied value (`vacmusers.pp:13-20`).
+    otherwise it uses the supplied value (`vacmusers.pp`).
   - `authtype`/`privtype` default to `$defauthtype`/`$defprivtype` when unset
-    (`vacmusers.pp:21-26`).
-  - **Per-user FIPS guard** (`vacmusers.pp:28-35`): re-checks the *resolved*
+    (`vacmusers.pp`).
+  - **Per-user FIPS guard** (`vacmusers.pp`): re-checks the *resolved*
     per-user auth/priv types (which may differ from the class defaults) and
     `fail()`s on `MD5`/`DES` under FIPS.
 
 - **`simp_snmpd::config` (`manifests/config.pp`)** — `contain`s
   `config::agent` unconditionally, then `include`s `config::firewall`,
   `config::tcpwrappers`, and `config::logging` gated on `$firewall`,
-  `$tcpwrappers`, and `$syslog` respectively (`config.pp:6-19`).
+  `$tcpwrappers`, and `$syslog` respectively (`config.pp`).
   - **`config::agent` (`config/agent.pp`)** — writes
     `${simp_snmpd_dir}/agent.conf` from `templates/snmpd/agent.conf.epp`
     (agentuser/agentgroup, getbulk limits, leave_pidfile).
@@ -94,7 +94,7 @@ three types are the data-transformation layer.
     runs `simp_snmpd::firewall_list($agentaddress)`, then opens
     `iptables::listen::udp` / `iptables::listen::tcp_stateful` per parsed entry
     with `trusted_nets => $trusted_nets`. `ipx`/`pvc` and other transports are
-    silently ignored (`config/firewall.pp:3-8,16-34`).
+    silently ignored (`config/firewall.pp`).
   - **`config::logging` (`config/logging.pp`)** — asserts `simp/rsyslog`,
     `include`s `rsyslog`, adds an `rsyslog::rule::local` routing `programname ==
     'snmpd'` to `$logfile` with `stop_processing => true`; if `$logrotate` is
@@ -114,7 +114,7 @@ three types are the data-transformation layer.
 - **`simp_snmpd::install::snmpduser` (`manifests/install/snmpduser.pp`)** —
   Included only when `$manage_snmpd_user` or `$manage_snmpd_group`. Creates the
   config owner `user` / group `group` — but **only when the owner/group is not
-  `'root'`** (`snmpduser.pp:8-25`).
+  `'root'`** (`snmpduser.pp`).
 
 **The VACM / USM model.** SNMPv3 access control is expressed as four moving
 parts that the module builds from Hiera and hands to `puppet/snmp`:
@@ -123,17 +123,17 @@ parts that the module builds from Hiera and hands to `puppet/snmp`:
    auth/priv type + password (auto-generated if omitted).
 2. **Views** (`$view_hash`) → `simp_snmpd::viewlist` — each entry is
    `included`/`excluded` OID subtrees, emitted as `"<viewname> <included|
-   excluded> <oid>"` lines (`viewlist.rb:16-38`). Any key other than
+   excluded> <oid>"` lines (`viewlist.rb`). Any key other than
    included/excluded raises.
 3. **Groups** (`$group_hash`) → `simp_snmpd::grouplist` — map a security name
    (user) to a group under a security model, emitted as `"<group> <model>
    <secname>"`; `secname` may be an array (one line each). Requires `secname`;
-   validates `model` (`grouplist.rb:18-42`).
+   validates `model` (`grouplist.rb`).
 4. **Access** (`$access_hash`) → `simp_snmpd::accesslist` — bind a group to a
    `read/write/notify` view triple at a security level, emitted as `"<group>
    <context> <model> <level> <prefx> <read> <write> <notify>"`; requires both
    `view` and `groups`, defaults unspecified views to `none` and level/model to
-   the class defaults (`accesslist.rb:21-80`).
+   the class defaults (`accesslist.rb`).
 
 `data/common.yaml` ships a working example of all four (users `snmp_ro`/
 `snmp_rw`, `systemview`/`iso1` views, `readonly_group`/`readwrite_group`,
@@ -155,10 +155,10 @@ of `snmpd.conf` directive strings):
 **Types** (`types/`):
 
 - `Simp_snmpd::Seclevel = Enum['noAuthNoPriv','authNoPriv','authPriv']`
-  (`seclevel.pp:2`).
+  (`seclevel.pp`).
 - `Simp_snmpd::Secmodel = Enum['usm']` — **USM only** by design; the broader
-  enum is commented out (`secmodel.pp:1-4`).
-- `Simp_snmpd::Vacmlevel = Enum['noauth','auth','priv']` (`vacmlevel.pp:2`).
+  enum is commented out (`secmodel.pp`).
+- `Simp_snmpd::Vacmlevel = Enum['noauth','auth','priv']` (`vacmlevel.pp`).
 
 **Templates** (`templates/`): `snmpd/agent.conf.epp` (EPP, agent.conf, used by
 `config::agent`); `snmp/snmpd.conf.erb` and `snmp/snmptrapd.conf.erb` (ERB —
@@ -168,24 +168,24 @@ main config files).
 ### Gotchas / non-obvious details
 
 - **USM / SNMPv3 only.** `$version` other than `3` does nothing but emit a
-  `notify` (`init.pp:247-250`); `Secmodel` is locked to `usm` (`secmodel.pp:4`);
-  `com2sec`/`com2sec6` are forced empty (`install.pp:136-137`). No SNMPv1/v2c
+  `notify` (`init.pp`); `Secmodel` is locked to `usm` (`secmodel.pp`);
+  `com2sec`/`com2sec6` are forced empty (`install.pp`). No SNMPv1/v2c
   community strings. Use `puppet/snmp` directly for older versions.
 - **This module does not manage snmptrap.** It only lays down an `includeDir`
   for the trap daemon and leaves the service `stopped` by default
-  (`init.pp:182-183`, `install.pp:84-98`).
+  (`init.pp`, `install.pp`).
 - **FIPS is enforced in two places.** Class-level pre-flight on the *defaults*
-  (`install.pp:13-20`) and per-user on the *resolved* types
-  (`vacmusers.pp:28-35`). A user can set a per-user `authtype`/`privtype` that
+  (`install.pp`) and per-user on the *resolved* types
+  (`vacmusers.pp`). A user can set a per-user `authtype`/`privtype` that
   passes the class check but fails the per-user check. Both trigger on `$fips`
   **or** the live `fips_enabled` fact.
-- **The `${simp_snmpd_dir}` is purged** (`install.pp:44-45`) — anything Puppet
+- **The `${simp_snmpd_dir}` is purged** (`install.pp`) — anything Puppet
   doesn't manage there is deleted. The `${user_snmpd_dir}` (`snmpd.d`) is the
   intended place for out-of-band operator config, and only exists when
   `$include_userdir` is true.
 - **Passwords are auto-generated and stable** via `simplib::passgen` keyed on
-  the username (`vacmusers.pp:13-20`) and on `snmp_${environment}_${os_name}`
-  for rsync (`rsync.pp:23-24,57-58`). Omitting `authpass`/`privpass` is the norm,
+  the username (`vacmusers.pp`) and on `snmp_${environment}_${os_name}`
+  for rsync (`rsync.pp`). Omitting `authpass`/`privpass` is the norm,
   not an error.
 - **Every optional integration is guarded** by
   `simplib::assert_optional_dependency` *and* a `simp_options::*` toggle
@@ -194,9 +194,9 @@ main config files).
 - **`rsync` is the one non-private class besides the entry class** — it has no
   `assert_private()` (`rsync.pp`), unlike the other seven manifests.
 - **`snmpduser` no-ops for `root`.** User/group are only created when the
-  configured owner/group differs from `'root'` (`snmpduser.pp:9,18`).
+  configured owner/group differs from `'root'` (`snmpduser.pp`).
 - **`system_info` is deprecated** — `puppet/snmp` always sets the system
-  parameters, so there is no way to leave them writable (`init.pp:141-146`).
+  parameters, so there is no way to leave them writable (`init.pp`).
 - **`simp/simp_options` is NOT a declared dependency**, yet the manifest reads
   the `simp_options::*` seam via `simplib::lookup` (provided by `simp/simplib`).
   Keep the explicit `default_value` on every lookup.
@@ -204,26 +204,26 @@ main config files).
 ### Manifests using `assert_private()`
 
 Seven of the ten classes are private (only `simp_snmpd` and `simp_snmpd::rsync`
-are not): `config.pp:4`, `config/agent.pp:5`, `config/firewall.pp:11`,
-`config/logging.pp:4`, `config/tcpwrappers.pp:7`, `install/snmpduser.pp:6`,
-`install/vacmusers.pp:9`.
+are not): `config.pp`, `config/agent.pp`, `config/firewall.pp`,
+`config/logging.pp`, `config/tcpwrappers.pp`, `install/snmpduser.pp`,
+`install/vacmusers.pp`.
 
 ## The `simp_options` / `simplib::lookup` seam
 
 This is the module's SIMP-integration seam (the natural target for a lookup-path
 unit test). All nine calls are parameter defaults in `manifests/init.pp`:
 
-| Line | Key | `default_value` |
+| File | Key | `default_value` |
 |------|-----|-----------------|
-| `init.pp:223` | `simp_options::rsync::server` | `'127.0.0.1'` |
-| `init.pp:224` | `simp_options::rsync::timeout` | `2` |
-| `init.pp:225` | `simp_options::firewall` | `false` |
-| `init.pp:226` | `simp_options::tcpwrappers` | `false` |
-| `init.pp:227` | `simp_options::syslog` | `false` |
-| `init.pp:228` | `simp_options::logrotate` | `false` |
-| `init.pp:229` | `simp_options::fips` | `false` |
-| `init.pp:230` | `simp_options::trusted_nets` | `['127.0.0.1']` |
-| `init.pp:231` | `simp_options::package_ensure` | `'installed'` |
+| `init.pp` | `simp_options::rsync::server` | `'127.0.0.1'` |
+| `init.pp` | `simp_options::rsync::timeout` | `2` |
+| `init.pp` | `simp_options::firewall` | `false` |
+| `init.pp` | `simp_options::tcpwrappers` | `false` |
+| `init.pp` | `simp_options::syslog` | `false` |
+| `init.pp` | `simp_options::logrotate` | `false` |
+| `init.pp` | `simp_options::fips` | `false` |
+| `init.pp` | `simp_options::trusted_nets` | `['127.0.0.1']` |
+| `init.pp` | `simp_options::package_ensure` | `'installed'` |
 
 Keep routing SIMP feature toggles through `simplib::lookup('simp_options::*', {
 'default_value' => ... })` with an explicit default rather than assuming
@@ -245,11 +245,11 @@ Optional dependencies (from `metadata.json` `simp.optional_dependencies`), each
 enforced at runtime by `simplib::assert_optional_dependency` only when its
 `simp_options` toggle is on:
 
-- `simp/tcpwrappers` `>= 6.2.0 < 7.0.0` (`config/tcpwrappers.pp:9`)
-- `simp/iptables` `>= 6.5.3 < 8.0.0` (`config/firewall.pp:13`)
-- `simp/rsyslog` `>= 7.6.0 < 9.0.0` (`config/logging.pp:6`)
-- `simp/logrotate` `>= 6.5.0 < 7.0.0` (`config/logging.pp:18`)
-- `simp/rsync` `>= 6.1.1 < 8.0.0` (`rsync.pp:5`)
+- `simp/tcpwrappers` `>= 6.2.0 < 7.0.0` (`config/tcpwrappers.pp`)
+- `simp/iptables` `>= 6.5.3 < 8.0.0` (`config/firewall.pp`)
+- `simp/rsyslog` `>= 7.6.0 < 9.0.0` (`config/logging.pp`)
+- `simp/logrotate` `>= 6.5.0 < 7.0.0` (`config/logging.pp`)
+- `simp/rsync` `>= 6.1.1 < 8.0.0` (`rsync.pp`)
 
 Runtime requirement (from `metadata.json` `requirements`): `puppet
 >= 7.0.0 < 9.0.0`. This is an **older baseline** that still names `puppet`. SIMP
@@ -281,7 +281,7 @@ OracleLinux 7/8/9; Rocky 8/9; AlmaLinux 8/9.
 - `data/common.yaml` — required hashes (users/views/groups/access), their
   `hash`-merge `lookup_options`, and `snmpd_options`.
 - `metadata.json` — deps, optional deps, OS matrix, Puppet requirement.
-- `spec/` — rspec-puppet unit tests; `spec/spec_helper.rb:11` requires
+- `spec/` — rspec-puppet unit tests; `spec/spec_helper.rb` requires
   `puppetlabs_spec_helper/module_spec_helper`.
 - `REFERENCE.md` — generated Puppet Strings reference.
 - **CI has no acceptance job.** `.github/workflows/pr_tests.yml` runs the
@@ -314,11 +314,11 @@ bundle exec rake beaker:suites[default,oel]
 ```
 
 Relevant gem pins (from `Gemfile`): the tested Puppet range defaults to
-`['>= 7', '< 9']` (`Gemfile:23`) and is applied via `gem 'puppet',
-puppet_version` — the **`puppet` gem only** (`Gemfile:29`), matching the older
-`metadata.json` baseline. Other pins: `rubocop ~> 1.88.0` (`Gemfile:16`),
-`puppetlabs_spec_helper ~> 8.0.0` (`Gemfile:30`), `simp-rake-helpers ~> 5.24.0`
-(`Gemfile:36`), `simp-beaker-helpers ~> 2.0.0` (`Gemfile:52`).
+`['>= 7', '< 9']` (`Gemfile`) and is applied via `gem 'puppet',
+puppet_version` — the **`puppet` gem only** (`Gemfile`), matching the older
+`metadata.json` baseline. Other pins: `rubocop ~> 1.88.0` (`Gemfile`),
+`puppetlabs_spec_helper ~> 8.0.0` (`Gemfile`), `simp-rake-helpers ~> 5.24.0`
+(`Gemfile`), `simp-beaker-helpers ~> 2.0.0` (`Gemfile`).
 
 ## Conventions
 

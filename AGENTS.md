@@ -26,8 +26,7 @@ when either rsync toggle is on (`init.pp`).
 
 ### Business logic
 
-The public entry class is `simp_snmpd`; everything else is `assert_private()`'d
-(see the Gotchas section for the list). `simp_snmpd::install::vacmusers` is a
+The public entry class is `simp_snmpd`. `simp_snmpd::install` and `simp_snmpd::rsync` are also **not** `assert_private()`'d; every other class is (see the Gotchas section for the list). `simp_snmpd::install::vacmusers` is a
 private *parameterized* class (it takes a `$daemon`), and the four functions plus
 three types are the data-transformation layer.
 
@@ -104,11 +103,10 @@ three types are the data-transformation layer.
     `simp/tcpwrappers`, `include`s `tcpwrappers`, adds `tcpwrappers::allow {
     'snmpd': pattern => $trusted_nets }`.
 
-- **`simp_snmpd::rsync` (`manifests/rsync.pp`)** — the **only** non-private,
-  non-entry class (no `assert_private()`). Asserts `simp/rsync`, `include`s
+- **`simp_snmpd::rsync` (`manifests/rsync.pp`)** — one of two non-entry classes that are **not** `assert_private()`'d (the other being `simp_snmpd::install`). Asserts `simp/rsync`, `include`s
   `rsync`, and pulls dlmod `.so` modules (`rsync_dlmod`) and/or MIBs
   (`rsync_mibs`) from `$rsync_server`, authenticating with a `simplib::passgen`
-  password keyed on `snmp_${environment}_${os_name}`. When `$dlmods` is set it
+  password keyed on `snmp_${environment}_${downcase(os_name)}` (`rsync.pp` downcases `$facts['os']['name']`). When `$dlmods` is set it
   writes a `dlmod.conf` with `dlmod` lines. All rsyncs `notify => Service['snmpd']`.
 
 - **`simp_snmpd::install::snmpduser` (`manifests/install/snmpduser.pp`)** —
@@ -184,15 +182,13 @@ main config files).
   intended place for out-of-band operator config, and only exists when
   `$include_userdir` is true.
 - **Passwords are auto-generated and stable** via `simplib::passgen` keyed on
-  the username (`vacmusers.pp`) and on `snmp_${environment}_${os_name}`
-  for rsync (`rsync.pp`). Omitting `authpass`/`privpass` is the norm,
+  the username (`vacmusers.pp`) and on `snmp_${environment}_${downcase(os_name)}` for rsync (`rsync.pp` downcases the OS name). Omitting `authpass`/`privpass` is the norm,
   not an error.
 - **Every optional integration is guarded** by
   `simplib::assert_optional_dependency` *and* a `simp_options::*` toggle
   (default `false`); nothing optional is hard-`include`d. See the dependency and
   seam sections.
-- **`rsync` is the one non-private class besides the entry class** — it has no
-  `assert_private()` (`rsync.pp`), unlike the other seven manifests.
+- **`rsync` and `install` are the non-private classes besides the entry class** — neither `rsync.pp` nor `install.pp` calls `assert_private()`, unlike the other seven manifests (which do).
 - **`snmpduser` no-ops for `root`.** User/group are only created when the
   configured owner/group differs from `'root'` (`snmpduser.pp`).
 - **`system_info` is deprecated** — `puppet/snmp` always sets the system
@@ -203,8 +199,7 @@ main config files).
 
 ### Manifests using `assert_private()`
 
-Seven of the ten classes are private (only `simp_snmpd` and `simp_snmpd::rsync`
-are not): `config.pp`, `config/agent.pp`, `config/firewall.pp`,
+Seven of the ten classes are private (the three that are **not**: `simp_snmpd`, `simp_snmpd::install`, and `simp_snmpd::rsync`): `config.pp`, `config/agent.pp`, `config/firewall.pp`,
 `config/logging.pp`, `config/tcpwrappers.pp`, `install/snmpduser.pp`,
 `install/vacmusers.pp`.
 

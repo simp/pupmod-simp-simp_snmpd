@@ -1,6 +1,6 @@
 {
   "name": "simp-simp_snmpd",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "author": "SIMP Team",
   "summary": "Configures snmpd agent using v3 USM on the client",
   "license": "Apache-2.0",
@@ -30,7 +30,7 @@
     "optional_dependencies": [
       {
         "name": "simp/iptables",
-        "version_requirement": ">= 6.5.3 < 9.0.0"
+        "version_requirement": ">= 6.5.3 < 10.0.0"
       },
       {
         "name": "simp/logrotate",
@@ -42,7 +42,7 @@
       },
       {
         "name": "simp/rsyslog",
-        "version_requirement": ">= 7.6.0 < 10.0.0"
+        "version_requirement": ">= 7.6.0 < 11.0.0"
       },
       {
         "name": "simp/tcpwrappers",
@@ -94,7 +94,7 @@
   "requirements": [
     {
       "name": "openvox",
-      "version_requirement": ">= 8.0.0 < 9.0.0"
+      "version_requirement": ">= 8.0.0 < 10.0.0"
     }
   ]
 }

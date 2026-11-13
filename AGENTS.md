@@ -228,12 +228,12 @@ Keep routing SIMP feature toggles through `simplib::lookup('simp_options::*', {
 
 Module dependencies (from `metadata.json`):
 
-- `simp/simplib` `>= 4.9.0 < 5.0.0` (provides `simplib::lookup`,
+- `simp/simplib` `>= 4.9.0 < 8.0.0` (provides `simplib::lookup`,
   `simplib::assert_optional_dependency`, `simplib::passgen`, and the `Simplib::*`
   types).
-- `puppet/snmp` `>= 5.1.0 < 8.0.0` (the upstream Net-SNMP module — provides
+- `puppet/snmp` `>= 5.1.0 < 9.0.0` (the upstream Net-SNMP module — provides
   `class { 'snmp' }` and the `snmp::snmpv3_user` define this module drives).
-- `puppetlabs/stdlib` `>= 8.0.0 < 10.0.0` (provides `Stdlib::*` types and
+- `puppetlabs/stdlib` `>= 8.0.0 < 11.0.0` (provides `Stdlib::*` types and
   `pick()`).
 
 Optional dependencies (from `metadata.json` `simp.optional_dependencies`), each
@@ -241,10 +241,10 @@ enforced at runtime by `simplib::assert_optional_dependency` only when its
 `simp_options` toggle is on:
 
 - `simp/tcpwrappers` `>= 6.2.0 < 7.0.0` (`config/tcpwrappers.pp`)
-- `simp/iptables` `>= 6.5.3 < 8.0.0` (`config/firewall.pp`)
-- `simp/rsyslog` `>= 7.6.0 < 9.0.0` (`config/logging.pp`)
-- `simp/logrotate` `>= 6.5.0 < 7.0.0` (`config/logging.pp`)
-- `simp/rsync` `>= 6.1.1 < 8.0.0` (`rsync.pp`)
+- `simp/iptables` `>= 6.5.3 < 10.0.0` (`config/firewall.pp`)
+- `simp/rsyslog` `>= 7.6.0 < 12.0.0` (`config/logging.pp`)
+- `simp/logrotate` `>= 6.5.0 < 8.0.0` (`config/logging.pp`)
+- `simp/rsync` `>= 6.1.1 < 9.0.0` (`rsync.pp`)
 
 Runtime requirement (from `metadata.json` `requirements`): `puppet
 >= 7.0.0 < 9.0.0`. This is an **older baseline** that still names `puppet`. SIMP

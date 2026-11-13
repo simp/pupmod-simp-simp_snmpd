@@ -10,10 +10,6 @@ class simp_snmpd::config {
     include simp_snmpd::config::firewall
   }
 
-  if $simp_snmpd::tcpwrappers {
-    include simp_snmpd::config::tcpwrappers
-  }
-
   if $simp_snmpd::syslog {
     include simp_snmpd::config::logging
   }

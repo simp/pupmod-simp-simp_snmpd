@@ -1,6 +1,6 @@
 {
   "name": "simp-simp_snmpd",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "author": "SIMP Team",
   "summary": "Configures snmpd agent using v3 USM on the client",
   "license": "Apache-2.0",
@@ -43,10 +43,6 @@
       {
         "name": "simp/rsyslog",
         "version_requirement": ">= 7.6.0 < 11.0.0"
-      },
-      {
-        "name": "simp/tcpwrappers",
-        "version_requirement": ">= 6.2.0 < 7.0.0"
       }
     ]
   },

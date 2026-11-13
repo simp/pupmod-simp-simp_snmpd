@@ -83,9 +83,9 @@ three types are the data-transformation layer.
     `fail()`s on `MD5`/`DES` under FIPS.
 
 - **`simp_snmpd::config` (`manifests/config.pp`)** — `contain`s
-  `config::agent` unconditionally, then `include`s `config::firewall`,
-  `config::tcpwrappers`, and `config::logging` gated on `$firewall`,
-  `$tcpwrappers`, and `$syslog` respectively (`config.pp`).
+  `config::agent` unconditionally, then `include`s `config::firewall`
+  and `config::logging` gated on `$firewall` and `$syslog` respectively
+  (`config.pp`).
   - **`config::agent` (`config/agent.pp`)** — writes
     `${simp_snmpd_dir}/agent.conf` from `templates/snmpd/agent.conf.epp`
     (agentuser/agentgroup, getbulk limits, leave_pidfile).
@@ -99,9 +99,6 @@ three types are the data-transformation layer.
     'snmpd'` to `$logfile` with `stop_processing => true`; if `$logrotate` is
     also set, asserts `simp/logrotate` and adds a `logrotate::rule`. Manages
     `$logfile` with `seltype => 'snmpd_log_t'`.
-  - **`config::tcpwrappers` (`config/tcpwrappers.pp`)** — asserts
-    `simp/tcpwrappers`, `include`s `tcpwrappers`, adds `tcpwrappers::allow {
-    'snmpd': pattern => $trusted_nets }`.
 
 - **`simp_snmpd::rsync` (`manifests/rsync.pp`)** — one of two non-entry classes that are **not** `assert_private()`'d (the other being `simp_snmpd::install`). Asserts `simp/rsync`, `include`s
   `rsync`, and pulls dlmod `.so` modules (`rsync_dlmod`) and/or MIBs
@@ -199,21 +196,20 @@ main config files).
 
 ### Manifests using `assert_private()`
 
-Seven of the ten classes are private (the three that are **not**: `simp_snmpd`, `simp_snmpd::install`, and `simp_snmpd::rsync`): `config.pp`, `config/agent.pp`, `config/firewall.pp`,
-`config/logging.pp`, `config/tcpwrappers.pp`, `install/snmpduser.pp`,
+Six of the nine classes are private (the three that are **not**: `simp_snmpd`, `simp_snmpd::install`, and `simp_snmpd::rsync`): `config.pp`, `config/agent.pp`, `config/firewall.pp`,
+`config/logging.pp`, `install/snmpduser.pp`,
 `install/vacmusers.pp`.
 
 ## The `simp_options` / `simplib::lookup` seam
 
 This is the module's SIMP-integration seam (the natural target for a lookup-path
-unit test). All nine calls are parameter defaults in `manifests/init.pp`:
+unit test). All eight calls are parameter defaults in `manifests/init.pp`:
 
 | File | Key | `default_value` |
 |------|-----|-----------------|
 | `init.pp` | `simp_options::rsync::server` | `'127.0.0.1'` |
 | `init.pp` | `simp_options::rsync::timeout` | `2` |
 | `init.pp` | `simp_options::firewall` | `false` |
-| `init.pp` | `simp_options::tcpwrappers` | `false` |
 | `init.pp` | `simp_options::syslog` | `false` |
 | `init.pp` | `simp_options::logrotate` | `false` |
 | `init.pp` | `simp_options::fips` | `false` |
@@ -228,23 +224,22 @@ Keep routing SIMP feature toggles through `simplib::lookup('simp_options::*', {
 
 Module dependencies (from `metadata.json`):
 
-- `simp/simplib` `>= 4.9.0 < 5.0.0` (provides `simplib::lookup`,
+- `simp/simplib` `>= 4.9.0 < 8.0.0` (provides `simplib::lookup`,
   `simplib::assert_optional_dependency`, `simplib::passgen`, and the `Simplib::*`
   types).
-- `puppet/snmp` `>= 5.1.0 < 8.0.0` (the upstream Net-SNMP module — provides
+- `puppet/snmp` `>= 5.1.0 < 9.0.0` (the upstream Net-SNMP module — provides
   `class { 'snmp' }` and the `snmp::snmpv3_user` define this module drives).
-- `puppetlabs/stdlib` `>= 8.0.0 < 10.0.0` (provides `Stdlib::*` types and
+- `puppetlabs/stdlib` `>= 8.0.0 < 11.0.0` (provides `Stdlib::*` types and
   `pick()`).
 
 Optional dependencies (from `metadata.json` `simp.optional_dependencies`), each
 enforced at runtime by `simplib::assert_optional_dependency` only when its
 `simp_options` toggle is on:
 
-- `simp/tcpwrappers` `>= 6.2.0 < 7.0.0` (`config/tcpwrappers.pp`)
-- `simp/iptables` `>= 6.5.3 < 8.0.0` (`config/firewall.pp`)
-- `simp/rsyslog` `>= 7.6.0 < 9.0.0` (`config/logging.pp`)
-- `simp/logrotate` `>= 6.5.0 < 7.0.0` (`config/logging.pp`)
-- `simp/rsync` `>= 6.1.1 < 8.0.0` (`rsync.pp`)
+- `simp/iptables` `>= 6.5.3 < 10.0.0` (`config/firewall.pp`)
+- `simp/rsyslog` `>= 7.6.0 < 11.0.0` (`config/logging.pp`)
+- `simp/logrotate` `>= 6.5.0 < 8.0.0` (`config/logging.pp`)
+- `simp/rsync` `>= 6.1.1 < 9.0.0` (`rsync.pp`)
 
 Runtime requirement (from `metadata.json` `requirements`): `puppet
 >= 7.0.0 < 9.0.0`. This is an **older baseline** that still names `puppet`. SIMP
@@ -263,10 +258,10 @@ OracleLinux 7/8/9; Rocky 8/9; AlmaLinux 8/9.
 - `manifests/install/vacmusers.pp` — private, `$daemon`-parameterized; creates
   `snmp::snmpv3_user` per user (auto-passgen, per-user FIPS guard).
 - `manifests/install/snmpduser.pp` — private; optional owner user/group.
-- `manifests/config.pp` — private; contains `config::agent`, gates the three
+- `manifests/config.pp` — private; contains `config::agent`, gates the two
   optional config classes.
-- `manifests/config/{agent,firewall,logging,tcpwrappers}.pp` — private config
-  sub-classes (agent.conf template; iptables; rsyslog+logrotate; tcpwrappers).
+- `manifests/config/{agent,firewall,logging}.pp` — private config
+  sub-classes (agent.conf template; iptables; rsyslog+logrotate).
 - `manifests/rsync.pp` — `simp_snmpd::rsync`; dlmod/MIB rsync (non-private).
 - `lib/puppet/functions/simp_snmpd/{accesslist,firewall_list,grouplist,viewlist}.rb`
   — Ruby functions that build `snmpd.conf` directive arrays.

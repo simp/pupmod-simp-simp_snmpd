@@ -5,7 +5,6 @@
 class simp_snmpd::install::vacmusers (
   Enum['snmpd','snmptrapd'] $daemon = 'snmpd'
 ) {
-
   assert_private()
 
   $simp_snmpd::v3_users_hash.each |String $username, Optional[Hash] $settings| {
@@ -13,17 +12,17 @@ class simp_snmpd::install::vacmusers (
       $_authpass = $settings['authpass'] ? {
         /(undef|UNDEF)/  => simplib::passgen("snmp_auth_${username}"),
         undef            => simplib::passgen("snmp_auth_${username}"),
-        default          => $settings['authpass'] }
+      default          => $settings['authpass'] }
       $_privpass = $settings['privpass'] ? {
         /(undef|UNDEF)/ => simplib::passgen("snmp_priv_${username}"),
         undef           => simplib::passgen("snmp_priv_${username}"),
-        default         => $settings['privpass'] }
+      default         => $settings['privpass'] }
       $_authtype = $settings['authtype'] ? {
         undef   => $simp_snmpd::defauthtype,
-        default => $settings['authtype'] }
+      default => $settings['authtype'] }
       $_privtype = $settings['privtype'] ? {
         undef   => $simp_snmpd::defprivtype,
-        default => $settings['privtype'] }
+      default => $settings['privtype'] }
 
       if $simp_snmpd::fips or $facts['fips_enabled'] {
         if $_authtype == 'MD5' {

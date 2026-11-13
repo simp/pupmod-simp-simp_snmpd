@@ -13,5 +13,4 @@ class simp_snmpd::config {
   if $simp_snmpd::syslog {
     include simp_snmpd::config::logging
   }
-
 }

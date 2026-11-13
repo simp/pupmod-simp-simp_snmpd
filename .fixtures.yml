@@ -14,5 +14,3 @@ fixtures:
     snmp: https://github.com/simp/puppet-snmp.git
     stdlib: https://github.com/simp/puppetlabs-stdlib.git
     systemd: https://github.com/simp/puppet-systemd.git
-  symlinks:
-    simp_snmpd: "#{source_dir}"

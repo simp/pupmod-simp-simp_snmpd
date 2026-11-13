@@ -4,7 +4,6 @@
 # * Disable v2 setup
 #
 class simp_snmpd::install {
-
   if $simp_snmpd::manage_snmpd_user or $simp_snmpd::manage_snmpd_group {
     include 'simp_snmpd::install::snmpduser'
   }
@@ -84,10 +83,10 @@ class simp_snmpd::install {
   # If the trap daemon is set to  be running then create the trap config dir
   # and add an include directive to the trap config file.
   if $simp_snmpd::trap_service_ensure != 'stopped' {
-    $_snmptrapd_config =  [ "includeDir ${simp_snmpd::user_trapd_dir}" ]
+    $_snmptrapd_config = ["includeDir ${simp_snmpd::user_trapd_dir}"]
     $_user_trapdir_ensure = 'directory'
   } else {
-    $_snmptrapd_config =  []
+    $_snmptrapd_config = []
     $_user_trapdir_ensure = 'absent'
   }
   file { $simp_snmpd::user_trapd_dir:
@@ -104,7 +103,7 @@ class simp_snmpd::install {
 
   # create the users
   class { 'simp_snmpd::install::vacmusers' :
-      daemon => 'snmpd'
+    daemon => 'snmpd'
   }
 
   class { 'snmp':
@@ -138,6 +137,5 @@ class simp_snmpd::install {
     accesses                 => $_accesslist,
     views                    => $_viewlist,
     groups                   => $_grouplist
-
   }
 }

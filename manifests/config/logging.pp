@@ -20,7 +20,7 @@ class simp_snmpd::config::logging {
     include 'logrotate'
 
     logrotate::rule { 'snmpd':
-      log_files                 => [ $simp_snmpd::logfile ],
+      log_files                 => [$simp_snmpd::logfile],
       lastaction_restart_logger => true
     }
   }

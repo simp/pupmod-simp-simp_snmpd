@@ -1,8 +1,7 @@
 # @summary Create systems users for running snmpd daemon
 #    and owning the snmpd files
 #
-class simp_snmpd::install::snmpduser{
-
+class simp_snmpd::install::snmpduser {
   assert_private()
 
   if $simp_snmpd::manage_snmpd_user {

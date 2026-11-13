@@ -81,12 +81,49 @@ describe 'simp_snmpd class' do
             - '.1.3.6.1.2.1.1'
             - '.1.3.6.1.2.1.25'
       simp_snmpd::system_info: false
+      # Listen on all interfaces (0.0.0.0) for both UDP and TCP so the
+      # 'check remote' tests can reach the daemon from the other host.
+      #
+      # The previous value bound to the node's FQDN. On the Vagrant boxes the
+      # FQDN resolves to the 127.0.1.1 loopback alias (the box ships a
+      # '127.0.1.1 <fqdn> <hostname>' line in /etc/hosts that precedes Beaker's
+      # routable entry), so snmpd only listened on loopback and remote queries
+      # got 'Connection refused'. A bare 'udp:161'/'tcp:161' binds to 0.0.0.0.
+      # Note: do NOT also list 'udp:127.0.0.1:161' here -- it overlaps the
+      # wildcard bind and snmpd fails to start with EADDRINUSE.
       simp_snmpd::agentaddress:
-      - udp:127.0.0.1:161
-      - udp:%{facts.fqdn}:161
-      - tcp:%{facts.fqdn}:161
+      - udp:161
+      - tcp:161
       simp_snmpd::manage_client: true
     EOH2
+  end
+
+  # Exercise noop from a clean (uninstalled) state: on a fresh node the Sicura
+  # console previews the module with `puppet apply --noop`, which must not error
+  # even though nothing simp_snmpd manages exists yet. Real idempotence is covered
+  # by the applies below. A post-convergence noop check is deliberately omitted:
+  # `puppet apply --noop --detailed-exitcodes` always exits 0, so it could never
+  # fail and would test nothing.
+  #
+  # We noop a bare `include` rather than the suite `manifest` above: that manifest
+  # also declares a troubleshooting `iptables::listen::tcp_stateful` SSH rule,
+  # which under --noop trips a simp_firewalld provider bug on EL8 --
+  # `firewall-offline-cmd --zone 99_simp --list-services` returns 112
+  # (INVALID_ZONE) because the zone a noop-suppressed resource would create does
+  # not exist yet, so the run errors (exit 4). The console previews the module
+  # class itself (firewall default-off), so a bare include is both the
+  # representative subject and free of that unrelated rule.
+  # See simp/pupmod-simp-simp_firewalld#106.
+  context 'in noop mode from a clean state' do
+    let(:noop_manifest) { "include 'simp_snmpd'" }
+
+    before(:context) do
+      on(hosts, 'puppet resource package net-snmp ensure=absent')
+    end
+
+    it 'applies without errors in noop mode' do
+      apply_manifest_on(hosts, noop_manifest, catch_failures: true, noop: true)
+    end
   end
 
   context 'with default setting on snmpd agent and client installed' do
@@ -121,7 +158,9 @@ describe 'simp_snmpd class' do
   context 'with snmpd hiera hash updates' do
     hosts.each do |node|
       it 'removes SNMPv3 users' do
-        on(node, 'service snmpd stop')
+        # `service` is not available on EL9/EL10; use the portable Puppet
+        # provider so the daemon is stopped on Vagrant and Docker alike.
+        on(node, 'puppet resource service snmpd ensure=stopped')
         on(node, 'rm -rf /var/lib/net-snmp')
       end
     end

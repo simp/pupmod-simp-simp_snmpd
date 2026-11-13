@@ -11,7 +11,6 @@
 * [`simp_snmpd::config::agent`](#simp_snmpd--config--agent): Set up sensible agent defaults
 * [`simp_snmpd::config::firewall`](#simp_snmpd--config--firewall): Ensure that firewall rules are defined
 * [`simp_snmpd::config::logging`](#simp_snmpd--config--logging): Ensures that appropriate logging rules are defined
-* [`simp_snmpd::config::tcpwrappers`](#simp_snmpd--config--tcpwrappers): This class is meant to be called from simp_snmp.
 * [`simp_snmpd::install`](#simp_snmpd--install): Set up snmp group/user if needed, and subsequently change permissions
 * [`simp_snmpd::install::snmpduser`](#simp_snmpd--install--snmpduser): Create systems users for running snmpd daemon
 and owning the snmpd files
@@ -69,7 +68,6 @@ accepted connections. Denied connections will still be logged.
     * snmpd.conf AGENT BEHAVIOR section for more information on the
   * man
     * snmpd.conf  SNMPv3 with the User-based Security Model (USM) section
-A hash of users to create for usm access. Also see README for details
 
 #### Parameters
 
@@ -115,7 +113,6 @@ The following parameters are available in the `simp_snmpd` class:
 * [`rsync_mibs`](#-simp_snmpd--rsync_mibs)
 * [`rsync_mibs_dir`](#-simp_snmpd--rsync_mibs_dir)
 * [`v3_users_hash`](#-simp_snmpd--v3_users_hash)
-* [`v3_users_hash`](#-simp_snmpd--v3_users_hash)
 * [`view_hash`](#-simp_snmpd--view_hash)
 * [`group_hash`](#-simp_snmpd--group_hash)
 * [`access_hash`](#-simp_snmpd--access_hash)
@@ -134,7 +131,6 @@ The following parameters are available in the `simp_snmpd` class:
 * [`trusted_nets`](#-simp_snmpd--trusted_nets)
 * [`syslog`](#-simp_snmpd--syslog)
 * [`logrotate`](#-simp_snmpd--logrotate)
-* [`tcpwrappers`](#-simp_snmpd--tcpwrappers)
 
 ##### <a name="-simp_snmpd--ensure"></a>`ensure`
 
@@ -293,6 +289,8 @@ Data type: `String`
 The options passed to the snmpd daemon at start up.
 The default sends info through critical to local6.
 
+Default value: `'-LS0-6d'`
+
 ##### <a name="-simp_snmpd--agentaddress"></a>`agentaddress`
 
 Data type: `Array[String]`
@@ -403,7 +401,7 @@ Data type: `Simplib::Host`
 
 The rsync server from which to pull the files.
 
-Default value: `simplib::lookup('simp_options::rsync::server',  { 'default_value' => '127.0.0.1' })`
+Default value: `simplib::lookup('simp_options::rsync::server', { 'default_value' => '127.0.0.1' })`
 
 ##### <a name="-simp_snmpd--rsync_source"></a>`rsync_source`
 
@@ -466,11 +464,9 @@ Default value: `'/usr/share/snmp'`
 
 Data type: `Hash`
 
+A hash of users to create for USM access. Also see README for details
 
-
-##### <a name="-simp_snmpd--v3_users_hash"></a>`v3_users_hash`
-
-hash of users to create for USM.
+Default value: `{ 'snmp_ro' => { 'authtype' => 'SHA', 'privtype' => 'AES' }, 'snmp_rw' => { 'authtype' => 'SHA', 'privtype' => 'AES' } }`
 
 ##### <a name="-simp_snmpd--view_hash"></a>`view_hash`
 
@@ -478,17 +474,23 @@ Data type: `Hash`
 
 Hash of views to create for VACM
 
+Default value: `{ 'systemview' => { 'included' => ['.1.3.6.1.2.1.1', '.1.3.6.1.2.1.25.1.1'] }, 'iso1' => { 'included' => ['.1'] } }`
+
 ##### <a name="-simp_snmpd--group_hash"></a>`group_hash`
 
 Data type: `Hash`
 
 Hash of groups to create for VACM
 
+Default value: `{ 'readonly_group' => { 'secname' => ['snmp_ro'] }, 'readwrite_group' => { 'secname' => ['snmp_rw'] } }`
+
 ##### <a name="-simp_snmpd--access_hash"></a>`access_hash`
 
 Data type: `Hash`
 
 Hash of access entrys to create for VACM.
+
+Default value: `{ 'readaccess' => { 'view' => { 'read' => 'systemview' }, 'groups' => ['readonly_group'] }, 'systemwrite' => { 'view' => { 'read' => 'iso1', 'write' => 'systemview' }, 'groups' => ['readwrite_group'] } }`
 
 ##### <a name="-simp_snmpd--defauthtype"></a>`defauthtype`
 
@@ -577,7 +579,7 @@ Data type: `Boolean`
 If FIPS should be enabled or not.  FIPS mode does not allow MD5 or DES
 macs/ciphers.
 
-Default value: `simplib::lookup('simp_options::fips',           { 'default_value' => false })`
+Default value: `simplib::lookup('simp_options::fips', { 'default_value' => false })`
 
 ##### <a name="-simp_snmpd--firewall"></a>`firewall`
 
@@ -586,7 +588,7 @@ Data type: `Boolean`
 Whether include modules that will use agentaddress array to open ports in
 iptables.
 
-Default value: `simplib::lookup('simp_options::firewall',       { 'default_value' => false })`
+Default value: `simplib::lookup('simp_options::firewall', { 'default_value' => false })`
 
 ##### <a name="-simp_snmpd--trusted_nets"></a>`trusted_nets`
 
@@ -594,7 +596,7 @@ Data type: `Simplib::Netlist`
 
 Networks that will be allowed to access the snmp ports opened by the firewall.
 
-Default value: `simplib::lookup('simp_options::trusted_nets',   { 'default_value' => ['127.0.0.1'] })`
+Default value: `simplib::lookup('simp_options::trusted_nets', { 'default_value' => ['127.0.0.1'] })`
 
 ##### <a name="-simp_snmpd--syslog"></a>`syslog`
 
@@ -602,7 +604,7 @@ Data type: `Boolean`
 
 
 
-Default value: `simplib::lookup('simp_options::syslog',         { 'default_value' => false })`
+Default value: `simplib::lookup('simp_options::syslog', { 'default_value' => false })`
 
 ##### <a name="-simp_snmpd--logrotate"></a>`logrotate`
 
@@ -611,15 +613,7 @@ Data type: `Boolean`
 If these variables are set then rules will be added to rsyslog to log
 snmp messages to /var/log/snmpd.log and set up log rotation.
 
-Default value: `simplib::lookup('simp_options::logrotate',      { 'default_value' => false })`
-
-##### <a name="-simp_snmpd--tcpwrappers"></a>`tcpwrappers`
-
-Data type: `Boolean`
-
-Whether or not the system is using tcpwrappers to control access.
-
-Default value: `simplib::lookup('simp_options::tcpwrappers',    { 'default_value' => false })`
+Default value: `simplib::lookup('simp_options::logrotate', { 'default_value' => false })`
 
 ### <a name="simp_snmpd--config"></a>`simp_snmpd::config`
 
@@ -641,12 +635,6 @@ firewall need to be opened.
 ### <a name="simp_snmpd--config--logging"></a>`simp_snmpd::config::logging`
 
 Ensures that appropriate logging rules are defined
-
-### <a name="simp_snmpd--config--tcpwrappers"></a>`simp_snmpd::config::tcpwrappers`
-
-simp_snmpd::config::tcpwrappers
-
-It ensures that tcpwrappers rules are defined.
 
 ### <a name="simp_snmpd--install"></a>`simp_snmpd::install`
 
@@ -813,4 +801,3 @@ Alias of `Enum['usm']`
 The default type to use in VACM access directives
 
 Alias of `Enum['noauth', 'auth', 'priv']`
-

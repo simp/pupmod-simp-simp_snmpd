@@ -72,7 +72,6 @@ describe 'simp_snmpd' do
           it { is_expected.to contain_class('simp_snmpd::config::agent') }
           it { is_expected.to create_file('/etc/snmp/simp_snmpd.d/agent.conf') }
           it { is_expected.not_to contain_class('simp_snmpd::config::firewall') }
-          it { is_expected.not_to contain_class('simp_snmpd::config::tcpwrappers') }
           it { is_expected.not_to contain_class('simp_snmpd::config::logging') }
         end
         context 'install/users with default parameters' do
@@ -120,14 +119,12 @@ describe 'simp_snmpd' do
           let(:params) do
             {
               firewall: true,
-              tcpwrappers: true,
               syslog: true,
               logrotate: true,
             }
           end
 
           it_behaves_like 'a structured module'
-          it { is_expected.to contain_class('simp_snmpd::config::tcpwrappers') }
           it { is_expected.to contain_class('simp_snmpd::config::firewall') }
           it { is_expected.to contain_class('simp_snmpd::config::logging') }
           it { is_expected.to create_rsyslog__rule__local('XX_snmpd') }

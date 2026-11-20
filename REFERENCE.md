@@ -11,7 +11,6 @@
 * [`simp_snmpd::config::agent`](#simp_snmpd--config--agent): Set up sensible agent defaults
 * [`simp_snmpd::config::firewall`](#simp_snmpd--config--firewall): Ensure that firewall rules are defined
 * [`simp_snmpd::config::logging`](#simp_snmpd--config--logging): Ensures that appropriate logging rules are defined
-* [`simp_snmpd::config::tcpwrappers`](#simp_snmpd--config--tcpwrappers): This class is meant to be called from simp_snmp.
 * [`simp_snmpd::install`](#simp_snmpd--install): Set up snmp group/user if needed, and subsequently change permissions
 * [`simp_snmpd::install::snmpduser`](#simp_snmpd--install--snmpduser): Create systems users for running snmpd daemon
 and owning the snmpd files
@@ -132,7 +131,6 @@ The following parameters are available in the `simp_snmpd` class:
 * [`trusted_nets`](#-simp_snmpd--trusted_nets)
 * [`syslog`](#-simp_snmpd--syslog)
 * [`logrotate`](#-simp_snmpd--logrotate)
-* [`tcpwrappers`](#-simp_snmpd--tcpwrappers)
 
 ##### <a name="-simp_snmpd--ensure"></a>`ensure`
 
@@ -617,14 +615,6 @@ snmp messages to /var/log/snmpd.log and set up log rotation.
 
 Default value: `simplib::lookup('simp_options::logrotate', { 'default_value' => false })`
 
-##### <a name="-simp_snmpd--tcpwrappers"></a>`tcpwrappers`
-
-Data type: `Boolean`
-
-Whether or not the system is using tcpwrappers to control access.
-
-Default value: `simplib::lookup('simp_options::tcpwrappers', { 'default_value' => false })`
-
 ### <a name="simp_snmpd--config"></a>`simp_snmpd::config`
 
 Configure the SNMPD service
@@ -645,12 +635,6 @@ firewall need to be opened.
 ### <a name="simp_snmpd--config--logging"></a>`simp_snmpd::config::logging`
 
 Ensures that appropriate logging rules are defined
-
-### <a name="simp_snmpd--config--tcpwrappers"></a>`simp_snmpd::config::tcpwrappers`
-
-simp_snmpd::config::tcpwrappers
-
-It ensures that tcpwrappers rules are defined.
 
 ### <a name="simp_snmpd--install"></a>`simp_snmpd::install`
 

@@ -54,8 +54,11 @@ puppet-snmp directly.
 
 The `simp_snmpd::tcpwrappers` parameter and the
 `simp_snmpd::config::tcpwrappers` class have been removed. TCP Wrappers is
-not available on EL8 and later, and `simp/tcpwrappers` is archived. Remove
-any `simp_snmpd::tcpwrappers` setting from Hiera before upgrading.
+not available on EL8 and later, and `simp/tcpwrappers` is archived.
+
+Remove `tcpwrappers` from any resource-style `class { 'simp_snmpd': }`
+declaration; those fail to compile after the upgrade. A leftover
+`simp_snmpd::tcpwrappers` Hiera key is ignored and can be removed at any time.
 
 ## Setup
 

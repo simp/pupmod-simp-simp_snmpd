@@ -7,14 +7,15 @@
 #### Table of Contents
 
 1. [Description](#description)
-2. [Setup - The basics of getting started with simp_snmp](#setup)
+2. [Breaking changes in 3.0.0](#breaking-changes-in-300)
+3. [Setup - The basics of getting started with simp_snmp](#setup)
     * [What simp_snmp affects](#what-simp_snmp-affects)
     * [Setup requirements](#setup-requirements)
     * [Beginning with simp_snmp](#beginning-with-simp_snmp)
-3. [Usage - Configuration options and additional functionality](#usage)
-4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
-5. [Limitations - OS compatibility, etc.](#limitations)
-6. [Development - Guide for contributing to the module](#development)
+4. [Usage - Configuration options and additional functionality](#usage)
+5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
+6. [Limitations - OS compatibility, etc.](#limitations)
+7. [Development - Guide for contributing to the module](#development)
     * [Acceptance Tests - Beaker env variables](#acceptance-tests)
 
 ## Description
@@ -48,6 +49,13 @@ with usm authentication.  To configure snmp in a different way use
 puppet-snmp directly.
 
 #TODO add tsm and configure snmp to use encryption
+
+## Breaking changes in 3.0.0
+
+The `simp_snmpd::tcpwrappers` parameter and the
+`simp_snmpd::config::tcpwrappers` class have been removed. TCP Wrappers is
+not available on EL8 and later, and `simp/tcpwrappers` is archived. Remove
+any `simp_snmpd::tcpwrappers` setting from Hiera before upgrading.
 
 ## Setup
 

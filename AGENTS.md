@@ -14,7 +14,7 @@ user directory), and it explicitly refuses any protocol version other than 3
 The core job is to translate four Hiera hashes — users, views, groups, and
 access entries — into the `snmp.conf`/`snmpd.conf` USM and VACM directives that
 `puppet/snmp` expects, generate SNMPv3 credentials, and optionally wire up the
-firewall, TCP wrappers, syslog/logrotate, and rsync integrations that a SIMP
+firewall, syslog/logrotate, and rsync integrations that a SIMP
 host normally wants. The install → config flow is a fixed chain:
 
 ```
@@ -246,8 +246,8 @@ Runtime requirement (from `metadata.json` `requirements`): `puppet
 is migrating Puppet → OpenVox; when `metadata.json` switches this to `openvox`,
 update this line (and the `Gemfile` gem, below) to match.
 
-Supported OS matrix (from `metadata.json`): CentOS 7/8/9; RedHat 7/8/9;
-OracleLinux 7/8/9; Rocky 8/9; AlmaLinux 8/9.
+Supported OS matrix (from `metadata.json`): CentOS 9/10; RedHat 8/9/10;
+OracleLinux 8/9/10; Rocky 8/9/10; AlmaLinux 8/9/10.
 
 ## Repository layout
 

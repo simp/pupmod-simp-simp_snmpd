@@ -1,3 +1,6 @@
+* Mon Nov 23 2026 Hazel Caballero <hazel@sicura.us> - 3.0.1
+- Added a "Breaking changes in 3.0.0" section to the README
+
 * Fri Nov 13 2026 Steven Pritchard <steve@sicura.us> - 3.0.0
 - BREAKING: Remove `simp_snmpd::tcpwrappers` and the
   `simp_snmpd::config::tcpwrappers` class. TCP Wrappers is not available on

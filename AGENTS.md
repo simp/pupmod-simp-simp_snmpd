@@ -236,7 +236,7 @@ Optional dependencies (from `metadata.json` `simp.optional_dependencies`), each
 enforced at runtime by `simplib::assert_optional_dependency` only when its
 `simp_options` toggle is on:
 
-- `simp/iptables` `>= 6.5.3 < 10.0.0` (`config/firewall.pp`)
+- `simp/iptables` `>= 6.5.3 < 11.0.0` (`config/firewall.pp`)
 - `simp/rsyslog` `>= 7.6.0 < 12.0.0` (`config/logging.pp`)
 - `simp/logrotate` `>= 6.5.0 < 8.0.0` (`config/logging.pp`)
 - `simp/rsync` `>= 6.1.1 < 9.0.0` (`rsync.pp`)
